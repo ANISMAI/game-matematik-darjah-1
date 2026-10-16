@@ -1,30 +1,35 @@
-# Jom Kira! — Mockup Game Matematik Darjah 1
+# YouEdu Math — Pulau Ninja (Fasa 1)
 
-Mockup permainan matematik untuk murid Darjah 1, berasaskan topik awal KSSR Matematik Tahun 1.
+Prototaip navigasi interaktif untuk permainan matematik murid Tahun 1. Dibina dengan React + CSS + SVG, dan semua teks antara muka dalam Bahasa Melayu.
 
-## Cara buka
+## Cara jalankan
 
-Klik dua kali pada `index.html` untuk buka di browser. Tiada pemasangan diperlukan.
+```
+npm install
+npm run dev
+```
 
-## Mod permainan
+Browser akan terbuka sendiri. Untuk versi produksi: `npm run build`, kemudian `npm run preview`.
 
-| Mod | Kandungan |
+## Aliran
+
+Peta Dunia → Kawasan Topik → Subtopik → Pratonton Misi → Permainan → Keputusan → Kembali ke Kawasan
+
+- 8 kawasan boleh dibuka. Hanya **Nombor Bulat → Bilang Objek** boleh dimainkan (5 soalan, kira objek 1–10).
+- Kawasan lain memaparkan "Pratonton Latihan" (aktiviti akan datang).
+- Kemajuan, lokasi terakhir dan tetapan bunyi disimpan dalam `localStorage` (`youedu-pulau-ninja-v1`). Untuk mula semula, padam kunci ini dalam DevTools.
+
+## Struktur
+
+| Fail | Kandungan |
 |---|---|
-| 🍎 Kira Objek | Kira objek 1–10 |
-| ➕ Tambah | Tambah dalam lingkungan 10 |
-| ➖ Tolak | Tolak dalam lingkungan 10 |
-| ⚖️ Banding | Pilih nombor lebih besar (1–20) |
+| `src/data/topics.js` | Kawasan, topik, subtopik (boleh disunting; `available` untuk peraturan buka kunci) |
+| `src/lib/storage.js` | Simpanan kemajuan dan status misi |
+| `src/lib/questions.js` | Penjana soalan Bilang Objek |
+| `src/lib/sound.js` | Bunyi lembut (Web Audio) |
+| `src/lib/usePanZoom.js` | Muat peta, zum dan geseran peta |
+| `src/components/` | `WorldMap`, `RegionMap`, `TopicMarker`, `MissionPreview`, `CountingGame`, `ResultsScreen`, `NinjaCharacter`, `Art` (seni SVG) |
+| `src/styles.css` | Warna, butang, panel dan animasi dikongsi |
+| `legacy/` | Mockup lama "Jom Kira!" (HTML biasa) |
 
-Setiap pusingan ada 10 soalan. Markah dikira hanya untuk cubaan pertama, dan murid boleh dapat sehingga 3 bintang. Jumlah bintang disimpan dalam browser.
-
-## Struktur fail
-
-- `index.html` — susunan skrin (menu, permainan, keputusan)
-- `style.css` — reka bentuk
-- `game.js` — logik soalan dan permainan
-
-## Idea seterusnya
-
-- Bunyi dan suara (sebut nombor)
-- Topik lain: wang, masa, bentuk, nilai tempat
-- Tahap kesukaran (hingga 20, hingga 100)
+Label topik dan subtopik ialah kandungan cadangan prototaip, bukan kurikulum rasmi.
