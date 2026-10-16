@@ -389,9 +389,340 @@ button {
   stroke-dasharray: 18 10;
 }
 
-.region.is-selected .region-top {
+.region.is-selected .region-glow {
   stroke: #fff;
+  stroke-width: 7;
+  stroke-opacity: 0.9;
+}
+
+.region-hit {
+  fill: transparent;
+}
+
+/* Kepingan pulau yang terangkat bersama bangunan dan label */
+/* Kepingan hanya kelihatan semasa terangkat, supaya ia tidak menutup animasi (cth. air terjun)
+   di lapisan bawah. Bila turun, ia kekal kelihatan sehingga animasi turun selesai. */
+.land-piece {
+  opacity: 0;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.28s ease, opacity 0s linear 0.28s;
+}
+
+.land-piece.is-up,
+.land-piece.is-focused {
+  opacity: 1;
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.28s ease, opacity 0s;
+}
+
+.land-piece.is-up {
+  transform: translateY(-10px);
+  filter: drop-shadow(0 9px 6px rgba(4, 22, 40, 0.45)) brightness(1.08) saturate(1.1);
+}
+
+.piece-edge {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 6;
+  stroke-linejoin: round;
+  transition: stroke 0.2s;
+}
+
+.land-piece.is-focused .piece-edge {
+  stroke: #1d4ed8;
   stroke-width: 8;
+  stroke-dasharray: 20 12;
+}
+
+.land-socket {
+  opacity: 0;
+  transition: opacity 0.28s;
+}
+
+.land-socket.is-up {
+  opacity: 0.4;
+}
+
+.map-top .region-label-wrap .region-lift {
+  transition: transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-top .region-label-wrap.is-hover .region-lift {
+  transform: translateY(-10px);
+}
+
+.region-glow {
+  fill: #fff;
+  fill-opacity: 0;
+  transition: fill-opacity 0.18s;
+}
+
+.region.is-hover .region-glow,
+.region:focus-visible .region-glow {
+  fill-opacity: 0.2;
+}
+
+.no-hit {
+  pointer-events: none;
+}
+
+.map-scroll.ocean-deep {
+  background-color: #1f8fcc;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M10 30 q15 -10 30 0 t30 0' stroke='white' stroke-opacity='.3' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 45%, #48b8e8 0%, #2196d2 45%, #156ea8 100%);
+  background-size: 120px 60px, 100% 100%;
+  animation: waves-deep 8s linear infinite;
+}
+
+/* Laut realistik (komponen Sea) */
+.sea {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0a78b8;
+}
+
+.sea-a,
+.sea-b {
+  position: absolute;
+  background-image: url('/map/laut.webp');
+  will-change: transform;
+}
+
+/* laut.webp ialah jubin 1024px; anjakan animasi = saiz jubin supaya gelung lancar */
+.sea-a {
+  inset: -1024px;
+  animation: sea-a 110s linear infinite;
+}
+
+.sea-b {
+  inset: -1536px;
+  background-size: 1536px 1536px;
+  opacity: 0.55;
+  mix-blend-mode: overlay;
+  animation: sea-b 150s linear infinite;
+}
+
+/* bayang dalam di tepi skrin untuk rasa kedalaman */
+.sea::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 48%, rgba(120, 220, 255, 0.18) 0%, transparent 45%, rgba(1, 35, 75, 0.5) 100%);
+}
+
+@keyframes sea-a {
+  to {
+    transform: translate(1024px, 0);
+  }
+}
+
+@keyframes sea-b {
+  to {
+    transform: translate(-1536px, 1536px);
+  }
+}
+
+.sea + .map-scroll {
+  position: relative;
+  background: transparent;
+}
+
+/* warna laut dipadankan dengan tepi gambar pulau-tanah.webp */
+.map-scroll.ocean-image {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cpath d='M10 30 q15 -10 30 0 t30 0' stroke='white' stroke-opacity='.22' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 45%, #0d93cc 0%, #0779bb 55%, #035e9e 100%);
+}
+
+@keyframes waves-deep {
+  from {
+    background-position: 0 0, 0 0;
+  }
+  to {
+    background-position: 120px 60px, 0 0;
+  }
+}
+
+/* Peta berlapis: tanah statik, animasi, label */
+.map-stack {
+  position: relative;
+  flex: none;
+}
+
+.map-layer {
+  width: 100%;
+  will-change: transform;
+}
+
+.map-fx,
+.map-top {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-top .region-label-wrap {
+  pointer-events: auto;
+}
+
+.region-label-wrap .region-lift {
+  filter: drop-shadow(0 5px 3px rgba(26, 16, 6, 0.25));
+}
+
+.landmark-shadow {
+  transition: opacity 0.18s, transform 0.18s;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.region-label-wrap.is-hover .landmark-shadow {
+  opacity: 0.14;
+  transform: scale(0.9);
+}
+
+.foam {
+  animation: foam 6s linear infinite;
+}
+
+.foam-2 {
+  animation-duration: 11s;
+  animation-direction: reverse;
+}
+
+.sparkle {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: twinkle 4s ease-in-out infinite;
+  opacity: 0;
+}
+
+.mist {
+  animation: mist 9s ease-in-out infinite alternate;
+}
+
+.mist-1 {
+  animation-duration: 13s;
+}
+
+.rays path {
+  animation: rays 7s ease-in-out infinite alternate;
+}
+
+.rays .ray-2 {
+  animation-delay: -3s;
+}
+
+.birds {
+  animation: fly 38s linear infinite;
+}
+
+.birds path {
+  animation: flap 0.6s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.reveal {
+  opacity: 0;
+}
+
+.reveal-l {
+  transform: translateX(-760px);
+  animation: reveal-l 1.6s cubic-bezier(0.6, 0, 0.3, 1) 0.25s backwards;
+}
+
+.reveal-r {
+  transform: translateX(760px);
+  animation: reveal-r 1.6s cubic-bezier(0.6, 0, 0.3, 1) 0.25s backwards;
+}
+
+@keyframes foam {
+  to {
+    stroke-dashoffset: -320;
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  70%,
+  100% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  82% {
+    opacity: 0.95;
+    transform: scale(1.1) rotate(45deg);
+  }
+}
+
+@keyframes mist {
+  from {
+    opacity: 0.35;
+    transform: translateX(-25px);
+  }
+  to {
+    opacity: 0.85;
+    transform: translateX(25px);
+  }
+}
+
+@keyframes rays {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fly {
+  from {
+    transform: translate(-80px, 0);
+  }
+  50% {
+    transform: translate(620px, -40px);
+  }
+  to {
+    transform: translate(1320px, 10px);
+  }
+}
+
+@keyframes flap {
+  to {
+    transform: scaleY(0.55);
+  }
+}
+
+@keyframes reveal-l {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes reveal-r {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.whirl {
+  animation: spin 9s linear infinite;
+}
+
+.falls {
+  animation: falls 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes falls {
+  to {
+    stroke-dashoffset: -16;
+  }
 }
 
 .region.is-locked {
@@ -1205,5 +1536,59 @@ button {
   }
   .feedback {
     min-height: 0;
+  }
+}
+
+/* Air terjun (komponen Waterfalls) */
+.falls-flow {
+  animation: falls-flow 1.3s linear infinite;
+}
+
+.falls-water {
+  opacity: 0.75;
+  mix-blend-mode: screen;
+}
+
+/* jalur biru untuk air terjun yang sudah putih dalam gambar */
+.falls-shade {
+  opacity: 0.9;
+  mix-blend-mode: multiply;
+}
+
+.falls-foam {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: falls-foam 1.1s ease-in-out infinite alternate;
+}
+
+.falls-mist {
+  animation: falls-mist 2.6s ease-in-out infinite alternate;
+}
+
+@keyframes falls-flow {
+  to {
+    transform: translateY(96px);
+  }
+}
+
+@keyframes falls-foam {
+  from {
+    opacity: 0.3;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes falls-mist {
+  from {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0.75;
+    transform: translateY(-6px);
   }
 }

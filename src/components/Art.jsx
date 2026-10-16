@@ -254,11 +254,13 @@ export function Landmark({ type }) {
 
 export function Cloud({ x, y, s = 1, className = '' }) {
   return (
-    <g className={`cloud ${className}`} transform={`translate(${x} ${y}) scale(${s})`} aria-hidden="true">
-      <ellipse cx="0" cy="0" rx="46" ry="20" fill="#fff" />
-      <circle cx="-18" cy="-10" r="20" fill="#fff" />
-      <circle cx="12" cy="-16" r="24" fill="#fff" />
-      <ellipse cx="0" cy="6" rx="46" ry="10" fill="#e6f2fb" />
+    <g transform={`translate(${x} ${y}) scale(${s})`} aria-hidden="true">
+      <g className={`cloud ${className}`}>
+        <ellipse cx="0" cy="0" rx="46" ry="20" fill="#fff" />
+        <circle cx="-18" cy="-10" r="20" fill="#fff" />
+        <circle cx="12" cy="-16" r="24" fill="#fff" />
+        <ellipse cx="0" cy="6" rx="46" ry="10" fill="#e6f2fb" />
+      </g>
     </g>
   );
 }

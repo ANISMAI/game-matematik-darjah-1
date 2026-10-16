@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
-    "preview": "vite preview --open"
+    "preview": "vite preview --open",
+    "images": "node scripts/to-webp.mjs && node scripts/make-mask.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",
+    "sharp": "^0.34.3",
     "vite": "^7.1.0"
   },
   "dependencies": {

@@ -1,6 +1,7 @@
 // Kandungan pulau: kawasan, topik dan subtopik.
 // Label topik/subtopik ialah cadangan kandungan prototaip, bukan kurikulum rasmi.
 // `available` boleh ditukar kepada false untuk peraturan buka kunci pada masa depan.
+// `sprite` (pilihan): gambar bangunan dalam public/map; tanpanya, bangunan SVG digunakan.
 
 const PREVIEW = (instruction) => [
   {
@@ -17,6 +18,7 @@ export const REGIONS = [
     topic: 'Nombor Bulat',
     name: 'Kampung Buluh',
     landmark: 'bamboo',
+    sprite: '/map/kampung-buluh.webp',
     color: '#9fdc6f',
     edge: '#5f9e3c',
     map: { cx: 330, cy: 235 },
@@ -39,6 +41,7 @@ export const REGIONS = [
     topic: 'Tambah dan Tolak',
     name: 'Dojo Ninja',
     landmark: 'dojo',
+    sprite: '/map/dojo.webp',
     color: '#f6c48a',
     edge: '#c68b4e',
     map: { cx: 610, cy: 205 },
@@ -55,6 +58,7 @@ export const REGIONS = [
     topic: 'Masa dan Waktu',
     name: 'Menara Jam',
     landmark: 'clock',
+    sprite: '/map/menara-jam.webp',
     color: '#cdbaf0',
     edge: '#8f78c4',
     map: { cx: 885, cy: 240 },
@@ -66,6 +70,7 @@ export const REGIONS = [
     topic: 'Ruang',
     name: 'Kubu Bentuk',
     landmark: 'shapes',
+    sprite: '/map/kubu-bentuk.webp',
     color: '#cfd4de',
     edge: '#8c94a6',
     map: { cx: 250, cy: 455 },
@@ -77,6 +82,7 @@ export const REGIONS = [
     topic: 'Pecahan',
     name: 'Kebun Ninja',
     landmark: 'garden',
+    sprite: '/map/kebun.webp',
     color: '#86d68a',
     edge: '#4f9e58',
     map: { cx: 585, cy: 440 },
@@ -88,6 +94,7 @@ export const REGIONS = [
     topic: 'Wang',
     name: 'Pasar Ninja',
     landmark: 'market',
+    sprite: '/map/pasar.webp',
     color: '#ffd77e',
     edge: '#d0a43e',
     map: { cx: 925, cy: 465 },
@@ -99,6 +106,7 @@ export const REGIONS = [
     topic: 'Ukuran dan Sukatan',
     name: 'Lembah Jambatan',
     landmark: 'bridge',
+    sprite: '/map/jambatan.webp',
     color: '#a9e0c0',
     edge: '#5fae86',
     map: { cx: 400, cy: 650 },
@@ -110,6 +118,7 @@ export const REGIONS = [
     topic: 'Pengurusan Data',
     name: 'Pusat Rekod Ninja',
     landmark: 'records',
+    sprite: '/map/pusat-rekod.webp',
     color: '#f2cfa6',
     edge: '#c49463',
     map: { cx: 785, cy: 655 },
