@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ms">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Jom Kira! – Matematik Darjah 1</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Skrin Utama -->
+  <section id="screen-home" class="screen active">
+    <header class="hero">
+      <div class="mascot" aria-hidden="true">🦉</div>
+      <h1>Jom Kira!</h1>
+      <p class="subtitle">Permainan Matematik Darjah 1</p>
+    </header>
+
+    <div class="stars-total">⭐ <span id="total-stars">0</span> bintang</div>
+
+    <div class="menu">
+      <button class="card c-count" data-mode="kira">
+        <span class="card-icon">🍎</span>
+        <span class="card-title">Kira Objek</span>
+        <span class="card-desc">Berapa banyak?</span>
+      </button>
+      <button class="card c-add" data-mode="tambah">
+        <span class="card-icon">➕</span>
+        <span class="card-title">Tambah</span>
+        <span class="card-desc">Hingga 10</span>
+      </button>
+      <button class="card c-sub" data-mode="tolak">
+        <span class="card-icon">➖</span>
+        <span class="card-title">Tolak</span>
+        <span class="card-desc">Hingga 10</span>
+      </button>
+      <button class="card c-cmp" data-mode="banding">
+        <span class="card-icon">⚖️</span>
+        <span class="card-title">Banding</span>
+        <span class="card-desc">Mana lebih besar?</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- Skrin Permainan -->
+  <section id="screen-game" class="screen">
+    <div class="topbar">
+      <button class="btn-back" id="btn-back" aria-label="Kembali">←</button>
+      <div class="progress"><div class="progress-fill" id="progress-fill"></div></div>
+      <div class="round" id="round-label">1/10</div>
+    </div>
+
+    <h2 class="question-title" id="question-title">Berapa banyak?</h2>
+    <div class="question" id="question"></div>
+    <div class="answers" id="answers"></div>
+    <div class="feedback" id="feedback" aria-live="polite"></div>
+  </section>
+
+  <!-- Skrin Keputusan -->
+  <section id="screen-result" class="screen">
+    <div class="result-box">
+      <div class="result-emoji" id="result-emoji">🎉</div>
+      <h2 id="result-title">Syabas!</h2>
+      <p class="result-score">Betul: <strong id="result-score">0</strong> / 10</p>
+      <div class="result-stars" id="result-stars"></div>
+      <div class="result-actions">
+        <button class="btn primary" id="btn-again">Main Lagi</button>
+        <button class="btn" id="btn-home">Menu Utama</button>
+      </div>
+    </div>
+  </section>
+
+  <script src="game.js"></script>
+</body>
+</html>
