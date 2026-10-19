@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 import { REGIONS } from '../data/topics.js';
 import { completedInRegion } from '../lib/storage.js';
 import { usePanZoom } from '../lib/usePanZoom.js';
-import { Cloud, Landmark } from './Art.jsx';
+import { Landmark } from './Art.jsx';
 import { pointInPoly, smoothClosed } from './Terrain.jsx';
 import { AnimatedFx, seaSparkles, TextureDefs } from './MapEffects.jsx';
 import { NinjaMarker } from './NinjaCharacter.jsx';
 import MapControls from './MapControls.jsx';
 import Sea from './Sea.jsx';
+import SoftClouds from './SoftClouds.jsx';
+import Travellers from './Travellers.jsx';
 import Waterfalls, { WaterfallDefs } from './Waterfalls.jsx';
 import SPRITE_SIZES from '../data/sprite-sizes.json';
 
@@ -39,6 +41,20 @@ const E = {
   b1: [J5, [630, 510], [602, 548], [590, 584], [578, 632], [565, 680], [530, 735], [575, 790], [600, 860], [600, 1024]], // Ukuran | Wang
   b2: [J4, [1010, 520], [1070, 578], [1165, 620], [1205, 655], [1215, 720], [1225, 800], [1240, 1024]], // Wang | Data
 };
+// Laluan pengembara (ninja dan kereta sorong): disurih ikut garis tengah jalan tanah dalam gambar.
+const ROADS = [
+  // utara: padang buluh -> bawah dojo -> ke hutan musim luruh
+  [[440, 218], [490, 226], [525, 240], [545, 268], [575, 285], [615, 293], [660, 285], [710, 277], [760, 274], [810, 270], [860, 258], [925, 240], [970, 224], [988, 200], [975, 165]],
+  // barat: dari utara Nombor turun ke kebun, kemudian ke timur di tepi padang pasir
+  [[566, 150], [575, 190], [555, 215], [535, 242], [548, 272], [552, 302], [538, 332], [522, 360], [530, 386], [562, 410], [578, 438], [575, 455], [600, 470], [650, 485], [700, 495], [750, 495], [800, 486], [850, 481], [900, 485], [950, 488]],
+  // timur: tepi salji turun ke padang pasir
+  [[925, 242], [965, 265], [980, 290], [1000, 318], [1030, 345], [1040, 380], [1035, 412], [1030, 448], [1018, 478], [995, 490], [985, 515], [1003, 548], [1050, 580], [1100, 610], [1140, 635]],
+  // ke menara jam
+  [[980, 284], [1040, 262], [1120, 255]],
+  // barat daya: tepi padang pasir turun ke lembah
+  [[688, 505], [680, 540], [640, 564], [614, 588], [601, 621], [603, 650], [604, 672], [578, 700], [542, 715], [515, 725]],
+];
+
 const fwd = (k) => E[k];
 const rev = (k) => [...E[k]].reverse();
 const POLYS = {
@@ -337,6 +353,7 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
               <WaterfallDefs />
             </defs>
             <Waterfalls />
+            <Travellers roads={ROADS} />
             <AnimatedFx
               width={W}
               height={H}
@@ -347,7 +364,7 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
                 [1460, 640, 110, 60],
               ]}
             />
-            <Cloud x={420} y={60} s={1.1} className="drift-b" />
+            <SoftClouds />
           </svg>
 
           {/* Lapisan 3: kepingan tanah yang terangkat, bangunan dan label */}

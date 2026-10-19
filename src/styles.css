@@ -1592,3 +1592,23 @@ button {
     transform: translateY(-6px);
   }
 }
+
+/* Awan lembut (komponen SoftClouds) hanyut perlahan ke kanan dan kembali */
+.soft-cloud {
+  animation: soft-drift 80s ease-in-out infinite alternate;
+}
+
+@keyframes soft-drift {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(60px);
+  }
+}
+
+/* benarkan awan melimpah keluar dari kotak peta supaya tidak terpotong */
+.map-fx {
+  overflow: visible;
+}
+

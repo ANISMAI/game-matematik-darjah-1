@@ -2,7 +2,7 @@
 // Bangunan dipotong rapat (tiada ruang telus) dan saiznya dicatat dalam
 // src/data/sprite-sizes.json supaya kaki bangunan boleh diletak tepat di tanah.
 // Jalankan: npm run images
-import { readdir, mkdir, stat, writeFile } from 'node:fs/promises';
+import { readdir, mkdir, readFile, stat, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import sharp from 'sharp';
 
@@ -10,14 +10,18 @@ const SRC = 'assets-src/map';
 const OUT = 'public/map';
 const SIZES = 'src/data/sprite-sizes.json';
 const GROUND = 'pulau-tanah';
+// Sprite sheet pengembara diproses oleh scripts/make-sprites.mjs
+const SHEETS = ['ninja-jalan', 'kereta-sorong'];
 const SPRITE_MAX = 512; // dipapar ~170px, 2x+ untuk skrin tajam
 
 await mkdir(OUT, { recursive: true });
-const sizes = {};
+// Gabung dengan saiz sedia ada supaya bangunan yang PNG asalnya tiada tidak hilang.
+const sizes = JSON.parse(await readFile(SIZES, 'utf8').catch(() => '{}'));
 
 for (const file of (await readdir(SRC)).sort()) {
   if (!/\.(png|jpe?g|webp)$/i.test(file)) continue;
   const name = path.parse(file).name;
+  if (SHEETS.includes(name)) continue;
   const target = path.join(OUT, `${name}.webp`);
   if (name === GROUND) {
     await sharp(path.join(SRC, file)).resize({ width: 1536, withoutEnlargement: true }).webp({ quality: 82 }).toFile(target);

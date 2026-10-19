@@ -1,0 +1,26 @@
+{
+  "ninja-jalan": {
+    "depan": {
+      "frameW": 142,
+      "frameH": 160,
+      "frames": 4
+    },
+    "belakang": {
+      "frameW": 144,
+      "frameH": 160,
+      "frames": 4
+    }
+  },
+  "kereta-sorong": {
+    "depan": {
+      "frameW": 161,
+      "frameH": 160,
+      "frames": 4
+    },
+    "belakang": {
+      "frameW": 173,
+      "frameH": 160,
+      "frames": 4
+    }
+  }
+}
