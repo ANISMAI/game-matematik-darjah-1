@@ -399,9 +399,11 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
   const runId = useRef(0);
 
   // sx/sy = regangan badan (lompat), lift = tinggi lompatan di atas tanah
+  const ninjaPos = useRef(null); // kedudukan kaki ninja terkini (unit peta), untuk kamera
   const draw = useCallback((pos, view, frameNo, flip, sx = 1, sy = 1, lift = 0) => {
     const n = ninja;
     if (!n.root.current) return;
+    ninjaPos.current = pos;
     n.root.current.setAttribute('transform', `translate(${pos[0].toFixed(1)} ${pos[1].toFixed(1)})`);
     n.lift.current.setAttribute('transform', `translate(0 ${(-lift).toFixed(1)})`);
     // bayang mengecil bila ninja tinggi di udara
@@ -422,14 +424,28 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
   }, []);
 
   // Tatal supaya ninja kekal di tengah skrin (lerp = 1 untuk terus).
+  // Kamera dikira daripada koordinat ninja (tanpa membaca DOM) dan disimpan sebagai nombor perpuluhan.
+  // Membaca semula scrollLeft (dibundarkan) setiap bingkai menyebabkan skrin bergegar kiri-kanan.
+  const view = useRef({});
+  view.current = { w, h, svgW: svgSize.width, svgH: svgSize.height };
+  const cam = useRef(null);
   const follow = useCallback((lerp) => {
     const el = boxRef.current;
-    const nr = ninja.root.current;
-    if (!el || !nr) return;
-    const b = el.getBoundingClientRect();
-    const r = nr.getBoundingClientRect();
-    el.scrollLeft += (r.left + r.width / 2 - (b.left + b.width / 2)) * lerp;
-    el.scrollTop += (r.top + r.height / 2 - (b.top + b.height / 2)) * lerp;
+    const p = ninjaPos.current;
+    if (!el || !p) return;
+    const v = view.current;
+    const s = Math.min(v.svgW / v.w, v.svgH / v.h); // preserveAspectRatio meet
+    const px = (v.svgW - v.w * s) / 2 + p[0] * s;
+    const py = (v.svgH - v.h * s) / 2 + (p[1] - NINJA_H / 2) * s;
+    const tx = Math.max(0, Math.min(el.scrollWidth - el.clientWidth, px - el.clientWidth / 2));
+    const ty = Math.max(0, Math.min(el.scrollHeight - el.clientHeight, py - el.clientHeight / 2));
+    // mula dari kedudukan sebenar (pengguna mungkin telah menatal sendiri), kemudian kekal perpuluhan
+    if (!cam.current || lerp >= 1) cam.current = { x: el.scrollLeft, y: el.scrollTop };
+    const c = cam.current;
+    c.x += (tx - c.x) * Math.min(1, lerp);
+    c.y += (ty - c.y) * Math.min(1, lerp);
+    el.scrollLeft = c.x;
+    el.scrollTop = c.y;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -443,6 +459,7 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
   // Jalankan fn(t) dari t = 0 hingga 1 dalam dur ms; berhenti jika pergerakan baru bermula.
   const animate = (dur, id, fn) =>
     new Promise((resolve) => {
+      cam.current = null; // kamera bermula dari kedudukan tatal sebenar
       const t0 = performance.now();
       const step = (now) => {
         if (runId.current !== id) return;
@@ -641,10 +658,40 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
   }, [svgSize.width, svgSize.height, follow]);
 
   // Landskap: roda tetikus menatal ke kiri/kanan.
+  // Tatal licin: roda tetikus menetapkan sasaran, peta meluncur ke situ (bukan melompat 100px sekali gus).
+  const wheel = useRef({ target: null, raf: 0 });
   const onWheel = (e) => {
-    if (orient !== 'landscape' || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-    boxRef.current.scrollLeft += e.deltaY;
+    const el = boxRef.current;
+    const horiz = orient === 'landscape';
+    // landskap: roda menegak menatal ke kiri/kanan; pad sentuh (deltaX) biarkan pelayar uruskan
+    if (horiz && Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    const unit = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? (horiz ? el.clientWidth : el.clientHeight) : 1;
+    const max = horiz ? el.scrollWidth - el.clientWidth : el.scrollHeight - el.clientHeight;
+    const now = horiz ? el.scrollLeft : el.scrollTop;
+    const w = wheel.current;
+    if (!horiz) return; // potret: penatalan menegak asli sudah licin
+    w.target = Math.max(0, Math.min(max, (w.target ?? now) + e.deltaY * unit));
+    if (reducedMotion()) {
+      el.scrollLeft = w.target;
+      w.target = null;
+      return;
+    }
+    if (w.raf) return;
+    const step = () => {
+      const cur = el.scrollLeft;
+      const diff = w.target - cur;
+      if (Math.abs(diff) < 0.5) {
+        el.scrollLeft = w.target;
+        w.target = null;
+        w.raf = 0;
+        return;
+      }
+      el.scrollLeft = cur + diff * 0.18;
+      w.raf = requestAnimationFrame(step);
+    };
+    w.raf = requestAnimationFrame(step);
   };
+  useEffect(() => () => cancelAnimationFrame(wheel.current.raf), []);
 
   // Selepas misi selesai: berjalan sendiri ke tahap seterusnya.
   useEffect(() => {
@@ -700,7 +747,9 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
       )}
 
       <div className={`level-box is-${orient}${region.background ? ' has-bg' : ''}`} ref={boxRef} onWheel={onWheel} style={region.background ? { backgroundImage: `url(${region.background})` } : undefined}>
-        <svg className="level-svg" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" style={svgSize} role="group" aria-label={`Laluan ${region.topic}`}>
+        <div className="level-stack" style={svgSize} role="group" aria-label={`Laluan ${region.topic}`}>
+        {/* Lapisan pemandangan statik: dilukis sekali dan ditatal oleh GPU */}
+        <svg className="level-svg level-scene" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" style={svgSize} aria-hidden="true">
           <defs>
             <TextureDefs />
             <radialGradient id="lvl-ground" cx="50%" cy="45%" r="75%">
@@ -775,7 +824,11 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
             )}
 
           <BuildingArt region={region} x={layout.building[0]} y={layout.building[1]} scale={orient === 'landscape' ? 1 : 0.9} />
+        </svg>
 
+        {/* Lapisan atas (ringan, tanpa penapis berat): batu tahap dan ninja. Dipisahkan supaya animasi ninja
+            tidak memaksa pemandangan di bawah (penapis jalan, bayang hiasan) dilukis semula. */}
+        <svg className="level-svg level-top" viewBox={`0 0 ${w} ${h}`} preserveAspectRatio="xMidYMid meet" style={svgSize}>
           {subs.map((sub, i) => (
             <LevelNode
               key={sub.id}
@@ -792,6 +845,7 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
 
           <NinjaWalker refs={ninja} />
         </svg>
+        </div>
       </div>
 
       {intro === 'talk' && <IntroDialog lines={region.intro} onDone={introWalk} />}

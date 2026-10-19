@@ -2284,3 +2284,20 @@ button {
     animation: none;
   }
 }
+
+/* Peta tahap: dua lapisan bertindan (pemandangan statik + batu/ninja) */
+.level-stack {
+  position: relative;
+  flex: none;
+}
+
+.level-box .level-svg.level-scene {
+  /* lapisan sendiri: ditatal oleh GPU tanpa melukis semula penapis jalan dan bayang */
+  will-change: transform;
+  pointer-events: none;
+}
+
+.level-box .level-svg.level-top {
+  position: absolute;
+  inset: 0;
+}
