@@ -4,7 +4,7 @@
 import sharp from 'sharp';
 
 const SRC = 'public/map/pulau-tanah.webp';
-const OUT = 'public/map/pulau-mask.png';
+const OUT = 'public/map/pulau-mask.webp';
 
 // Mask dijana pada saiz koordinat peta (1536px) walaupun gambar tanah lebih besar.
 const { data, info } = await sharp(SRC).resize({ width: 1536 }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
@@ -53,7 +53,7 @@ for (let i = 0; i < n; i++) mask[i] = sea[i] ? 0 : 255;
 await sharp(mask, { raw: { width: w, height: h, channels: 1 } })
   .median(7)
   .blur(1.2)
-  .png({ compressionLevel: 9 })
+  .webp({ lossless: true })
   .toFile(OUT);
 
 const land = mask.reduce((s, v) => s + (v ? 1 : 0), 0);

@@ -1,0 +1,146 @@
+.dojo-home {
+  height: 100%;
+  width: 100%;
+  color: #fff;
+  font-family: 'Nunito', system-ui, sans-serif;
+}
+
+.dojo-home .home-main {
+  position: static;
+}
+
+.dojo-home .home-selector {
+  align-self: flex-end;
+  padding: 20px 8px;
+}
+
+.dojo-home .home-hero {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 40px 24px;
+  pointer-events: none;
+}
+
+.dojo-home .home-hero > * {
+  pointer-events: auto;
+}
+
+.dojo-home .home-notice {
+  width: min(420px, calc(100% - 32px));
+  margin: auto;
+  background: linear-gradient(145deg, #102a5c, #081a3a);
+}
+
+.dojo-home .home-notice::backdrop {
+  background: rgba(4, 10, 35, 0.8);
+}
+
+.dojo-home :focus-visible {
+  outline: 3px solid #ffe19b;
+  outline-offset: 4px;
+}
+
+@media (min-width: 1024px) {
+  .dojo-home .home-hero {
+    padding-left: 264px;
+    padding-right: 280px;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .dojo-home .home-hero {
+    padding-left: 264px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dojo-home .home-selector {
+    align-self: center;
+    padding: 16px 8px;
+  }
+
+  .dojo-home .home-hero {
+    inset: 74px 0 100px;
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .dojo-home .home-hero > * {
+    max-width: 100%;
+  }
+}
+
+@media (max-height: 620px) {
+  .dojo-home .home-hero {
+    place-items: start center;
+    overflow-y: auto;
+    padding-top: 76px;
+    padding-bottom: 100px;
+  }
+}
+
+@media (max-width: 420px) {
+  .dojo-home .home-selector button {
+    gap: 4px;
+    padding: 6px 8px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .dojo-home .home-selector > div {
+    gap: 8px;
+  }
+
+  .dojo-home .home-hero {
+    padding: 12px;
+  }
+
+  .dojo-home .dojo-hero-characters {
+    height: clamp(128px, 26vh, 192px);
+  }
+
+  .dojo-home .dojo-hero-sign {
+    padding: 16px 12px;
+  }
+
+  .dojo-home .dojo-hero-sign h1 {
+    font-size: clamp(1.7rem, 8vw, 2.25rem);
+    white-space: nowrap;
+  }
+
+  .dojo-home .dojo-hero-sign h1 span:last-child {
+    padding: 4px 8px;
+    font-size: 0.8em;
+  }
+
+  .dojo-home .dojo-hero-sign p {
+    font-size: 12px;
+  }
+
+  .dojo-home .dojo-hero-actions {
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .dojo-home .dojo-hero-actions button {
+    width: 80px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .dojo-home .dojo-hero-actions button[aria-label='Mula main'] {
+    width: 88px;
+    height: 88px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dojo-home *,
+  .dojo-home *::before,
+  .dojo-home *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -41,7 +41,7 @@ for (let y = 0; y < height; y++) {
 }
 
 await sharp(map, { raw: { width, height, channels: 3 } })
-  .png()
-  .toFile('public/map/ninja-potret-lambai.png');
+  .webp({ lossless: true }) // lossless: nilai peta anjakan mesti tepat
+  .toFile('public/map/ninja-potret-lambai.webp');
 await writeFile('src/data/portrait.json', JSON.stringify({ size, waveScale }) + '\n');
 console.log('Potret: peta lambaian berterusan (tanpa potongan tangan)');

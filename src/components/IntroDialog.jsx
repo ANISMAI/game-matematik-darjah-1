@@ -29,7 +29,7 @@ function AnimatedPortrait({ onError }) {
     <svg className="intro-portrait-svg" viewBox={`0 0 ${PS} ${PS}`} aria-hidden="true">
       <defs>
         <filter id="pt-wave" filterUnits="userSpaceOnUse" x="0" y="0" width={PS} height={PS} colorInterpolationFilters="sRGB">
-          <feImage href="/map/ninja-potret-lambai.png" x="0" y="0" width={PS} height={PS} result="wave-map" />
+          <feImage href="/map/ninja-potret-lambai.webp" x="0" y="0" width={PS} height={PS} result="wave-map" />
           <feDisplacementMap in="SourceGraphic" in2="wave-map" scale="0" xChannelSelector="R" yChannelSelector="G">
             {!reducedMotion && (
               <animate

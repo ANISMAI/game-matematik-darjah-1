@@ -8,8 +8,9 @@ import MissionPreview from './components/MissionPreview.jsx';
 import CountingGame from './components/CountingGame.jsx';
 import ResultsScreen from './components/ResultsScreen.jsx';
 import NinjaCharacter from './components/NinjaCharacter.jsx';
+import HomePage from './home/HomePage.jsx';
 
-function Header({ sound, onToggleSound }) {
+function Header({ sound, onToggleSound, onHome }) {
   const [open, setOpen] = useState(false);
   return (
     <header className="app-header">
@@ -20,8 +21,39 @@ function Header({ sound, onToggleSound }) {
         <h1>Pulau Ninja</h1>
       </div>
       <div className="settings">
-        <button className="glass-btn header-btn" aria-label="Tetapan" title="Tetapan" aria-expanded={open} onClick={() => setOpen(!open)}>
-          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <button className="glass-btn header-btn" onClick={onHome} aria-label="Halaman utama" title="Halaman utama">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z" />
+          </svg>
+        </button>
+        <button
+          className="glass-btn header-btn"
+          aria-label="Tetapan"
+          title="Tetapan"
+          aria-expanded={open}
+          onClick={() => setOpen(!open)}
+        >
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="12" cy="12" r="3" />
             <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" />
           </svg>
@@ -29,7 +61,12 @@ function Header({ sound, onToggleSound }) {
         {open && (
           <div className="settings-pop" role="group" aria-label="Tetapan">
             <span>Bunyi</span>
-            <button className={`toggle${sound ? ' on' : ''}`} role="switch" aria-checked={sound} onClick={onToggleSound}>
+            <button
+              className={`toggle${sound ? ' on' : ''}`}
+              role="switch"
+              aria-checked={sound}
+              onClick={onToggleSound}
+            >
               <span className="toggle-knob" aria-hidden="true" />
               {sound ? 'Hidup' : 'Mati'}
             </button>
@@ -42,7 +79,12 @@ function Header({ sound, onToggleSound }) {
 
 export default function App() {
   const [progress, update] = useProgress();
-  const [screen, setScreen] = useState({ name: 'world' });
+  const [screen, setScreen] = useState({ name: 'home' });
+  const [homeProfile, setHomeProfile] = useState({
+    coins: 0,
+    gems: 0,
+    equipped: { avatar: 'av-1', bingkai: 'fr-default', muzik: 'mu-default', gelaran: 'gl-default' },
+  });
   const [preview, setPreview] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
   // subtopik asal ninja bila kembali dari misi (ninja berjalan ke tahap seterusnya)
@@ -91,9 +133,28 @@ export default function App() {
 
   const region = screen.regionId ? getRegion(screen.regionId) : null;
 
+  if (screen.name === 'home') {
+    return (
+      <HomePage
+        onPlay={() => setScreen({ name: 'world' })}
+        sound={progress.sound}
+        onToggleSound={() => update((p) => ({ sound: !p.sound }))}
+        profile={homeProfile}
+        onProfileChange={setHomeProfile}
+      />
+    );
+  }
+
   return (
     <div className="app">
-      <Header sound={progress.sound} onToggleSound={() => update((p) => ({ sound: !p.sound }))} />
+      <Header
+        sound={progress.sound}
+        onToggleSound={() => update((p) => ({ sound: !p.sound }))}
+        onHome={() => {
+          setPreview(null);
+          setScreen({ name: 'home' });
+        }}
+      />
 
       <div className="stage" key={screen.name + (screen.regionId ?? '') + run}>
         {screen.name === 'world' && (

@@ -166,6 +166,9 @@ button {
 
 .settings {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .settings .btn-round {
@@ -996,7 +999,8 @@ button {
   border-radius: 50%;
   background: radial-gradient(circle at 35% 25%, #ffe7a0, var(--accent) 65%, #dba544);
   border: 3px solid var(--line);
-  font-size: 2rem;
+  font-size: clamp(1.4rem, 5vw, 2rem);
+  line-height: 1;
   font-weight: 800;
   box-shadow: inset 0 2px 2px rgba(255, 252, 224, 0.65), 0 2px 3px rgba(89, 53, 16, 0.16);
 }
@@ -1040,6 +1044,45 @@ button {
   gap: 12px;
   justify-content: center;
   margin-top: 4px;
+}
+
+@media (max-width: 420px) {
+  .scroll-body {
+    padding: 16px 18px 20px;
+    gap: 10px;
+  }
+
+  .scroll-kicker {
+    font-size: 0.85rem;
+  }
+
+  .scroll-body h2 {
+    font-size: 1.65rem;
+  }
+
+  .scroll-instruction {
+    font-size: 1.1rem;
+  }
+
+  .scroll-meta {
+    gap: 6px;
+  }
+
+  .scroll-meta .chip {
+    padding: 4px 8px;
+    font-size: 0.9rem;
+  }
+
+  .scroll-body .scroll-actions {
+    flex-wrap: nowrap;
+    gap: 10px;
+  }
+
+  .scroll-body .btn-lg {
+    min-height: 48px;
+    padding: 6px 16px;
+    font-size: 1.15rem;
+  }
 }
 
 .dialog {

@@ -1,0 +1,169 @@
+@import "tailwindcss" source(none);
+@source "./";
+
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-display: "Fredoka", "Baloo 2", system-ui, sans-serif;
+  --font-sans: "Nunito", system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-ninja-navy: var(--ninja-navy);
+  --color-ninja-navy-deep: var(--ninja-navy-deep);
+  --color-ninja-orange: var(--ninja-orange);
+  --color-ninja-orange-glow: var(--ninja-orange-glow);
+  --color-ninja-yellow: var(--ninja-yellow);
+  --color-ninja-blue: var(--ninja-blue);
+  --color-ninja-green: var(--ninja-green);
+  --color-ninja-fire: var(--ninja-fire);
+  --color-ninja-gold: var(--ninja-gold);
+}
+
+:root {
+  --radius: 1rem;
+
+  /* Ninja palette */
+  --ninja-navy: oklch(0.24 0.05 265);
+  --ninja-navy-deep: oklch(0.17 0.05 265);
+  --ninja-orange: oklch(0.72 0.19 50);
+  --ninja-orange-glow: oklch(0.8 0.18 60);
+  --ninja-yellow: oklch(0.88 0.16 85);
+  --ninja-blue: oklch(0.65 0.16 240);
+  --ninja-green: oklch(0.72 0.18 150);
+  --ninja-fire: oklch(0.7 0.22 30);
+  --ninja-gold: oklch(0.82 0.15 80);
+
+  --background: oklch(0.96 0.01 250);
+  --foreground: oklch(0.2 0.04 265);
+  --card: oklch(0.24 0.05 265);
+  --card-foreground: oklch(0.98 0.01 250);
+  --popover: oklch(0.24 0.05 265);
+  --popover-foreground: oklch(0.98 0.01 250);
+  --primary: oklch(0.72 0.19 50);
+  --primary-foreground: oklch(0.16 0.04 265);
+  --secondary: oklch(0.65 0.16 240);
+  --secondary-foreground: oklch(0.98 0.01 250);
+  --muted: oklch(0.3 0.04 265);
+  --muted-foreground: oklch(0.75 0.02 260);
+  --accent: oklch(0.88 0.16 85);
+  --accent-foreground: oklch(0.18 0.04 265);
+  --destructive: oklch(0.62 0.24 28);
+  --destructive-foreground: oklch(0.98 0.01 250);
+  --border: oklch(0.32 0.04 265);
+  --input: oklch(0.32 0.04 265);
+  --ring: oklch(0.72 0.19 50);
+
+  --shadow-game: 0 8px 0 0 oklch(0.14 0.04 265 / 0.6), 0 20px 40px -10px oklch(0.14 0.04 265 / 0.5);
+  --shadow-glow-orange: 0 0 40px oklch(0.72 0.19 50 / 0.55);
+  --shadow-glow-blue: 0 0 30px oklch(0.65 0.16 240 / 0.45);
+
+  --gradient-orange: linear-gradient(180deg, oklch(0.82 0.18 70), oklch(0.68 0.2 40));
+  --gradient-blue: linear-gradient(180deg, oklch(0.7 0.16 235), oklch(0.55 0.18 250));
+  --gradient-navy: linear-gradient(180deg, oklch(0.28 0.05 265), oklch(0.18 0.05 265));
+  --gradient-sky: linear-gradient(180deg, oklch(0.82 0.1 230), oklch(0.7 0.13 220));
+
+  /* Solid game-panel backgrounds — fully opaque, no transparency */
+  --sidebar-solid: linear-gradient(180deg, #0B3D91 0%, #071B3A 60%, #061534 100%);
+  --card-solid: linear-gradient(145deg, #102A5C 0%, #0A1E42 50%, #081A3A 100%);
+  --card-solid-alt: linear-gradient(145deg, #0E2755 0%, #071737 100%);
+  --mission-solid: linear-gradient(180deg, #FFB347 0%, #F9A825 50%, #E8930C 100%);
+  --sidebar-border: #0F2A5E;
+  --card-gold-border: #F9A825;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+  html, body, #root {
+    height: 100%;
+  }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    overflow: hidden;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+}
+
+@layer utilities {
+  .text-stroke-navy {
+    -webkit-text-stroke: 3px oklch(0.16 0.05 265);
+    paint-order: stroke fill;
+  }
+  .text-stroke-sm {
+    -webkit-text-stroke: 1.5px oklch(0.16 0.05 265);
+    paint-order: stroke fill;
+  }
+  .text-shadow-readable {
+    text-shadow: 0 2px 4px oklch(0.14 0.04 265 / 0.8), 0 1px 2px oklch(0.14 0.04 265 / 0.6);
+  }
+  .text-shadow-strong {
+    text-shadow: 0 3px 6px oklch(0.14 0.04 265 / 0.9), 0 1px 3px oklch(0.14 0.04 265 / 0.7);
+  }
+  .scrollbar-none::-webkit-scrollbar { display: none; }
+  .scrollbar-none { scrollbar-width: none; }
+}
+
+/* Keyframes */
+@keyframes float-soft {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes float-tiny {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 oklch(0.72 0.19 50 / 0.7), 0 10px 0 0 oklch(0.45 0.18 35); }
+  50% { box-shadow: 0 0 30px 10px oklch(0.72 0.19 50 / 0.4), 0 10px 0 0 oklch(0.45 0.18 35); }
+}
+@keyframes sparkle {
+  0%, 100% { opacity: 0; transform: scale(0.5) rotate(0deg); }
+  50% { opacity: 1; transform: scale(1) rotate(180deg); }
+}
+@keyframes cloud-drift {
+  from { transform: translateX(-5%); }
+  to { transform: translateX(105%); }
+}
+@keyframes badge-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 oklch(0.62 0.24 28 / 0.6); }
+  50% { transform: scale(1.15); box-shadow: 0 0 0 8px oklch(0.62 0.24 28 / 0); }
+}
+
+.animate-float-soft { animation: float-soft 4s ease-in-out infinite; }
+.animate-float-tiny { animation: float-tiny 3s ease-in-out infinite; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+.animate-sparkle { animation: sparkle 2.5s ease-in-out infinite; }
+.animate-badge-pulse { animation: badge-pulse 1.8s ease-in-out infinite; }

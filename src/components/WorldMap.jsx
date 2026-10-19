@@ -79,7 +79,7 @@ const COAST_D = smoothClosed(COAST);
 const scaleCoast = (k) => smoothClosed(COAST.map(([x, y]) => [770 + (x - 770) * k, 500 + (y - 500) * k]));
 // Kepingan tanah = gambar ∩ sempadan kawasan ∩ (mask darat ∪ pedalaman pulau) ∩ pantai luas.
 // Mask darat dijana oleh scripts/make-mask.mjs; pedalaman menampal tasik/sungai yang dikesan sebagai laut.
-const LAND_MASK = '/map/pulau-mask.png';
+const LAND_MASK = '/map/pulau-mask.webp';
 const COAST_WIDE_D = scaleCoast(1.05);
 const COAST_INNER_D = scaleCoast(0.82);
 
