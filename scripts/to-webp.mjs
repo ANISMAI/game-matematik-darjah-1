@@ -12,7 +12,7 @@ const SIZES = 'src/data/sprite-sizes.json';
 const GROUND = 'pulau-tanah';
 // Sprite sheet pengembara diproses oleh scripts/make-sprites.mjs
 const SHEETS = ['ninja-jalan', 'kereta-sorong'];
-const SPRITE_MAX = 512; // dipapar ~170px, 2x+ untuk skrin tajam
+const SPRITE_MAX = 1024; // dipapar ~170px; besar supaya kekal tajam bila peta dizum 2x
 
 await mkdir(OUT, { recursive: true });
 // Gabung dengan saiz sedia ada supaya bangunan yang PNG asalnya tiada tidak hilang.
@@ -24,7 +24,8 @@ for (const file of (await readdir(SRC)).sort()) {
   if (SHEETS.includes(name)) continue;
   const target = path.join(OUT, `${name}.webp`);
   if (name === GROUND) {
-    await sharp(path.join(SRC, file)).resize({ width: 1536, withoutEnlargement: true }).webp({ quality: 82 }).toFile(target);
+    // 3072px (2x koordinat peta) supaya kekal tajam bila dizum; koordinat peta kekal 1536 x 1024
+    await sharp(path.join(SRC, file)).resize({ width: 3072, withoutEnlargement: true }).webp({ quality: 80 }).toFile(target);
   } else {
     const trimmed = await sharp(path.join(SRC, file)).trim({ threshold: 10 }).toBuffer();
     const info = await sharp(trimmed)

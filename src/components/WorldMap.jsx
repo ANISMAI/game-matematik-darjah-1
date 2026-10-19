@@ -5,7 +5,6 @@ import { usePanZoom } from '../lib/usePanZoom.js';
 import { Landmark } from './Art.jsx';
 import { pointInPoly, smoothClosed } from './Terrain.jsx';
 import { AnimatedFx, seaSparkles, TextureDefs } from './MapEffects.jsx';
-import { NinjaMarker } from './NinjaCharacter.jsx';
 import MapControls from './MapControls.jsx';
 import Sea from './Sea.jsx';
 import SoftClouds from './SoftClouds.jsx';
@@ -15,6 +14,7 @@ import SPRITE_SIZES from '../data/sprite-sizes.json';
 
 // Koordinat peta ikut piksel gambar tanah (public/map/pulau-tanah.webp, 1536 x 1024).
 const W = 1536;
+// Zum dihadkan ~1.35x saiz asal gambar tanah (1536px) supaya gambar tidak kabur.
 const H = 1024;
 const GROUND = '/map/pulau-tanah.webp';
 
@@ -117,7 +117,7 @@ const SPARKLES = seaSparkles(W, H, (x, y) => pointInPoly(x, y, COAST), 20);
 const polyD = (pts) => 'M' + pts.map((p) => p.join(',')).join(' L') + 'Z';
 const LABEL_SCALE = 1.2;
 // Sementara: label topik disembunyikan untuk menilai paparan pulau. Tukar ke true untuk paparkan semula.
-const SHOW_LABELS = false;
+const SHOW_LABELS = true;
 
 function activate(e, fn) {
   if (e.key === 'Enter' || e.key === ' ') {
@@ -215,6 +215,70 @@ function BuildingGround({ region, box }) {
   );
 }
 
+// Papan tanda kayu di sebelah bangunan dengan nama topik.
+// Kedudukan relatif kepada kaki bangunan; SIGN_OFFSET melaras kawasan tertentu ([dx, dy] dalam unit peta).
+const SIGN_OFFSET = {};
+const SIGN_SCALE = 1.5; // cukup besar untuk dibaca murid Tahun 1 di tablet
+
+// Pecah nama panjang kepada dua baris (cth. "Ukuran dan" / "Sukatan").
+function signLines(text) {
+  if (text.length <= 11) return [text];
+  const words = text.split(' ');
+  let best = [text];
+  let bestDiff = Infinity;
+  for (let i = 1; i < words.length; i++) {
+    const a = words.slice(0, i).join(' ');
+    const b = words.slice(i).join(' ');
+    const diff = Math.abs(a.length - b.length);
+    if (diff < bestDiff) {
+      bestDiff = diff;
+      best = [a, b];
+    }
+  }
+  return best;
+}
+
+function Signpost({ region, box, done }) {
+  const [ox, oy] = SIGN_OFFSET[region.id] ?? [0, 0];
+  const lines = signLines(region.topic);
+  const longest = Math.max(...lines.map((l) => l.length));
+  const pw = Math.max(64, longest * 8.6 + 22);
+  // tiang di tepi kanan bangunan; papan dianjak ke kanan supaya tidak menutup bangunan
+  const x = box.bx + box.w * 0.46 + (pw / 2) * SIGN_SCALE * 0.55 + ox;
+  const y = box.by - 2 + oy;
+  const ph = lines.length === 1 ? 26 : 40;
+  const top = -44 - ph;
+  return (
+    <g className="signpost" transform={`translate(${x.toFixed(1)} ${y.toFixed(1)}) scale(${SIGN_SCALE})`}>
+      <ellipse cx="2" cy="1" rx="10" ry="3" fill="#1a1006" opacity=".3" />
+      {/* tiang */}
+      <rect x="-3.5" y={top + ph - 4} width="7" height={-top - ph + 5} rx="2" fill="#7a4a26" stroke="#3b2a1a" strokeWidth="1.5" />
+      {/* papan */}
+      <g className="sign-board">
+        <rect x={-pw / 2 + 2} y={top + 3} width={pw} height={ph} rx="5" fill="#1a1006" opacity=".25" />
+        <rect x={-pw / 2} y={top} width={pw} height={ph} rx="5" fill="#d9a35e" stroke="#3b2a1a" strokeWidth="2" />
+        <rect x={-pw / 2 + 3} y={top + 3} width={pw - 6} height={ph - 6} rx="3" fill="none" stroke="#a8703a" strokeWidth="1.2" />
+        <path d={`M${-pw / 2 + 6} ${top + ph * 0.38} h${pw * 0.3} M${pw * 0.1} ${top + ph * 0.72} h${pw * 0.32}`} stroke="#c48a4c" strokeWidth="1" opacity=".7" />
+        <circle cx={-pw / 2 + 5} cy={top + 5} r="1.4" fill="#5c3a1c" />
+        <circle cx={pw / 2 - 5} cy={top + 5} r="1.4" fill="#5c3a1c" />
+        <text className="sign-text" x="0" y={top + (lines.length === 1 ? 18 : 17)} textAnchor="middle">
+          {lines.map((l, i) => (
+            <tspan key={i} x="0" dy={i === 0 ? 0 : 15}>
+              {l}
+            </tspan>
+          ))}
+        </text>
+        {done > 0 && (
+          <g transform={`translate(${pw / 2 - 2} ${top + 1})`}>
+            <circle r="8" fill="#2a9d8f" stroke="#fff" strokeWidth="2" />
+            <path d="M-3.5 0 l2.5 3 l4.5 -6" stroke="#fff" strokeWidth="2.2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </g>
+        )}
+      </g>
+    </g>
+  );
+}
+
 // Dilukis dua kali: semua bangunan dahulu (part="sprite"), kemudian semua label (part="label"),
 // supaya bangunan kawasan jiran tidak menutup label.
 function RegionLabel({ region, done, hover, onHover, onOpen, part }) {
@@ -239,23 +303,7 @@ function RegionLabel({ region, done, hover, onHover, onOpen, part }) {
               <Landmark type={region.landmark} />
             </g>
           ))}
-        {part === 'label' && (
-        <g transform={`translate(${cx} ${cy + 10}) scale(${LABEL_SCALE})`}>
-          <rect x={-w / 2} y="0" width={w} height="58" rx="18" fill="#fffdf6" stroke="#3b2a1a" strokeWidth="3" />
-          <text x="0" y="29" textAnchor="middle" className="label-topic">
-            {region.topic}
-          </text>
-          <text x="0" y="48" textAnchor="middle" className="label-name">
-            {region.name}
-          </text>
-          {done > 0 && (
-            <g transform={`translate(${w / 2 - 4} 2)`}>
-              <circle r="15" fill="#2a9d8f" stroke="#fff" strokeWidth="3" />
-              <path d="M-6 0 l4 5 l8 -10" stroke="#fff" strokeWidth="3.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-            </g>
-          )}
-        </g>
-        )}
+        {part === 'label' && <Signpost region={region} box={box} done={done} />}
       </g>
     </g>
   );
@@ -264,13 +312,12 @@ function RegionLabel({ region, done, hover, onHover, onOpen, part }) {
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
 export default function WorldMap({ progress, onOpenRegion, onContinue }) {
-  const pz = usePanZoom({ aspect: W / H });
+  const pz = usePanZoom({ aspect: W / H, maxWidth: W * 1.35 });
   const [hover, setHover] = useState(null);
   const [focus, setFocus] = useState(null);
   const [popping, setPopping] = useState(null);
   const popTimer = useRef(null);
   const hasMission = Boolean(progress.lastMission);
-  const sel = REGIONS.find((r) => r.id === progress.lastRegion);
   const active = popping ?? hover ?? focus;
 
   useEffect(() => () => clearTimeout(popTimer.current), []);
@@ -289,9 +336,12 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
   return (
     <main className="screen world-screen">
       <div className="map-bar">
-        <h2 className="map-heading">Pilih kawasan pengembaraan!</h2>
-        <button className="btn btn-primary btn-cta" onClick={onContinue}>
-          <span aria-hidden="true">▶</span> {hasMission ? 'Sambung Misi' : 'Mula Pengembaraan'}
+        <h2 className="map-heading glass-chip">Pilih kawasan pengembaraan</h2>
+        <button className="cta-pill" onClick={onContinue}>
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7 4.5v15l12-7.5z" fill="currentColor" />
+          </svg>
+          {hasMission ? 'Sambung Misi' : 'Mula Pengembaraan'}
         </button>
       </div>
 
@@ -438,12 +488,6 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
             )}
           </svg>
 
-          {/* Lapisan 4: ninja (beranimasi, diasingkan supaya lapisan 3 tidak dilukis semula setiap bingkai) */}
-          {sel && (
-            <svg className="map-svg map-layer map-fx" viewBox={`0 0 ${W} ${H}`} aria-hidden="true">
-              <NinjaMarker x={BASES[sel.id][0] + 120} y={BASES[sel.id][1]} scale={0.62} />
-            </svg>
-          )}
         </div>
       </div>
 

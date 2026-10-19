@@ -6,7 +6,8 @@ import sharp from 'sharp';
 const SRC = 'public/map/pulau-tanah.webp';
 const OUT = 'public/map/pulau-mask.png';
 
-const { data, info } = await sharp(SRC).removeAlpha().raw().toBuffer({ resolveWithObject: true });
+// Mask dijana pada saiz koordinat peta (1536px) walaupun gambar tanah lebih besar.
+const { data, info } = await sharp(SRC).resize({ width: 1536 }).removeAlpha().raw().toBuffer({ resolveWithObject: true });
 const { width: w, height: h } = info;
 const n = w * h;
 

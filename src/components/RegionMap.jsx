@@ -59,10 +59,13 @@ export default function RegionMap({ region, progress, selectedSub, onSelectSub, 
   return (
     <main className="screen region-screen">
       <div className="region-bar">
-        <button className="btn btn-light btn-back" onClick={onBack}>
-          <span aria-hidden="true">←</span> Peta Dunia
+        <button className="glass-pill btn-back" onClick={onBack}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M15 5l-7 7 7 7" />
+          </svg>
+          Peta Dunia
         </button>
-        <div className="region-title">
+        <div className="region-title glass-chip">
           <h2>{region.topic}</h2>
           <p>{region.name}</p>
         </div>
