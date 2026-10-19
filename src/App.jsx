@@ -45,6 +45,8 @@ export default function App() {
   const [screen, setScreen] = useState({ name: 'world' });
   const [preview, setPreview] = useState(null);
   const [selectedSub, setSelectedSub] = useState(null);
+  // subtopik asal ninja bila kembali dari misi (ninja berjalan ke tahap seterusnya)
+  const [walkFrom, setWalkFrom] = useState(null);
   const [run, setRun] = useState(0);
   const [newBadge, setNewBadge] = useState(false);
 
@@ -53,6 +55,7 @@ export default function App() {
     update(() => ({ lastRegion: regionId }));
     setSelectedSub(subId ?? (region.subtopics.find((s) => s.playable) ?? region.subtopics[0]).id);
     setPreview(subId);
+    setWalkFrom(null);
     setScreen({ name: 'region', regionId });
   };
 
@@ -103,6 +106,9 @@ export default function App() {
               region={region}
               progress={progress}
               selectedSub={selectedSub}
+              walkFrom={walkFrom}
+              showIntro={!walkFrom && !preview && !progress.introSeen?.[region.id]}
+              onIntroDone={() => update((p) => ({ introSeen: { ...p.introSeen, [region.id]: true } }))}
               onSelectSub={selectSub}
               onBack={() => setScreen({ name: 'world' })}
             />
@@ -134,8 +140,12 @@ export default function App() {
             isNewBadge={newBadge}
             onReplay={() => startMission(screen.regionId, screen.subId)}
             onBack={() => {
+              // kembali ke peta tahap; ninja berjalan ke tahap seterusnya (jika ada)
+              const subs = getRegion(screen.regionId).subtopics;
+              const next = subs[subs.findIndex((s) => s.id === screen.subId) + 1]?.id ?? screen.subId;
               openRegion(screen.regionId);
-              setSelectedSub(screen.subId);
+              setSelectedSub(next);
+              setWalkFrom(screen.subId);
             }}
           />
         )}

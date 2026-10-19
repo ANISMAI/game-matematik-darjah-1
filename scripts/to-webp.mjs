@@ -11,7 +11,8 @@ const OUT = 'public/map';
 const SIZES = 'src/data/sprite-sizes.json';
 const GROUND = 'pulau-tanah';
 // Sprite sheet pengembara diproses oleh scripts/make-sprites.mjs
-const SHEETS = ['ninja-jalan', 'kereta-sorong'];
+const SHEETS = ['ninja-jalan', 'kereta-sorong', 'ninja-diri', 'tapak-tahap'];
+// hiasan-* diproses oleh scripts/make-props.mjs
 const SPRITE_MAX = 1024; // dipapar ~170px; besar supaya kekal tajam bila peta dizum 2x
 
 await mkdir(OUT, { recursive: true });
@@ -21,9 +22,13 @@ const sizes = JSON.parse(await readFile(SIZES, 'utf8').catch(() => '{}'));
 for (const file of (await readdir(SRC)).sort()) {
   if (!/\.(png|jpe?g|webp)$/i.test(file)) continue;
   const name = path.parse(file).name;
-  if (SHEETS.includes(name)) continue;
+  if (SHEETS.includes(name) || name.startsWith('hiasan-')) continue;
   const target = path.join(OUT, `${name}.webp`);
-  if (name === GROUND) {
+  if (name === 'ninja-potret') {
+    // potret dialog: tidak dipotong supaya koordinat mata/tangan (IntroDialog) kekal sama dengan gambar asal
+    await sharp(path.join(SRC, file)).resize(1024, 1024, { fit: 'inside' }).webp({ quality: 88, alphaQuality: 90 }).toFile(target);
+  } else if (name === GROUND || name.startsWith('latar-')) {
+    // tanah pulau dan latar peta tahap (latar-*): gambar penuh, tanpa potongan
     // 3072px (2x koordinat peta) supaya kekal tajam bila dizum; koordinat peta kekal 1536 x 1024
     await sharp(path.join(SRC, file)).resize({ width: 3072, withoutEnlargement: true }).webp({ quality: 80 }).toFile(target);
   } else {

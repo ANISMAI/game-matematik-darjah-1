@@ -2,6 +2,9 @@
 // Label topik/subtopik ialah cadangan kandungan prototaip, bukan kurikulum rasmi.
 // `available` boleh ditukar kepada false untuk peraturan buka kunci pada masa depan.
 // `sprite` (pilihan): gambar bangunan dalam public/map; tanpanya, bangunan SVG digunakan.
+// `background` (pilihan): gambar latar penuh peta tahap kawasan (menggantikan tanah dan hiasan).
+// `intro` (pilihan): dialog cerita yang dipaparkan sekali sahaja bila kawasan dibuka kali pertama.
+// `ground` (pilihan): tekstur rumput berulang untuk tanah peta tahap (scripts/make-ground.mjs).
 
 const PREVIEW = (instruction) => [
   {
@@ -15,25 +18,35 @@ const PREVIEW = (instruction) => [
 export const REGIONS = [
   {
     id: 'nombor',
-    topic: 'Nombor Bulat',
+    topic: 'Nombor Bulat hingga 100',
     name: 'Kampung Buluh',
     landmark: 'bamboo',
     sprite: '/map/kampung-buluh.webp',
+    ground: '/map/rumput-nombor.webp',
+    // Intro cerita (kali pertama masuk kawasan): ninja keluar dari rumah dan bercakap.
+    intro: [
+      'Hai! Saya Ninja Kira. Selamat datang ke Kampung Buluh!',
+      'Kampung ini penuh dengan nombor. Jom kita belajar kenal nombor hingga 100!',
+      'Lompat ke setiap batu dan selesaikan cabaran untuk kumpul bintang!',
+      'Sedia? Jom ikut saya ke batu pertama!',
+    ],
     color: '#9fdc6f',
     edge: '#5f9e3c',
     map: { cx: 330, cy: 235 },
     available: true,
     subtopics: [
-      { id: 'kenal', title: 'Kenal Nombor', instruction: 'Kenali nombor 1 hingga 10.', playable: false },
       {
+        // id 'bilang' dikekalkan supaya kemajuan yang disimpan tidak hilang
         id: 'bilang',
-        title: 'Bilang Objek',
+        title: 'Mengenal dan Menulis Nombor',
         instruction: 'Kira objek dan pilih nombor yang betul.',
         playable: true,
         questionCount: 5,
       },
-      { id: 'banding', title: 'Banding Nombor', instruction: 'Cari nombor yang lebih besar atau lebih kecil.', playable: false },
-      { id: 'susun', title: 'Susun Nombor', instruction: 'Susun nombor mengikut tertib.', playable: false },
+      { id: 'nilai', title: 'Nilai Nombor', instruction: 'Kenali nilai puluh dan sa dalam nombor.', playable: false },
+      { id: 'urutan', title: 'Urutan Nombor', instruction: 'Susun nombor secara menaik dan menurun.', playable: false },
+      { id: 'pola', title: 'Pola Nombor', instruction: 'Cari nombor seterusnya dalam pola.', playable: false },
+      { id: 'anggar', title: 'Anggar dan Banding', instruction: 'Anggar dan bandingkan kuantiti objek.', playable: false },
     ],
   },
   {

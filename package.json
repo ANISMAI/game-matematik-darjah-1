@@ -7,7 +7,7 @@
     "dev": "vite --open",
     "build": "vite build",
     "preview": "vite preview --open",
-    "images": "node scripts/to-webp.mjs && node scripts/make-mask.mjs && node scripts/make-sprites.mjs"
+    "images": "node scripts/to-webp.mjs && node scripts/make-mask.mjs && node scripts/make-sprites.mjs && node scripts/make-ground.mjs && node scripts/make-props.mjs && node scripts/make-portrait.mjs && node scripts/make-ui-textures.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^5.0.0",

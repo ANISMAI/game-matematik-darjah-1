@@ -888,27 +888,61 @@ button {
   max-height: calc(100dvh - 32px);
   display: flex;
   flex-direction: column;
+  filter: drop-shadow(0 14px 16px rgba(31, 23, 10, 0.35));
   animation: unroll 0.3s ease-out;
 }
 
 .scroll-rod {
   flex: none;
-  height: 26px;
+  height: 30px;
   margin: 0 -14px;
   border-radius: 13px;
-  background: linear-gradient(#e3a76a, #a0612c);
-  border: 3px solid var(--line);
+  background-color: #ad7139;
+  background-image:
+    linear-gradient(180deg, rgba(255, 231, 171, 0.65), transparent 30%, rgba(69, 31, 12, 0.18) 65%, rgba(48, 22, 8, 0.65)),
+    url('/ui/scroll-wood.webp');
+  background-size: 100% 100%, 320px 100px;
+  background-position: center;
+  border: 2px solid #69401e;
+  box-shadow: inset 0 2px 2px rgba(255, 235, 179, 0.65), inset 0 -2px 3px rgba(52, 25, 10, 0.5), 0 3px 4px rgba(63, 35, 12, 0.2);
   position: relative;
   z-index: 1;
+}
+
+.scroll-rod::before,
+.scroll-rod::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  width: 13px;
+  border: 2px solid #69401e;
+  border-radius: 7px;
+  background: linear-gradient(90deg, #875026, #d8a362 40%, #9d602f 75%, #74401e);
+  box-shadow: inset 1px 1px 1px rgba(255, 231, 183, 0.55), 1px 2px 2px rgba(52, 25, 10, 0.25);
+}
+
+.scroll-rod::before {
+  left: -3px;
+}
+
+.scroll-rod::after {
+  right: -3px;
 }
 
 .scroll-body {
   overflow: auto;
   padding: 18px 28px 22px;
   margin: -6px 0;
-  background: var(--parchment);
-  border-left: 3px solid var(--line);
-  border-right: 3px solid var(--line);
+  background-color: var(--parchment);
+  background-image:
+    linear-gradient(90deg, rgba(128, 77, 24, 0.24), transparent 7%, transparent 93%, rgba(128, 77, 24, 0.24)),
+    linear-gradient(180deg, rgba(104, 60, 19, 0.28), transparent 28px, transparent calc(100% - 30px), rgba(104, 60, 19, 0.24)),
+    url('/ui/scroll-paper.webp');
+  background-size: 100% 100%, 100% 100%, 480px 480px;
+  border-left: 2px solid #ad864d;
+  border-right: 2px solid #ad864d;
+  box-shadow: inset 4px 0 7px rgba(138, 89, 38, 0.12), inset -4px 0 7px rgba(138, 89, 38, 0.12);
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -929,39 +963,42 @@ button {
   font-weight: 800;
   line-height: 1.1;
   color: var(--primary-dark);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .preview-art {
   width: 100%;
   padding: 12px;
-  background: #fff8e8;
-  border: 3px dashed #d9b77a;
+  background: rgba(255, 253, 243, 0.52);
+  border: 2px dashed #c6a16a;
   border-radius: 18px;
+  box-shadow: inset 0 1px 5px rgba(126, 79, 27, 0.09), 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
 .preview-objects {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: clamp(4px, 1.5vw, 8px);
 }
 
 .preview-objects .count-svg {
-  width: 64px;
-  height: 80px;
+  width: clamp(34px, 12vw, 64px);
+  height: clamp(48px, 15vw, 80px);
 }
 
 .preview-q {
   display: grid;
   place-items: center;
-  width: 60px;
-  height: 60px;
-  margin-left: 8px;
+  width: clamp(40px, 12vw, 60px);
+  height: clamp(40px, 12vw, 60px);
+  flex-shrink: 0;
   border-radius: 50%;
-  background: var(--accent);
+  background: radial-gradient(circle at 35% 25%, #ffe7a0, var(--accent) 65%, #dba544);
   border: 3px solid var(--line);
   font-size: 2rem;
   font-weight: 800;
+  box-shadow: inset 0 2px 2px rgba(255, 252, 224, 0.65), 0 2px 3px rgba(89, 53, 16, 0.16);
 }
 
 .preview-soon {
@@ -1816,5 +1853,391 @@ button {
 @media (max-width: 760px) {
   .map-heading.glass-chip {
     display: none;
+  }
+}
+
+/* ---------- Peta tahap kawasan (RegionMap) ---------- */
+.level-box {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: var(--biome-dark, #4f9e2f);
+  overflow: hidden;
+}
+
+.level-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  user-select: none;
+}
+
+.level-node {
+  cursor: pointer;
+  outline: none;
+}
+
+.level-lift {
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.level-node:hover .level-lift,
+.level-node:focus-visible .level-lift {
+  transform: translateY(-6px) scale(1.04);
+}
+
+.level-node:focus-visible .level-lift > circle:nth-of-type(2) {
+  stroke: #1d6fd6;
+  stroke-width: 7;
+}
+
+.level-node.is-selected .level-lift {
+  transform: scale(1.08);
+}
+
+.level-pulse {
+  fill: #fff6c8;
+  opacity: 0.6;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: level-pulse 1.6s ease-out infinite;
+}
+
+.level-num {
+  font-family: var(--font);
+  font-size: 46px;
+  font-weight: 800;
+  fill: #fff;
+  paint-order: stroke;
+  stroke: #9a5b00;
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+
+.level-node.is-soon .level-num {
+  stroke: #6b7486;
+}
+
+.level-soon {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  fill: #fff;
+}
+
+.level-title {
+  font-family: var(--font);
+  font-size: 19px;
+  font-weight: 800;
+  fill: var(--ink, #2b2118);
+}
+
+.level-status {
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  fill: #5c677d;
+}
+
+.level-status.st-selesai {
+  fill: #1f7a6f;
+}
+
+.level-status.st-sedang {
+  fill: #c4532f;
+}
+
+/* ninja berdiri diam bila tidak berjalan (tiada lompatan) */
+.level-ninja {
+  animation: none;
+}
+
+@keyframes level-pulse {
+  from {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  to {
+    transform: scale(1.35);
+    opacity: 0;
+  }
+}
+
+@keyframes walker-hop {
+  to {
+    transform: translateY(-4px);
+  }
+}
+
+/* Gambar latar peta tahap (penuh skrin, dipotong ikut nisbah) */
+.level-box.has-bg {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Peta tahap boleh ditatal (lebih panjang daripada skrin) */
+.level-box {
+  overflow: auto;
+  scrollbar-width: thin;
+  overscroll-behavior: contain;
+}
+
+.level-box .level-svg {
+  position: static;
+  display: block;
+  inset: auto;
+}
+
+/* ninja tidak melompat semasa berjalan */
+.ninja-walker.is-walking .level-ninja {
+  animation: none;
+}
+
+/* tatal hanya pada satu paksi supaya bar skrol tidak mengubah saiz peta berulang kali */
+.level-box.is-landscape {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.level-box.is-portrait {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Nombor terukir di atas tapak batu tahap */
+.level-node .level-num {
+  font-size: 48px;
+  fill: #6a4a26;
+  stroke: #f6ead2;
+  stroke-width: 3px;
+  paint-order: stroke;
+}
+
+.level-node .level-num.is-soon {
+  fill: #5d6470;
+  stroke: #c9ced6;
+  opacity: 0.85;
+}
+
+/* cahaya emas berdenyut atas batu yang dipilih */
+.level-node .level-pulse {
+  fill: none;
+  stroke: #ffd54a;
+  stroke-width: 6;
+  opacity: 0.8;
+}
+
+/* ---------- Intro cerita (IntroDialog) ---------- */
+.intro-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(6, 14, 28, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: intro-fade 0.35s ease-out;
+}
+
+.intro-overlay.is-leaving {
+  animation: intro-fade-out 0.28s ease-in forwards;
+}
+
+.intro-skip {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 2;
+}
+
+.intro-stage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 24px 28px;
+  cursor: pointer;
+}
+
+.intro-portrait {
+  position: absolute;
+  left: max(2vw, 12px);
+  bottom: 0;
+  height: min(78%, 620px);
+  display: flex;
+  align-items: flex-end;
+  animation: intro-portrait-in 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 0.1s backwards;
+  pointer-events: none;
+}
+
+.intro-portrait img {
+  height: 100%;
+  width: auto;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+}
+
+.intro-box {
+  position: relative;
+  width: min(760px, 100%);
+  margin-left: min(26vw, 300px);
+  padding: 26px 26px 16px;
+  background: #fffaf0;
+  border: 3px solid #3b2a1a;
+  border-radius: 22px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
+  animation: intro-box-in 0.4s cubic-bezier(0.34, 1.3, 0.64, 1) 0.2s backwards;
+}
+
+.intro-name {
+  position: absolute;
+  top: -18px;
+  left: 22px;
+  padding: 4px 16px;
+  background: linear-gradient(180deg, #ff5d84, #e63462);
+  color: #fff;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
+  box-shadow: 0 4px 10px rgba(230, 52, 98, 0.35);
+}
+
+.intro-text {
+  min-height: 3.2em;
+  margin: 0;
+  font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+  font-weight: 700;
+  line-height: 1.45;
+  color: #2b2118;
+}
+
+.intro-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+}
+
+.intro-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.intro-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #d9cdb8;
+}
+
+.intro-dots span.on {
+  width: 22px;
+  border-radius: 999px;
+  background: #e63462;
+}
+
+.intro-next svg {
+  margin-left: 2px;
+}
+
+/* skrin potret / sempit: ninja di atas kotak dialog */
+@media (max-aspect-ratio: 1/1), (max-width: 760px) {
+  .intro-stage {
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 14px 18px;
+  }
+
+  .intro-portrait {
+    position: static;
+    height: min(46vh, 380px);
+    justify-content: center;
+  }
+
+  .intro-box {
+    margin-left: 0;
+  }
+}
+
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-portrait-in {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+}
+
+@keyframes intro-box-in {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Potret ninja beranimasi: lambai, kelip mata, nafas */
+.intro-portrait-svg {
+  height: 100%;
+  width: auto;
+  aspect-ratio: 1;
+  overflow: visible;
+  filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+}
+
+.pt-body {
+  transform-box: view-box;
+  transform-origin: 627px 1254px;
+  animation: pt-breathe 3.2s ease-in-out infinite;
+}
+
+.pt-lid {
+  transform-box: view-box;
+  transform: scaleY(0);
+  animation: pt-blink 4.2s ease-in-out infinite;
+}
+
+@keyframes pt-breathe {
+  50% {
+    transform: scale(1.008, 1.014);
+  }
+}
+
+@keyframes pt-blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(0);
+  }
+  93%,
+  95% {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pt-body,
+  .pt-lid {
+    animation: none;
   }
 }

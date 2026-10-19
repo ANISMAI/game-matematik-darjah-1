@@ -22,5 +22,19 @@
       "frameH": 160,
       "frames": 4
     }
+  },
+  "ninja-diri": {
+    "diri": {
+      "frameW": 118,
+      "frameH": 160,
+      "frames": 4
+    }
+  },
+  "tapak-tahap": {
+    "diri": {
+      "frameW": 338,
+      "frameH": 300,
+      "frames": 3
+    }
   }
 }

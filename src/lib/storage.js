@@ -8,6 +8,7 @@ const DEFAULTS = {
   lastRegion: null,
   lastMission: null, // { regionId, subId }
   sound: true,
+  introSeen: {}, // { nombor: true } intro cerita kawasan sudah ditonton
 };
 
 function load() {

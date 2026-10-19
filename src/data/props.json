@@ -1,0 +1,44 @@
+{
+  "nombor": [
+    {
+      "src": "/map/hiasan/nombor-1.webp",
+      "w": 265,
+      "h": 320
+    },
+    {
+      "src": "/map/hiasan/nombor-2.webp",
+      "w": 296,
+      "h": 320
+    },
+    {
+      "src": "/map/hiasan/nombor-3.webp",
+      "w": 320,
+      "h": 280
+    },
+    {
+      "src": "/map/hiasan/nombor-4.webp",
+      "w": 320,
+      "h": 229
+    },
+    {
+      "src": "/map/hiasan/nombor-5.webp",
+      "w": 320,
+      "h": 272
+    },
+    {
+      "src": "/map/hiasan/nombor-6.webp",
+      "w": 320,
+      "h": 298
+    },
+    {
+      "src": "/map/hiasan/nombor-7.webp",
+      "w": 320,
+      "h": 273
+    },
+    {
+      "src": "/map/hiasan/nombor-8.webp",
+      "w": 320,
+      "h": 278
+    }
+  ]
+}
