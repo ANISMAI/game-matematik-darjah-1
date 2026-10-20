@@ -305,9 +305,9 @@ export function CountObject({ type }) {
   );
 }
 
-export function Badge({ size = 140 }) {
+export function Badge({ size = 140, label = 'Lencana Bilang Objek' }) {
   return (
-    <svg width={size} height={size} viewBox="0 0 140 140" className="badge" role="img" aria-label="Lencana Bilang Objek">
+    <svg width={size} height={size} viewBox="0 0 140 140" className="badge" role="img" aria-label={label}>
       <path d="M44 92 L30 134 L50 124 L60 140 L70 100Z" fill="#ef476f" stroke={OUT} strokeWidth="3" strokeLinejoin="round" />
       <path d="M96 92 L110 134 L90 124 L80 140 L70 100Z" fill="#118ab2" stroke={OUT} strokeWidth="3" strokeLinejoin="round" />
       <circle cx="70" cy="62" r="50" fill="#ffd166" stroke={OUT} strokeWidth="4" />

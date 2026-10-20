@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { missionStatus } from '../lib/storage.js';
+import { missionStatus, regionStats } from '../lib/storage.js';
+import { T } from '../data/strings.js';
 import { Landmark } from './Art.jsx';
 import { BIOMES, Decor } from './Terrain.jsx';
 import { TextureDefs } from './MapEffects.jsx';
@@ -378,6 +379,7 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
   const decor = useMemo(() => scatterDecor(layout, PROPS[region.id] ? PROP_ORDER : biome.kinds, orient), [layout, biome.kinds, region.id, orient]);
   const trail = useMemo(() => smoothPath(layout.pts), [layout]);
   const isPreview = subs.every((s) => !s.playable);
+  const stats = regionStats(progress, region);
   // intro: 'exit' (ninja keluar dari rumah) | 'talk' (dialog) | null
   const [intro, setIntro] = useState(showIntro && region.intro ? 'exit' : null);
   const indexOf = (id) => Math.max(0, subs.findIndex((s) => s.id === id));
@@ -737,6 +739,7 @@ export default function RegionMap({ region, progress, selectedSub, walkFrom, sho
         <div className="region-title glass-chip">
           <h2>{region.topic}</h2>
           <p>{region.name}</p>
+          {stats.total > 0 && <p className="region-stats">{T.regionStats(stats.done, stats.total)}</p>}
         </div>
       </div>
 

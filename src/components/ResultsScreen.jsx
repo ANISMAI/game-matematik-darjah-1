@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { Badge } from './Art.jsx';
 import NinjaCharacter from './NinjaCharacter.jsx';
+import { T } from '../data/strings.js';
 
-export default function ResultsScreen({ isNewBadge, onReplay, onBack }) {
+export default function ResultsScreen({ title = 'Bilang Objek', total = 5, isNewBadge, backLabel = T.backToRegion, onReplay, onBack }) {
   const first = useRef(null);
   useEffect(() => first.current?.focus(), []);
 
@@ -14,21 +15,19 @@ export default function ResultsScreen({ isNewBadge, onReplay, onBack }) {
             <span key={i} style={{ '--i': i }} />
           ))}
         </div>
-        <h2>Misi Selesai!</h2>
-        <p className="results-sub">5 soalan selesai</p>
+        <h2>{T.resultsTitle}</h2>
+        <p className="results-sub">{T.resultsSub(total)}</p>
         <div className="results-art">
           <NinjaCharacter size={140} mood="cheer" className="ninja-jump" title="Ninja gembira" />
-          <Badge size={140} />
+          <Badge size={140} label={`Lencana ${title}`} />
         </div>
-        <p className="results-badge">
-          {isNewBadge ? 'Tahniah! Anda dapat Lencana Bilang Objek.' : 'Lencana Bilang Objek sudah dalam simpanan anda.'}
-        </p>
+        <p className="results-badge">{isNewBadge ? T.resultsNewBadge(title) : T.resultsOldBadge(title)}</p>
         <div className="scroll-actions">
           <button ref={first} className="btn btn-primary btn-lg" onClick={onReplay}>
-            <span aria-hidden="true">↺</span> Main Semula
+            <span aria-hidden="true">↺</span> {T.replay}
           </button>
           <button className="btn btn-light btn-lg" onClick={onBack}>
-            Kembali ke Kawasan
+            {backLabel}
           </button>
         </div>
       </div>

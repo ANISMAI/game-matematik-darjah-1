@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { REGIONS } from '../data/topics.js';
-import { completedInRegion } from '../lib/storage.js';
+import { completedInRegion, regionStats } from '../lib/storage.js';
+import { T } from '../data/strings.js';
 import { usePanZoom } from '../lib/usePanZoom.js';
 import { Landmark } from './Art.jsx';
 import { pointInPoly, smoothClosed } from './Terrain.jsx';
@@ -128,7 +129,7 @@ function activate(e, fn) {
 
 const labelWidth = (region) => Math.max(region.topic.length * 14 + 44, 170);
 
-function RegionShape({ region, done, selected, hover, onHover, onFocusChange, onOpen }) {
+function RegionShape({ region, stats, selected, hover, onHover, onFocusChange, onOpen }) {
   const d = polyD(POLYS[region.id]);
   const open = () => region.available && onOpen(region.id);
   return (
@@ -136,7 +137,7 @@ function RegionShape({ region, done, selected, hover, onHover, onFocusChange, on
       className={`region${selected ? ' is-selected' : ''}${hover ? ' is-hover' : ''}${region.available ? '' : ' is-locked'}`}
       role="button"
       tabIndex={0}
-      aria-label={`${region.topic}, ${region.name}${done ? `, ${done} aktiviti selesai` : ''}`}
+      aria-label={`${region.topic}, ${region.name}${stats.total ? `, ${T.regionStats(stats.done, stats.total)}` : ', pratonton'}`}
       onClick={open}
       onKeyDown={(e) => activate(e, open)}
       onMouseEnter={() => onHover(region.id)}
@@ -311,7 +312,7 @@ function RegionLabel({ region, done, hover, onHover, onOpen, part }) {
 
 const reducedMotion = () => window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
 
-export default function WorldMap({ progress, onOpenRegion, onContinue }) {
+export default function WorldMap({ progress, onOpenRegion, onContinue, onOpenShortcut }) {
   const pz = usePanZoom({ aspect: W / H, maxWidth: W * 1.35 });
   const [hover, setHover] = useState(null);
   const [focus, setFocus] = useState(null);
@@ -342,6 +343,15 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
             <path d="M7 4.5v15l12-7.5z" fill="currentColor" />
           </svg>
           {hasMission ? 'Sambung Misi' : 'Mula Pengembaraan'}
+        </button>
+        <button className="glass-pill shortcut-pill" onClick={onOpenShortcut}>
+          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          {T.shortcut}
         </button>
       </div>
 
@@ -386,7 +396,7 @@ export default function WorldMap({ progress, onOpenRegion, onContinue }) {
                 <RegionShape
                   key={r.id}
                   region={r}
-                  done={completedInRegion(progress, r)}
+                  stats={regionStats(progress, r)}
                   selected={progress.lastRegion === r.id}
                   hover={active === r.id}
                   onHover={setHover}

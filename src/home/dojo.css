@@ -1,5 +1,7 @@
 @import "tailwindcss" source(none);
 @source "./";
+@source "../darjah4";
+@source "../minigame";
 
 
 @custom-variant dark (&:is(.dark *));

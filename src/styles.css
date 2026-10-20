@@ -34,15 +34,19 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-h1,
-h2,
-p {
-  margin: 0;
-}
+/* Reset dalam layer supaya utiliti Tailwind (page Darjah 4 / halaman utama) boleh mengatasinya;
+   gaya Pulau Ninja yang tiada layer tetap menang seperti biasa. */
+@layer base {
+  h1,
+  h2,
+  p {
+    margin: 0;
+  }
 
-button {
-  font: inherit;
-  color: inherit;
+  button {
+    font: inherit;
+    color: inherit;
+  }
 }
 
 :focus-visible {

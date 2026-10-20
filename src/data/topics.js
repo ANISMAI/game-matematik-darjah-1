@@ -5,6 +5,9 @@
 // `background` (pilihan): gambar latar penuh peta tahap kawasan (menggantikan tanah dan hiasan).
 // `intro` (pilihan): dialog cerita yang dipaparkan sekali sahaja bila kawasan dibuka kali pertama.
 // `ground` (pilihan): tekstur rumput berulang untuk tanah peta tahap (scripts/make-ground.mjs).
+// `playable` diisi daripada data/activities.js: subtopik yang ada sekurang-kurangnya satu aktiviti.
+
+import { activitiesFor } from './activities.js';
 
 const PREVIEW = (instruction) => [
   {
@@ -39,14 +42,12 @@ export const REGIONS = [
         // id 'bilang' dikekalkan supaya kemajuan yang disimpan tidak hilang
         id: 'bilang',
         title: 'Mengenal dan Menulis Nombor',
-        instruction: 'Kira objek dan pilih nombor yang betul.',
-        playable: true,
-        questionCount: 5,
+        instruction: 'Kira objek dan padankan nombor dengan kumpulan.',
       },
-      { id: 'nilai', title: 'Nilai Nombor', instruction: 'Kenali nilai puluh dan sa dalam nombor.', playable: false },
-      { id: 'urutan', title: 'Urutan Nombor', instruction: 'Susun nombor secara menaik dan menurun.', playable: false },
-      { id: 'pola', title: 'Pola Nombor', instruction: 'Cari nombor seterusnya dalam pola.', playable: false },
-      { id: 'anggar', title: 'Anggar dan Banding', instruction: 'Anggar dan bandingkan kuantiti objek.', playable: false },
+      { id: 'nilai', title: 'Nilai Nombor', instruction: 'Kenali nilai puluh dan sa dalam nombor.' },
+      { id: 'urutan', title: 'Urutan Nombor', instruction: 'Susun nombor secara menaik dan menurun.' },
+      { id: 'pola', title: 'Pola Nombor', instruction: 'Cari nombor seterusnya dalam pola.' },
+      { id: 'anggar', title: 'Anggar dan Banding', instruction: 'Anggar dan bandingkan kuantiti objek.' },
     ],
   },
   {
@@ -60,10 +61,10 @@ export const REGIONS = [
     map: { cx: 610, cy: 205 },
     available: true,
     subtopics: [
-      { id: 'kenal-tambah', title: 'Kenal Tambah', instruction: 'Gabungkan dua kumpulan objek.', playable: false },
-      { id: 'tambah-mudah', title: 'Tambah Mudah', instruction: 'Tambah nombor dalam lingkungan 10.', playable: false },
-      { id: 'kenal-tolak', title: 'Kenal Tolak', instruction: 'Ambil objek keluar daripada kumpulan.', playable: false },
-      { id: 'tolak-mudah', title: 'Tolak Mudah', instruction: 'Tolak nombor dalam lingkungan 10.', playable: false },
+      { id: 'kenal-tambah', title: 'Kenal Tambah', instruction: 'Gabungkan dua kumpulan objek.' },
+      { id: 'tambah-mudah', title: 'Tambah Mudah', instruction: 'Tambah nombor dalam lingkungan 10.' },
+      { id: 'kenal-tolak', title: 'Kenal Tolak', instruction: 'Ambil objek keluar daripada kumpulan.' },
+      { id: 'tolak-mudah', title: 'Tolak Mudah', instruction: 'Tolak nombor dalam lingkungan 10.' },
     ],
   },
   {
@@ -139,6 +140,10 @@ export const REGIONS = [
     subtopics: PREVIEW('Baca dan buat piktograf mudah.'),
   },
 ];
+
+for (const region of REGIONS) {
+  for (const sub of region.subtopics) sub.playable = activitiesFor(region.id, sub.id).length > 0;
+}
 
 export const START_REGION = 'nombor';
 

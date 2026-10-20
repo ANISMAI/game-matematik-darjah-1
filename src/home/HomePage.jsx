@@ -44,7 +44,7 @@ function HomeNotice({ title, children, onClose }) {
   );
 }
 
-export default function HomePage({ onPlay, sound, onToggleSound, profile, onProfileChange }) {
+export default function HomePage({ onPlay, onPlayDarjah4, onOpenMinigame, sound, onToggleSound, profile, onProfileChange }) {
   const [subject, setSubject] = useState('Matematik');
   const [grade, setGrade] = useState('Darjah 1');
   const [shopOpen, setShopOpen] = useState(false);
@@ -71,6 +71,7 @@ export default function HomePage({ onPlay, sound, onToggleSound, profile, onProf
 
   const play = () => {
     if (subject === 'Matematik' && grade === 'Darjah 1') onPlay();
+    else if (subject === 'Matematik' && grade === 'Darjah 4' && onPlayDarjah4) onPlayDarjah4();
     else
       setNotice({
         title: 'Pengembaraan akan datang',
@@ -80,6 +81,7 @@ export default function HomePage({ onPlay, sound, onToggleSound, profile, onProf
 
   const select = (item) => {
     if (item.key === 'belajar') play();
+    else if (item.key === 'mini' && onOpenMinigame) onOpenMinigame();
     else if (item.key === 'inventori') setShopOpen(true);
     else if (item.key === 'tetapan') setNotice({ title: 'Tetapan', settings: true });
     else
