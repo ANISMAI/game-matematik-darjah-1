@@ -9,19 +9,28 @@
   position: static;
 }
 
-.dojo-home .home-selector {
-  align-self: flex-end;
-  padding: 20px 8px;
+/* Banner papan logo memanjang di atas sekali */
+.dojo-home .home-banner {
+  pointer-events: none;
 }
+
+/* Selaraskan bahagian atas lajur kiri dengan banner tengah. */
+.dojo-home .home-profile {
+  padding-top: 18px;
+}
+
+/* Pemilih subjek/darjah kini dalam lajur profil kiri (bukan kanan atas lagi). */
 
 .dojo-home .home-hero {
   position: absolute;
-  inset: 0;
+  inset: 96px 0 0; /* mula bawah banner */
   display: grid;
   place-items: center;
-  padding: 40px 24px;
+  padding: 24px 24px 120px; /* ruang untuk bar bawah */
   pointer-events: none;
 }
+
+/* Bar bawah penuh selebar skrin (semua saiz) menggantikan sidebar. */
 
 .dojo-home .home-hero > * {
   pointer-events: auto;
@@ -44,14 +53,7 @@
 
 @media (min-width: 1024px) {
   .dojo-home .home-hero {
-    padding-left: 264px;
-    padding-right: 280px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .dojo-home .home-hero {
-    padding-left: 264px;
+    padding-left: 180px; /* ruang untuk panel profil kiri (watak lebih ke tengah) */
   }
 }
 

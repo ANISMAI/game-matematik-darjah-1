@@ -64,6 +64,41 @@ export function HomeSidebar({ onSelect }) {
   );
 }
 
+// Bar bawah gaya "game" (Brawl Stars): semua menu jadi tab berbaris di bawah.
+// Dipakai untuk semua saiz skrin; menggantikan sidebar kiri.
+export function HomeBottomBar({ onSelect, active = 'mini' }) {
+  return (
+    <nav
+      className="home-bottombar fixed inset-x-0 bottom-0 z-40 flex items-stretch justify-around gap-1 border-t-2 px-3 pb-2 pt-2"
+      style={{ background: 'var(--sidebar-solid)', borderColor: 'var(--sidebar-border)' }}
+      aria-label="Menu utama"
+    >
+      {items.map((item) => {
+        const isActive = item.key === active;
+        return (
+          <button
+            key={item.key}
+            onClick={() => onSelect(item)}
+            aria-current={isActive || undefined}
+            className="group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl px-1 py-2 text-xs font-bold text-white/85 transition-colors hover:bg-white/10"
+            style={isActive ? { background: 'var(--gradient-orange)', color: '#fff' } : undefined}
+          >
+            <span className="grid h-8 w-8 place-items-center text-2xl" aria-hidden="true">
+              {item.emoji}
+            </span>
+            <span className="w-full truncate text-center text-shadow-readable">{item.short ?? item.label}</span>
+            {item.badge && (
+              <span className="absolute right-2 top-1 grid h-4 min-w-4 place-items-center rounded-full bg-red-500 px-1 text-[9px] font-black">
+                {item.badge}
+              </span>
+            )}
+          </button>
+        );
+      })}
+    </nav>
+  );
+}
+
 export function HomeMobileNav({ onSelect }) {
   const [showMore, setShowMore] = useState(false);
   const main = items.filter((item) => item.short);
