@@ -1,5 +1,5 @@
 import { shuffle } from '../lib/questions.js';
-import { Basket, Bang, Fruit, gridPositions, Hand, Tick } from './GameArt.jsx';
+import { ArtDefs, Bang, gridPositions, Hand, MiniNinja, NinjaPot, Shuriken, Tick } from './GameArt.jsx';
 import { inRect, useDragDrop } from './useDragDrop.js';
 
 const BW = 230;
@@ -33,28 +33,28 @@ export function check(b) {
   return { ok, board: { ...b, selected: null, wrong: !ok } };
 }
 
-function Fruits({ n }) {
-  return gridPositions(n, 0, 6, 40, 38).map(([x, y], i) => <Fruit key={i} x={x} y={y} r={16} />);
+function Stars({ n }) {
+  return gridPositions(n, 0, 2, 42, 40).map(([x, y], i) => <Shuriken key={i} x={x} y={y} s={0.78} />);
 }
 
 function BasketArt({ n, tag }) {
   return (
     <g>
-      <Basket w={BW} h={BH} tag={tag} />
-      <Fruits n={n} />
+      <NinjaPot w={BW} h={BH} tag={tag} />
+      <Stars n={n} />
     </g>
   );
 }
 
-// Ikon mat: satu buah vs banyak buah (label tidak bergantung pada warna)
+// Ikon mat: satu shuriken vs banyak shuriken (label tidak bergantung pada warna)
 function MatIcon({ kind }) {
   return kind === 'less' ? (
-    <Fruit x={0} y={0} r={11} />
+    <Shuriken x={0} y={0} s={0.5} />
   ) : (
     <g>
-      <Fruit x={-14} y={4} r={11} />
-      <Fruit x={14} y={4} r={11} />
-      <Fruit x={0} y={-12} r={11} />
+      <Shuriken x={-14} y={4} s={0.5} />
+      <Shuriken x={14} y={4} s={0.5} />
+      <Shuriken x={0} y={-12} s={0.5} />
     </g>
   );
 }
@@ -99,6 +99,7 @@ export default function SortingGame({ board, setBoard, solved, hint, tap }) {
 
   return (
     <svg ref={dd.svgRef} className="g-stage" viewBox="0 0 1000 560" role="group" aria-label="Bakul dan tikar">
+      <ArtDefs />
       <g
         className={`g-shelf${selected !== null && place[selected] ? ' is-armed' : ''}`}
         {...dd.bindTarget('Rak bakul', () => selected !== null && move(selected, 'shelf'), { inactive: selected === null || !place[selected] })}
@@ -171,7 +172,7 @@ export default function SortingGame({ board, setBoard, solved, hint, tap }) {
             key={bi}
             className={`g-item${isSel ? ' is-selected' : ''}${dd.drag?.id === bi ? ' is-ghosted' : ''}`}
             transform={`translate(${x} ${y})`}
-            {...dd.bindItem(bi, `Bakul ${TAGS[bi]} dengan ${counts[bi]} buah oren, ${where}${isSel ? ', dipilih' : ''}`, { selected: isSel })}
+            {...dd.bindItem(bi, `Bekas ${TAGS[bi]} dengan ${counts[bi]} shuriken, ${where}${isSel ? ', dipilih' : ''}`, { selected: isSel })}
           >
             <rect className="g-hit" x={-BW / 2 - 8} y={-BH / 2 - 40} width={BW + 16} height={BH + 56} rx="18" />
             <BasketArt n={counts[bi]} tag={TAGS[bi]} />
@@ -186,6 +187,9 @@ export default function SortingGame({ board, setBoard, solved, hint, tap }) {
           <BasketArt n={counts[dd.drag.id]} tag={TAGS[dd.drag.id]} />
         </g>
       )}
+
+      {/* ninja mini memberi reaksi */}
+      <MiniNinja x={70} y={540} size={84} mood={solved ? 'cheer' : 'happy'} />
     </svg>
   );
 }
@@ -220,4 +224,4 @@ export function Demo() {
   );
 }
 
-export const demoText = 'Bandingkan dua bakul. Seret bakul yang ada buah lebih sedikit ke tikar "Lebih sedikit", dan yang satu lagi ke "Lebih banyak".';
+export const demoText = 'Bandingkan dua bekas. Seret bekas yang ada shuriken lebih sedikit ke tikar "Lebih sedikit", dan yang satu lagi ke "Lebih banyak".';

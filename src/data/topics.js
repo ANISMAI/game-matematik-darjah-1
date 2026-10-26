@@ -38,16 +38,16 @@ export const REGIONS = [
     map: { cx: 330, cy: 235 },
     available: true,
     subtopics: [
-      {
-        // id 'bilang' dikekalkan supaya kemajuan yang disimpan tidak hilang
-        id: 'bilang',
-        title: 'Mengenal dan Menulis Nombor',
-        instruction: 'Kira objek dan padankan nombor dengan kumpulan.',
-      },
-      { id: 'nilai', title: 'Nilai Nombor', instruction: 'Kenali nilai puluh dan sa dalam nombor.' },
-      { id: 'urutan', title: 'Urutan Nombor', instruction: 'Susun nombor secara menaik dan menurun.' },
+      { id: 'banyak-sedikit', title: 'Banyak dan Sedikit', instruction: 'Bandingkan kumpulan: mana lebih banyak, mana lebih sedikit.' },
+      { id: 'kenali-1-10', title: 'Kenali 1 hingga 10', instruction: 'Kira objek dan padankan dengan nombor 1 hingga 10.' },
+      { id: 'kenali-sifar', title: 'Kenali Sifar', instruction: 'Kenali sifar (0) sebagai tiada objek.' },
+      { id: 'kombinasi-11-20', title: 'Kombinasi 11 hingga 20', instruction: 'Bina nombor 11 hingga 20 daripada puluh dan sa.' },
+      { id: 'kenali-21-100', title: 'Kenali 21 hingga 100', instruction: 'Kenali dan baca nombor 21 hingga 100.' },
+      { id: 'nilai-tempat', title: 'Nilai Tempat dan Nilai Digit', instruction: 'Kenali nilai tempat puluh dan sa dalam nombor.' },
+      { id: 'susunan', title: 'Susunan Nombor', instruction: 'Susun nombor secara menaik dan menurun.' },
       { id: 'pola', title: 'Pola Nombor', instruction: 'Cari nombor seterusnya dalam pola.' },
-      { id: 'anggar', title: 'Anggar dan Banding', instruction: 'Anggar dan bandingkan kuantiti objek.' },
+      { id: 'anggaran', title: 'Kenali Anggaran', instruction: 'Anggar bilangan objek tanpa mengira satu persatu.' },
+      { id: 'bundar', title: 'Kenali Bundar', instruction: 'Bundarkan nombor kepada puluh terdekat.' },
     ],
   },
   {

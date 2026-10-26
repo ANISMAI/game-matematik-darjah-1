@@ -1,5 +1,5 @@
 import { shuffle } from '../lib/questions.js';
-import { Apple, Door, gridPositions, Hand } from './GameArt.jsx';
+import { Apple, ArtDefs, Door, gridPositions, Hand } from './GameArt.jsx';
 import { activate } from './useDragDrop.js';
 
 const DOOR_X = [210, 500, 790];
@@ -54,6 +54,7 @@ export default function PickAnswerGame({ q, board, setBoard, fail, succeed, solv
 
   return (
     <svg className="g-stage" viewBox="0 0 1000 560" role="group" aria-label="Pintu jawapan">
+      <ArtDefs />
       <Group box={GROUP_A} n={q.a} from={0} hint={hint} />
       <Group box={GROUP_B} n={q.b} from={q.a} hint={hint} />
       <text className="g-op" x="500" y="118" textAnchor="middle" aria-hidden="true">

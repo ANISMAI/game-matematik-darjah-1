@@ -3,6 +3,29 @@ import NinjaCharacter from '../components/NinjaCharacter.jsx';
 
 export const OUT = '#3b2a1a';
 
+// Gradien dikongsi untuk buah (ditakrif sekali; dirujuk oleh Apple/Fruit).
+// Letak <ArtDefs /> sekali di dalam setiap <svg> game yang guna buah.
+export function ArtDefs() {
+  return (
+    <defs>
+      <radialGradient id="art-apple" cx="38%" cy="32%" r="72%">
+        <stop offset="0" stopColor="#ff8aa0" />
+        <stop offset="45%" stopColor="#ef476f" />
+        <stop offset="100%" stopColor="#c9184a" />
+      </radialGradient>
+      <radialGradient id="art-orange" cx="38%" cy="32%" r="72%">
+        <stop offset="0" stopColor="#ffd08a" />
+        <stop offset="45%" stopColor="#ff9f1c" />
+        <stop offset="100%" stopColor="#e07b00" />
+      </radialGradient>
+      <linearGradient id="art-leaf" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stopColor="#7ed957" />
+        <stop offset="1" stopColor="#3c8c22" />
+      </linearGradient>
+    </defs>
+  );
+}
+
 export function Lantern({ x = 0, y = 0, s = 1 }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
@@ -17,13 +40,15 @@ export function Lantern({ x = 0, y = 0, s = 1 }) {
   );
 }
 
-// Buah oren (sama saiz untuk semua bakul)
+// Buah oren berkilat (guna gradien dari <ArtDefs />). Saiz melalui r.
 export function Fruit({ x = 0, y = 0, r = 16 }) {
   return (
     <g transform={`translate(${x} ${y})`}>
-      <circle r={r} fill="#ff9f1c" stroke={OUT} strokeWidth="2" />
-      <ellipse cx={-r * 0.35} cy={-r * 0.35} rx={r * 0.25} ry={r * 0.35} fill="#ffd29a" opacity=".8" />
-      <path d={`M0 ${-r} q${r * 0.5} ${-r * 0.6} ${r * 0.9} ${-r * 0.35}`} fill="#4caf50" stroke={OUT} strokeWidth="1.5" />
+      <ellipse cx="0" cy={r * 0.95} rx={r * 0.85} ry={r * 0.25} fill="#1a1006" opacity="0.18" />
+      <circle r={r} fill="url(#art-orange)" stroke="#b86500" strokeWidth="1.5" />
+      <ellipse cx={-r * 0.34} cy={-r * 0.36} rx={r * 0.3} ry={r * 0.42} fill="#fff" opacity="0.55" />
+      <circle cx={0} cy={-r} r={r * 0.14} fill="#7a4a12" />
+      <path d={`M${r * 0.08} ${-r} q${r * 0.55} ${-r * 0.5} ${r * 0.95} ${-r * 0.18}`} fill="url(#art-leaf)" stroke="#2e6b18" strokeWidth="1" />
     </g>
   );
 }
@@ -31,10 +56,19 @@ export function Fruit({ x = 0, y = 0, r = 16 }) {
 export function Apple({ x = 0, y = 0, s = 1 }) {
   return (
     <g transform={`translate(${x} ${y}) scale(${s})`}>
-      <path d="M0 -18 q-2 -8 3 -13" stroke="#6b4423" strokeWidth="3" fill="none" strokeLinecap="round" />
-      <ellipse cx="9" cy="-24" rx="7" ry="3.5" fill="#4caf50" transform="rotate(-25 9 -24)" />
-      <path d="M0 -16 C-14 -26 -24 -12 -21 3 C-18 18 -8 22 0 18 C8 22 18 18 21 3 C24 -12 14 -26 0 -16Z" fill="#ef476f" stroke={OUT} strokeWidth="2.2" />
-      <ellipse cx="-10" cy="-4" rx="4" ry="7" fill="#ff99ac" opacity=".75" />
+      <ellipse cx="0" cy="21" rx="18" ry="5" fill="#1a1006" opacity="0.18" />
+      {/* tangkai & daun */}
+      <path d="M0 -17 q-3 -9 2 -14" stroke="#7a4a12" strokeWidth="3.4" fill="none" strokeLinecap="round" />
+      <path d="M2 -24 q10 -8 17 -3 q-5 9 -17 3Z" fill="url(#art-leaf)" stroke="#2e6b18" strokeWidth="1.2" />
+      {/* badan epal berkilat */}
+      <path
+        d="M0 -15 C-14 -25 -25 -11 -22 4 C-19 19 -8 23 0 19 C8 23 19 19 22 4 C25 -11 14 -25 0 -15Z"
+        fill="url(#art-apple)"
+        stroke="#9e1239"
+        strokeWidth="1.6"
+      />
+      {/* kilauan */}
+      <ellipse cx="-9" cy="-4" rx="4.5" ry="8" fill="#fff" opacity="0.6" transform="rotate(-18 -9 -4)" />
     </g>
   );
 }
@@ -56,21 +90,43 @@ export function ScrollCard({ w = 170, h = 112, label, fontSize = 64 }) {
   );
 }
 
-// Bakul anyaman (berpusat). Isi buah dilukis oleh pemanggil.
+// Bakul rotan (berpusat). Isi buah dilukis oleh pemanggil.
 export function Basket({ w = 230, h = 150, tag }) {
   const top = -h / 2 + 30;
+  const bw = w * 0.84; // lebar dasar (badan mengecut ke bawah)
+  const gid = `art-basket-${Math.round(w)}-${Math.round(h)}`;
+  // garis anyaman menegak
+  const weaves = [];
+  for (let i = 1; i < 9; i++) {
+    const t = i / 9;
+    const xTop = -w / 2 + w * t;
+    const xBot = -bw / 2 + bw * t;
+    weaves.push(<path key={i} d={`M${xTop} ${top + 6} L${xBot} ${top + h - 32}`} stroke="#9c5e28" strokeWidth="2" opacity="0.4" />);
+  }
   return (
     <g>
-      <ellipse cx="0" cy={h / 2 + 4} rx={w * 0.45} ry="10" fill="#1a1006" opacity=".2" />
-      <path d={`M${-w * 0.36} ${top} Q0 ${top - 70} ${w * 0.36} ${top}`} stroke="#a66a2c" strokeWidth="7" fill="none" />
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#f0bd77" />
+          <stop offset="1" stopColor="#c6823a" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="0" cy={h / 2 + 4} rx={w * 0.45} ry="11" fill="#1a1006" opacity=".2" />
+      {/* pemegang */}
+      <path d={`M${-w * 0.34} ${top} Q0 ${top - 72} ${w * 0.34} ${top}`} stroke="#b06f2e" strokeWidth="9" fill="none" strokeLinecap="round" />
+      <path d={`M${-w * 0.34} ${top} Q0 ${top - 72} ${w * 0.34} ${top}`} stroke="#d99a50" strokeWidth="3.5" fill="none" strokeLinecap="round" />
+      {/* badan */}
       <path
-        d={`M${-w / 2} ${top} h${w} l${-w * 0.08} ${h - 30} q${-w * 0.42} 12 ${-w * 0.84} 0z`}
-        fill="#e0a95a"
-        stroke={OUT}
+        d={`M${-w / 2} ${top} h${w} l${-(w - bw) / 2} ${h - 32} q${-bw / 2} 14 ${-bw} 0z`}
+        fill={`url(#${gid})`}
+        stroke="#7a4a12"
         strokeWidth="3"
         strokeLinejoin="round"
       />
-      <path d={`M${-w / 2 + 6} ${top + 40} h${w - 12} M${-w / 2 + 10} ${top + 80} h${w - 20}`} stroke="#a66a2c" strokeWidth="3" opacity=".7" />
+      <g clipPath="none">{weaves}</g>
+      {/* bibir atas bakul */}
+      <rect x={-w / 2 - 3} y={top - 9} width={w + 6} height="16" rx="8" fill="#d99a50" stroke="#7a4a12" strokeWidth="3" />
+      <path d={`M${-w / 2 + 2} ${top - 1} h${w - 4}`} stroke="#b06f2e" strokeWidth="2" opacity="0.6" />
       {tag && (
         <g transform={`translate(${-w / 2 + 6} ${top - 8})`}>
           <circle r="20" fill="#fffdf6" stroke={OUT} strokeWidth="3" />
@@ -78,6 +134,105 @@ export function Basket({ w = 230, h = 150, tag }) {
             {tag}
           </text>
         </g>
+      )}
+    </g>
+  );
+}
+
+// Shuriken (bintang ninja) berpusat. Senang dikira; warna keluli dengan kilauan.
+export function Shuriken({ x = 0, y = 0, s = 1 }) {
+  // 4 bilah bintang
+  const blade = 'M0 -22 L7 -7 L22 0 L7 7 L0 22 L-7 7 L-22 0 L-7 -7 Z';
+  return (
+    <g transform={`translate(${x} ${y}) scale(${s})`}>
+      <ellipse cx="0" cy="24" rx="18" ry="4.5" fill="#1a1006" opacity="0.14" />
+      <path d={blade} fill="#5b6472" stroke="#2f3640" strokeWidth="2.2" strokeLinejoin="round" transform="rotate(45)" />
+      <path d={blade} fill="#8d97a6" stroke="#2f3640" strokeWidth="2.2" strokeLinejoin="round" />
+      <path d="M0 -12 L4 -4 L-3 -2 Z" fill="#cfd6df" opacity="0.8" />
+      <circle r="6.5" fill="#39404b" stroke="#2f3640" strokeWidth="2" />
+      <circle r="2.6" fill="#aeb6c2" />
+    </g>
+  );
+}
+
+// Bekas ninja: mangkuk kayu Jepun (berpusat). Isi objek dilukis oleh pemanggil.
+export function NinjaPot({ w = 220, h = 150, tag }) {
+  const top = -h / 2 + 24;
+  const bw = w * 0.74;
+  const gid = `art-pot-${Math.round(w)}-${Math.round(h)}`;
+  return (
+    <g>
+      <defs>
+        <linearGradient id={gid} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#7a4a2b" />
+          <stop offset="1" stopColor="#4e2d17" />
+        </linearGradient>
+      </defs>
+      <ellipse cx="0" cy={h / 2 + 2} rx={w * 0.42} ry="10" fill="#1a1006" opacity="0.2" />
+      {/* badan mangkuk */}
+      <path
+        d={`M${-w / 2} ${top} h${w} l${-(w - bw) / 2} ${h - 26} q${-bw / 2} 16 ${-bw} 0z`}
+        fill={`url(#${gid})`}
+        stroke="#2e1a0d"
+        strokeWidth="3"
+        strokeLinejoin="round"
+      />
+      {/* jalur kain merah ninja */}
+      <rect x={-w / 2 - 2} y={top + 10} width={w + 4} height="20" fill="#c1121f" opacity="0.92" />
+      <rect x={-w / 2 - 2} y={top + 10} width={w + 4} height="5" fill="#8a0c16" />
+      {/* bibir atas */}
+      <rect x={-w / 2 - 3} y={top - 10} width={w + 6} height="18" rx="9" fill="#8a5a30" stroke="#2e1a0d" strokeWidth="3" />
+      {tag && (
+        <g transform={`translate(${-w / 2 + 8} ${top - 10})`}>
+          <circle r="20" fill="#fffdf6" stroke={OUT} strokeWidth="3" />
+          <text className="g-tag" y="9" textAnchor="middle">
+            {tag}
+          </text>
+        </g>
+      )}
+    </g>
+  );
+}
+
+// Biskut coklat cip (berpusat)
+export function Cookie({ x = 0, y = 0, r = 18 }) {
+  const chips = [
+    [-0.3, -0.3],
+    [0.35, -0.15],
+    [-0.1, 0.35],
+    [0.15, 0.1],
+    [-0.45, 0.2],
+    [0.4, 0.4],
+  ];
+  return (
+    <g transform={`translate(${x} ${y})`}>
+      <ellipse cx="0" cy={r * 0.9} rx={r * 0.85} ry={r * 0.22} fill="#1a1006" opacity="0.14" />
+      <circle r={r} fill="#d9a35c" stroke="#a9742f" strokeWidth="2" />
+      <circle r={r * 0.82} fill="#e8b878" opacity="0.6" />
+      {chips.map(([cx, cy], i) => (
+        <circle key={i} cx={cx * r} cy={cy * r} r={r * 0.14} fill="#5a3416" />
+      ))}
+    </g>
+  );
+}
+
+// Balang kaca bernombor (berpusat). Angka dipaparkan pada label.
+export function Jar({ w = 150, h = 180, label }) {
+  const top = -h / 2;
+  return (
+    <g>
+      <ellipse cx="0" cy={h / 2 + 2} rx={w * 0.42} ry="10" fill="#1a1006" opacity="0.18" />
+      {/* badan kaca */}
+      <rect x={-w / 2} y={top + 24} width={w} height={h - 24} rx="26" fill="#bfe8fb" stroke="#5aa6cf" strokeWidth="3" opacity="0.85" />
+      {/* kilauan kaca */}
+      <rect x={-w / 2 + 12} y={top + 40} width="14" height={h - 70} rx="7" fill="#fff" opacity="0.5" />
+      {/* leher & penutup */}
+      <rect x={-w * 0.34} y={top + 10} width={w * 0.68} height="22" rx="8" fill="#bfe8fb" stroke="#5aa6cf" strokeWidth="3" />
+      <rect x={-w * 0.4} y={top - 6} width={w * 0.8} height="22" rx="10" fill="#e07b43" stroke="#a9531f" strokeWidth="3" />
+      {label !== undefined && (
+        <text y={h * 0.12} textAnchor="middle" fontSize={h * 0.34} fontWeight="800" fill="#1d3a4f">
+          {label}
+        </text>
       )}
     </g>
   );

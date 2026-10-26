@@ -43,7 +43,21 @@ export function migrate(raw) {
   return p;
 }
 
+// SEMENTARA (fasa betulkan UI): jangan simpan/muat kemajuan — setiap refresh mula semula bersih.
+// Tukar kembali kepada false bila UI siap supaya kemajuan pemain disimpan semula.
+const DEV_RESET = true;
+
+// Buang sebarang kemajuan lama yang sudah tersimpan dalam browser (sekali, bila DEV_RESET aktif).
+if (DEV_RESET) {
+  try {
+    localStorage.removeItem(KEY);
+  } catch {
+    // abaikan: storan disekat
+  }
+}
+
 function load() {
+  if (DEV_RESET) return migrate(null); // sentiasa mula kosong
   try {
     const raw = localStorage.getItem(KEY);
     return migrate(raw ? JSON.parse(raw) : null);
@@ -59,6 +73,7 @@ export function useProgress() {
   const [progress, setProgress] = useState(load);
 
   useEffect(() => {
+    if (DEV_RESET) return; // jangan tulis ke storan semasa fasa betulkan UI
     try {
       localStorage.setItem(KEY, JSON.stringify(progress));
     } catch {

@@ -1,4 +1,4 @@
-import { Apple, Basket, Door, Lantern, Plank, PuzzlePiece, ScrollCard, Stone } from '../games/GameArt.jsx';
+import { Apple, ArtDefs, Basket, Door, Lantern, Plank, PuzzlePiece, ScrollCard, Stone } from '../games/GameArt.jsx';
 
 // Ikon kecil setiap mekanik (untuk pemilih aktiviti dan senarai pratonton)
 export default function MechanicIcon({ mechanic, size = 64 }) {
@@ -65,6 +65,7 @@ export default function MechanicIcon({ mechanic, size = 64 }) {
   }[mechanic];
   return (
     <svg className="mech-icon" width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
+      <ArtDefs />
       <circle cx="50" cy="50" r="48" fill="#fff6dc" stroke="#3b2a1a" strokeWidth="3" />
       {art}
     </svg>

@@ -31,7 +31,7 @@ function ActivityChooser({ list, progress, onStart, firstBtn }) {
                 {a.mechanicLabel} · {T.questions(questionTotal(a))}
               </span>
               <span className={`chooser-status ${STATUS[st].className}`}>
-                <StatusIcon status={st} size={16} /> {STATUS[st].label}
+                <StatusIcon status={st} size={15} /> {STATUS[st].label}
               </span>
             </div>
             <button
@@ -79,9 +79,6 @@ export default function MissionPreview({ region, sub, status, progress, onStart,
             <>
               <p className="scroll-instruction">{T.chooserTitle}</p>
               <ActivityChooser list={list} progress={progress} onStart={onStart} firstBtn={firstBtn} />
-              <div className="scroll-meta">
-                <StatusChip status={status} />
-              </div>
               <div className="scroll-actions">
                 <button className="btn btn-light btn-lg" onClick={onClose}>
                   {T.back}

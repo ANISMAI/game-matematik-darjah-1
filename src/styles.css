@@ -1050,6 +1050,81 @@ body {
   margin-top: 4px;
 }
 
+/* ---------- Pemilih aktiviti (kad) ---------- */
+
+.chooser {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.chooser-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.55);
+  border: 2px solid #e0cfa8;
+  border-radius: 18px;
+  text-align: left;
+}
+
+.chooser-row > :first-child {
+  flex-shrink: 0;
+}
+
+.chooser-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.chooser-text strong {
+  font-size: 1.2rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.chooser-text > span {
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.chooser-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 700;
+}
+
+.chooser-row .btn {
+  white-space: nowrap;
+}
+
+@media (max-width: 420px) {
+  .chooser-row {
+    grid-template-columns: auto 1fr;
+    gap: 10px 12px;
+    padding: 10px 12px;
+  }
+
+  .chooser-row .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .chooser-text strong {
+    font-size: 1.1rem;
+  }
+}
+
 @media (max-width: 420px) {
   .scroll-body {
     padding: 16px 18px 20px;
@@ -2304,4 +2379,235 @@ body {
 .level-box .level-svg.level-top {
   position: absolute;
   inset: 0;
+}
+
+/* ---------- Skrin aktiviti (gameplay) ---------- */
+/* Susun atur satu skrin: bar + arahan + stage (boleh kecut) + kawalan, tanpa tatal. */
+
+.act-screen {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 10px;
+  background: #c7f0ff; /* sandaran bila SVG belum render */
+}
+
+/* Latar padang rumput di belakang semua kandungan game. */
+.game-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('/game/latar-game.webp') center / cover no-repeat, #c7f0ff;
+}
+
+/* Lapisan putih nipis supaya kad game & soalan lebih menonjol di hadapan. */
+.game-bg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+/* Semua kandungan game duduk di atas latar. */
+.act-screen > .game-bar,
+.act-screen > .act-strip,
+.act-screen > .act-hint-text,
+.act-screen > .act-stage,
+.act-screen > .act-controls {
+  position: relative;
+  z-index: 1;
+}
+
+.act-strip {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.act-strip .instruction {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 18px 4px 6px;
+}
+
+.act-strip .instruction p {
+  font-size: clamp(1rem, 2.2vw, 1.35rem);
+}
+
+.act-tools {
+  flex: none;
+  display: flex;
+  gap: 8px;
+}
+
+.act-hint-text {
+  flex: none;
+  text-align: center;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  margin: 2px auto 0;
+  padding: 0 16px;
+}
+
+/* Stage: ambil ruang baki dan kecut supaya tiada tatal. */
+.act-stage {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  max-width: 980px;
+  margin: 2px auto 0;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.g-stage {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+}
+
+.act-controls {
+  flex: none;
+  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 6px 16px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ---------- Elemen SVG dalam stage (beri warna; tanpa ini SVG jadi hitam) ---------- */
+
+.g-panel {
+  fill: #fffaf0;
+  stroke: var(--line);
+  stroke-width: 3;
+}
+
+/* rak / tray / bank: permukaan kayu terang (bukan hitam default) */
+.g-shelf rect,
+.g-tray rect,
+.g-bank rect {
+  fill: #e7c9a0;
+  stroke: #a8703a;
+  stroke-width: 4;
+}
+
+.g-item rect,
+.g-fixed rect,
+.g-step rect,
+.g-slot rect {
+  fill: #fffdf6;
+  stroke: var(--line);
+  stroke-width: 3;
+}
+
+.g-target-box,
+.g-tray-spot,
+.g-gap,
+.g-slot.is-empty rect {
+  fill: rgba(255, 255, 255, 0.5);
+  stroke: #c68b4e;
+  stroke-width: 3;
+  stroke-dasharray: 8 7;
+}
+
+.g-mat {
+  fill: none;
+}
+
+.g-cross,
+.g-crosser,
+.g-take-away {
+  fill: none;
+  stroke: #c1121f;
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.g-extra {
+  fill: #ffb703;
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.g-num,
+.g-expr,
+.g-op,
+.g-label,
+.g-tag,
+.g-dir,
+.g-step,
+.g-small,
+.g-tiny,
+.g-text {
+  fill: #3b2a1a;
+  font-weight: 800;
+}
+
+.g-expr {
+  font-size: 54px;
+}
+.g-op {
+  font-size: 56px;
+}
+.g-small {
+  font-size: 22px;
+  fill: #fff;
+}
+.g-tiny {
+  font-size: 18px;
+}
+
+.g-hit {
+  fill: transparent;
+}
+
+.g-river,
+.g-wave {
+  fill: none;
+  stroke: #7fc8f8;
+}
+
+.g-rope,
+.g-bridge-rope,
+.g-rope-dash {
+  fill: none;
+  stroke: #c68b4e;
+  stroke-width: 4;
+}
+
+.g-ghost {
+  opacity: 0.4;
+}
+
+.g-door.is-off,
+.g-pair.is-off {
+  opacity: 0.45;
+}
+
+.g-hint-num,
+.g-hint-band,
+.g-hint {
+  pointer-events: none;
+}
+
+@media (max-width: 720px) {
+  .act-strip {
+    flex-wrap: wrap;
+  }
+  .act-tools {
+    width: 100%;
+    justify-content: center;
+  }
 }

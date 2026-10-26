@@ -4,6 +4,7 @@ import { playSound } from '../lib/sound.js';
 import { T } from '../data/strings.js';
 import NinjaCharacter from './NinjaCharacter.jsx';
 import TutorialOverlay from './TutorialOverlay.jsx';
+import GameBackground from '../games/GameBackground.jsx';
 
 // Keadaan pusingan: 'answering' → 'correct' → (Seterusnya) soalan berikut / keputusan.
 function freshRun(activity, mod) {
@@ -95,6 +96,7 @@ export default function ActivityShell({ activity, savedRun, sound, onSave, onExi
 
   return (
     <main className="screen game-screen act-screen">
+      <GameBackground />
       <div className="game-bar">
         <button className="btn btn-light" onClick={() => setConfirmExit(true)}>
           <span aria-hidden="true">✕</span> {T.exit}

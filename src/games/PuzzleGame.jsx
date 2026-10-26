@@ -1,5 +1,5 @@
 import { shuffle } from '../lib/questions.js';
-import { Apple, Hand, PuzzlePiece, Tick } from './GameArt.jsx';
+import { Apple, ArtDefs, Hand, PuzzlePiece, Tick } from './GameArt.jsx';
 import { inRect, useDragDrop } from './useDragDrop.js';
 
 const SLOTS = ['start', 'op', 'result'];
@@ -94,6 +94,7 @@ export default function PuzzleGame({ q, board, setBoard, solved, hint, tap }) {
 
   return (
     <svg ref={dd.svgRef} className={`g-stage${solved ? ' is-joined' : ''}`} viewBox="0 0 1000 560" role="group" aria-label="Teka-teki skrol tolak">
+      <ArtDefs />
       {/* Petunjuk: objek mula, kemudian objek yang ditolak diambil keluar */}
       {hint && (
         <g aria-hidden="true">
