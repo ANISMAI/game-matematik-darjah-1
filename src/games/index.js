@@ -11,6 +11,9 @@ import * as fill from './FillBlankGame.jsx';
 import * as butterfly from './ButterflyGame.jsx';
 import * as watermelon from './WatermelonGame.jsx';
 import * as owl from './OwlGame.jsx';
+import * as trace from './TraceGame.jsx';
+import * as zero from './ZeroGame.jsx';
+import * as bamboo from './BambooGame.jsx';
 
 const withDefaults = (m, usesCheck) => ({ ...m, Component: m.default, usesCheck });
 
@@ -26,4 +29,7 @@ export const MECHANICS = {
   butterfly: withDefaults(butterfly, false),
   watermelon: withDefaults(watermelon, false),
   owl: withDefaults(owl, false),
+  trace: withDefaults(trace, false),
+  zero: withDefaults(zero, false),
+  bamboo: withDefaults(bamboo, true),
 };

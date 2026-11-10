@@ -6,6 +6,9 @@
 
 const MELON_HINT = 'Kira biji pada belahan kiri, kemudian belahan kanan. Belahan mana ada lebih banyak biji?';
 const OWL_HINT = 'Kira bulu oren pada sayap kiri, kemudian sayap kanan. Sayap mana ada lebih banyak bulu?';
+const TRACE_HINT = 'Letak jari pada kereta merah. Ikut titik kuning yang bergerak dan anak panah putih.';
+const PARK_HINT = 'Tekan kereta untuk keluarkan. Kemudian kira kereta yang masih ada di petak. Tiada kereta = 0.';
+const BAMBOO_HINT = 'Digit puluh = bilangan ikat buluh. Digit sa = bilangan batang buluh.';
 const BUTTERFLY_HINT = 'Kira pom-pom pada sayap kiri, kemudian sayap kanan. Sayap mana ada lebih banyak?';
 
 export const ACTIVITIES = [
@@ -60,10 +63,101 @@ export const ACTIVITIES = [
       { id: 'q5', left: 5, right: 9, hint: OWL_HINT },
     ],
   },
+  {
+    id: 'surih-1-5',
+    regionId: 'nombor',
+    subId: 'kenali-1-10',
+    title: 'Surih Nombor 1 hingga 5',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih nombor',
+    instruction: 'Letakkan jari pada kereta merah. Pandu ikut jalan sampai ke lampu isyarat. Kira kereta di bawah.',
+    // n = nombor yang disurih (0 hingga 10); bilangan kereta di bawah sama dengan n.
+    questions: [1, 2, 3, 4, 5].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'surih-6-10',
+    regionId: 'nombor',
+    subId: 'kenali-1-10',
+    title: 'Surih Nombor 6 hingga 10',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih nombor',
+    instruction: 'Letakkan jari pada kereta merah. Pandu ikut jalan sampai ke lampu isyarat. Kira kereta di bawah.',
+    questions: [6, 7, 8, 9, 10].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'surih-11-15',
+    regionId: 'nombor',
+    subId: 'kombinasi-11-20',
+    title: 'Surih Nombor 11 hingga 15',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih puluh & sa',
+    instruction: 'Pandu kereta ikut jalan nombor. Satu lori bawa 10 kereta (1 puluh). Kira kereta lain (sa).',
+    // n = 11 hingga 20: di bawah jalan, lori 10 kereta (puluh) + kereta sa.
+    questions: [11, 12, 13, 14, 15].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'surih-16-20',
+    regionId: 'nombor',
+    subId: 'kombinasi-11-20',
+    title: 'Surih Nombor 16 hingga 20',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih puluh & sa',
+    instruction: 'Pandu kereta ikut jalan nombor. Satu lori bawa 10 kereta (1 puluh). Kira kereta lain (sa).',
+    questions: [16, 17, 18, 19, 20].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'surih-21-50',
+    regionId: 'nombor',
+    subId: 'kenali-21-100',
+    title: 'Surih Nombor 21 hingga 50',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih puluh & sa',
+    instruction: 'Pandu kereta ikut jalan nombor. Setiap lori bawa 10 kereta (1 puluh). Kira lori dan kereta (sa).',
+    questions: [23, 31, 38, 45, 50].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'surih-51-100',
+    regionId: 'nombor',
+    subId: 'kenali-21-100',
+    title: 'Surih Nombor 51 hingga 100',
+    mechanic: 'trace',
+    mechanicLabel: 'Surih puluh & sa',
+    instruction: 'Pandu kereta ikut jalan nombor. Setiap lori bawa 10 kereta (1 puluh). Kira lori dan kereta (sa).',
+    questions: [56, 67, 74, 89, 100].map((n) => ({ id: `n${n}`, n, hint: TRACE_HINT })),
+  },
+  {
+    id: 'ikat-buluh',
+    regionId: 'nombor',
+    subId: 'nilai-tempat',
+    title: 'Ikat Buluh',
+    mechanic: 'bamboo',
+    mechanicLabel: 'Puluh & sa',
+    instruction: 'Seret ikat buluh ke bakul PULUH dan batang buluh ke bakul SA untuk membina nombor. Kemudian tekan Semak.',
+    // n = nombor sasaran (10 hingga 99): ikat = digit puluh, batang = digit sa.
+    questions: [23, 35, 41, 60, 57].map((n) => ({ id: `n${n}`, n, hint: BAMBOO_HINT })),
+  },
+  {
+    id: 'sifar',
+    regionId: 'nombor',
+    subId: 'kenali-sifar',
+    title: 'Tempat Letak Kosong',
+    mechanic: 'zero',
+    mechanicLabel: 'Kenali sifar',
+    instruction: 'Keluarkan kereta dari tempat letak. Bila tiada kereta tinggal, itu sifar (0).',
+    // type 'parking': start = kereta di petak (0 hingga 5), out = kereta yang perlu dikeluarkan; jawapan = start - out.
+    // type 'trace': surih nombor n (0) dengan tempat letak kosong di bawah.
+    questions: [
+      { id: 'p1', type: 'parking', start: 3, out: 3, hint: PARK_HINT },
+      { id: 't0', type: 'trace', n: 0, hint: TRACE_HINT },
+      { id: 'p2z', type: 'parking', start: 2, out: 2, hint: PARK_HINT },
+      { id: 'p3', type: 'parking', start: 5, out: 5, hint: PARK_HINT },
+      { id: 'p4', type: 'parking', start: 0, out: 0, hint: PARK_HINT },
+    ],
+  },
 ];
 
 // Susunan dalam senarai Pratonton Gameplay.
-export const SHORTCUT_ORDER = ['rama-rama', 'tembikai', 'burung-hantu'];
+export const SHORTCUT_ORDER = ['rama-rama', 'tembikai', 'burung-hantu', 'surih-1-5', 'surih-6-10', 'sifar', 'surih-11-15', 'surih-16-20', 'surih-21-50', 'surih-51-100', 'ikat-buluh'];
 
 export function getActivity(id) {
   return ACTIVITIES.find((a) => a.id === id);

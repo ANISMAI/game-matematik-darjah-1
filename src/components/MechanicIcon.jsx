@@ -51,6 +51,37 @@ export default function MechanicIcon({ mechanic, size = 64 }) {
         ))}
       </g>
     ),
+    bamboo: (
+      <g stroke="#3b2a1a" strokeWidth="2">
+        {[22, 28, 34, 40, 46].map((x) => (
+          <rect key={x} x={x - 3} y="18" width="6" height="56" rx="3" fill="#7cc552" />
+        ))}
+        <rect x="16" y="36" width="36" height="7" rx="3" fill="#d6283a" />
+        {[66, 76].map((x) => (
+          <rect key={x} x={x - 3} y="18" width="6" height="56" rx="3" fill="#7cc552" />
+        ))}
+        <rect x="10" y="74" width="80" height="14" rx="6" fill="#c98b4f" />
+      </g>
+    ),
+    zero: (
+      <g stroke="#3b2a1a" strokeWidth="2.5">
+        <rect x="14" y="22" width="72" height="56" rx="10" fill="#4a4f57" />
+        <path d="M32 26 V56 M50 26 V56 M68 26 V56" stroke="#fff" strokeWidth="3" />
+        <rect x="8" y="10" width="20" height="20" rx="4" fill="#2f7fe0" />
+        <text x="18" y="26" textAnchor="middle" fontSize="16" fontWeight="900" fill="#fff" stroke="none">P</text>
+        <ellipse cx="66" cy="66" rx="14" ry="17" fill="#fffaf0" strokeWidth="3" />
+        <ellipse cx="66" cy="66" rx="6" ry="9" fill="none" strokeWidth="3.5" />
+      </g>
+    ),
+    trace: (
+      <g>
+        <rect x="18" y="10" width="64" height="80" rx="12" fill="#ffd77a" stroke="#3b2a1a" strokeWidth="2.5" />
+        <path d="M36 32 C40 20 64 18 64 34 C64 44 50 46 46 48 C58 48 66 56 64 66 C62 80 40 80 34 70" fill="none" stroke="#3b2a1a" strokeWidth="13" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M36 32 C40 20 64 18 64 34 C64 44 50 46 46 48 C58 48 66 56 64 66 C62 80 40 80 34 70" fill="none" stroke="#fff" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M36 32 C40 20 64 18 64 34 C64 44 50 46 46 48" fill="none" stroke="#e63e6d" strokeWidth="6" strokeLinecap="round" />
+        <circle cx="36" cy="32" r="4" fill="#e8263a" />
+      </g>
+    ),
     owl: (
       <g stroke="#3b2a1a" strokeWidth="2.5">
         <ellipse cx="24" cy="58" rx="18" ry="12" transform="rotate(-18 24 58)" fill="#8a5a35" />

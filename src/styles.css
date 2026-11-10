@@ -3823,3 +3823,395 @@ body {
     display: none;
   }
 }
+
+/* Seret pada skrin sentuh: jangan biar pelayar anggap sebagai skrol/zum. */
+[data-drag] {
+  touch-action: none;
+}
+
+/* ---------- Surih nombor (Kenali Nombor) ---------- */
+
+.tr-stage {
+  touch-action: none;
+  cursor: pointer;
+}
+
+/* cincin berdenyut di titik mula / sambung */
+.tr-ping {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tr-ping 1s ease-out infinite;
+}
+
+/* siap: jalan bercahaya sekali; enjin kereta dihidupkan satu-satu dan terus bergegar (badan naik turun) */
+.tr-glow {
+  animation: tr-glow 1.2s ease-out;
+}
+
+.tr-rumble {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation:
+    tr-start 0.35s ease-out calc(0.3s + var(--i) * 0.25s) both,
+    tr-rumble 0.16s ease-in-out calc(0.65s + var(--i) * 0.25s) infinite alternate;
+}
+
+.tr-puff {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tr-puff 0.9s ease-out calc(0.4s + var(--i) * 0.25s + var(--k) * 0.45s) infinite;
+}
+
+.tr-beam {
+  opacity: 0;
+  animation: tr-beam 0.3s ease-out calc(0.3s + var(--i) * 0.25s) forwards;
+}
+
+.tr-demo-ink {
+  stroke-dasharray: 1000 2000;
+  animation: tr-demo-ink 2.6s linear infinite;
+}
+
+@keyframes tr-ping {
+  from {
+    transform: scale(0.6);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes tr-glow {
+  40% {
+    filter: drop-shadow(0 0 18px #fff3a0);
+  }
+}
+
+/* hidup enjin: lonjakan kecil sekali, kemudian gegaran berterusan */
+@keyframes tr-start {
+  0% {
+    transform: translateY(0) rotate(0);
+  }
+  40% {
+    transform: translateY(-9px) rotate(-3deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+}
+
+@keyframes tr-rumble {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes tr-puff {
+  0% {
+    opacity: 0.85;
+    transform: translate(0, 0) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-30px, -14px) scale(1.9);
+  }
+}
+
+@keyframes tr-beam {
+  to {
+    opacity: 0.55;
+  }
+}
+
+@keyframes tr-demo-ink {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  75%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-ping,
+  .tr-glow,
+  .tr-rumble,
+  .tr-puff,
+  .tr-demo-ink {
+    animation: none;
+  }
+}
+
+/* Skrin permainan: seret/surih tidak boleh memilih (highlight biru) teks seperti butang Seterusnya.
+   touch-callout: tiada menu tekan lama pada iPad. */
+.act-screen {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* ---------- Tempat letak kereta (Kenali Sifar) ---------- */
+
+/* tiada kotak fokus pelayar bila kereta ditekan; papan kekunci masih nampak tanda (garis kuning) di bawah */
+.pk-spot {
+  cursor: pointer;
+  outline: none;
+}
+
+.pk-spot:focus-visible {
+  outline: none;
+}
+
+.pk-spot:focus-visible rect {
+  stroke: #ffd23f;
+  stroke-width: 5;
+}
+
+/* kereta diletak menghadap ke bawah (lukisan asal menghala ke kanan) */
+.pk-car {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: rotate(90deg) scale(1.7);
+}
+
+/* dipandu keluar: undur ke lorong, belok kiri, keluar ikut pintu di kiri */
+.pk-car.is-leaving {
+  animation: pk-leave 1.6s ease-in forwards;
+}
+
+.pk-demo-leave {
+  animation: pk-leave 1.6s ease-in 0.3s infinite;
+}
+
+.pk-demo-card {
+  animation: pk-demo-card 3s ease-in-out infinite;
+}
+
+@keyframes pk-leave {
+  0% {
+    transform: translate(0, 0) rotate(90deg) scale(1.7);
+  }
+  35% {
+    transform: translate(0, 150px) rotate(90deg) scale(1.7);
+  }
+  50% {
+    transform: translate(-30px, 182px) rotate(180deg) scale(1.7);
+  }
+  85% {
+    opacity: 1;
+  }
+  /* hilang selepas keluar (pentas lebih lebar daripada kawasan lukisan, jadi kereta masih nampak di tepi) */
+  100% {
+    transform: translate(var(--dx), 182px) rotate(180deg) scale(1.7);
+    opacity: 0;
+  }
+}
+
+@keyframes pk-demo-card {
+  0%,
+  15% {
+    transform: translate(0, 0);
+  }
+  60%,
+  85% {
+    transform: translate(615px, -328px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-car.is-leaving {
+    animation: none;
+    opacity: 0;
+  }
+
+  .pk-demo-leave,
+  .pk-demo-card {
+    animation: none;
+  }
+}
+
+/* Sifar: kawasan petak kosong diserlahkan (berdenyut), "0 kereta" muncul bila betul */
+.pk-empty rect {
+  animation: pk-empty 1.1s ease-in-out infinite alternate;
+}
+
+.pk-zero {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pk-zero 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes pk-empty {
+  from {
+    stroke-opacity: 1;
+    fill-opacity: 0.18;
+  }
+  to {
+    stroke-opacity: 0.45;
+    fill-opacity: 0.05;
+  }
+}
+
+@keyframes pk-zero {
+  from {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-empty rect,
+  .pk-zero {
+    animation: none;
+  }
+}
+
+/* ---------- Ikat Buluh (Nilai Tempat) ---------- */
+
+/* item baru dalam bakul timbul (dua nama animasi bergilir supaya bermula semula setiap kali) */
+.wb-pop {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+
+.wb-pop-0 {
+  animation: wb-pop-a 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.wb-pop-1 {
+  animation: wb-pop-b 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+/* salah bakul: bakul menggeleng */
+.wb-shake {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: wb-shake 0.4s ease-in-out;
+}
+
+/* 10 batang dirapatkan, kemudian tali diikat */
+.wb-tying {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: wb-squeeze 0.5s ease-in forwards;
+}
+
+.wb-rope {
+  opacity: 0;
+  animation: wb-rope 0.3s ease-out 0.5s forwards;
+}
+
+.wb-digit {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: wb-pop-a 0.3s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.wb-minus {
+  cursor: pointer;
+  outline: none;
+}
+
+.wb-minus:focus-visible circle {
+  stroke: #e63e6d;
+  stroke-width: 5;
+}
+
+.wb-over ellipse {
+  fill: #7a4a22;
+  stroke: #ffd23f;
+  stroke-width: 7;
+}
+
+.wb-glow {
+  animation: wb-glow 1.2s ease-in-out infinite alternate;
+}
+
+.wb-demo-move {
+  animation: wb-demo 2.6s ease-in-out infinite;
+}
+
+@keyframes wb-pop-a {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes wb-pop-b {
+  from {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
+
+@keyframes wb-shake {
+  20% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+  80% {
+    transform: rotate(-2deg);
+  }
+}
+
+@keyframes wb-squeeze {
+  to {
+    transform: scaleX(0.5);
+  }
+}
+
+@keyframes wb-rope {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes wb-glow {
+  to {
+    opacity: 0.4;
+  }
+}
+
+@keyframes wb-demo {
+  0%,
+  15% {
+    transform: translate(0, 0);
+  }
+  60%,
+  85% {
+    transform: translate(25px, -234px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wb-pop-0,
+  .wb-pop-1,
+  .wb-shake,
+  .wb-tying,
+  .wb-digit,
+  .wb-glow,
+  .wb-demo-move {
+    animation: none;
+  }
+
+  .wb-rope {
+    animation: none;
+    opacity: 1;
+  }
+}
