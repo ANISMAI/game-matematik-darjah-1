@@ -8,6 +8,9 @@ import * as puzzle from './PuzzleGame.jsx';
 import * as sorting from './SortingGame.jsx';
 import * as ordering from './OrderingGame.jsx';
 import * as fill from './FillBlankGame.jsx';
+import * as butterfly from './ButterflyGame.jsx';
+import * as watermelon from './WatermelonGame.jsx';
+import * as owl from './OwlGame.jsx';
 
 const withDefaults = (m, usesCheck) => ({ ...m, Component: m.default, usesCheck });
 
@@ -20,4 +23,7 @@ export const MECHANICS = {
   sorting: withDefaults(sorting, true),
   ordering: withDefaults(ordering, true),
   fill: withDefaults(fill, true),
+  butterfly: withDefaults(butterfly, false),
+  watermelon: withDefaults(watermelon, false),
+  owl: withDefaults(owl, false),
 };

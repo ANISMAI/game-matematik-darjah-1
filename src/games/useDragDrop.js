@@ -12,9 +12,11 @@ export function activate(e, fn) {
 // Seret-dan-letak untuk pentas SVG yang berskala.
 // - Pointer events + pointer capture (sentuh, pen, tetikus), koordinat ditukar ke viewBox SVG.
 // - Ketik objek tanpa seret = onPick(id); papan kekunci Enter/Space juga onPick(id).
+//   tapToPick: false = ketik dengan jari/tetikus tidak memilih (mesti seret); onTap(id) dipanggil sebagai isyarat.
+//   Papan kekunci & pembaca skrin masih boleh memilih supaya permainan kekal boleh diakses.
 // - Lepas di atas sasaran = onDrop(id, target); lepas di luar sasaran tidak mengubah apa-apa (objek kembali).
 // hitTest(x, y, id) memulangkan id sasaran pada titik viewBox itu, atau null.
-export function useDragDrop({ disabled, hitTest, onDrop, onPick }) {
+export function useDragDrop({ disabled, hitTest, onDrop, onPick, tapToPick = true, onTap }) {
   const svgRef = useRef(null);
   const live = useRef(null);
   const [drag, setDrag] = useState(null); // { id, dx, dy, over }
@@ -66,7 +68,8 @@ export function useDragDrop({ disabled, hitTest, onDrop, onPick }) {
         if (!s || s.id !== id || s.pointer !== e.pointerId) return;
         end();
         if (!s.moved) {
-          onPick(id);
+          if (tapToPick) onPick(id);
+          else onTap?.(id);
           return;
         }
         const p = toSvg(e);

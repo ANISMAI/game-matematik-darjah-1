@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { getRegion, getSubtopic, START_REGION } from './data/topics.js';
 import { getActivity, questionTotal, validateBank } from './data/activities.js';
 import { missionKey, missionStatus, patchActivity, useProgress } from './lib/storage.js';
 import { T } from './data/strings.js';
 import { playSound } from './lib/sound.js';
 import WorldMap from './components/WorldMap.jsx';
+import CloudCurtain from './components/CloudCurtain.jsx';
 import RegionMap from './components/RegionMap.jsx';
 import MissionPreview from './components/MissionPreview.jsx';
 import CountingGame from './components/CountingGame.jsx';
@@ -106,6 +107,9 @@ export default function App() {
   const [run, setRun] = useState(0);
   const [newBadge, setNewBadge] = useState(false);
   const [shortcutOpen, setShortcutOpen] = useState(false);
+  // Tirai awan dimainkan bila masuk peta dari Home sahaja.
+  const [cloudIntro, setCloudIntro] = useState(false);
+  const endCloudIntro = useCallback(() => setCloudIntro(false), []);
 
   const openRegion = (regionId, subId = null) => {
     const region = getRegion(regionId);
@@ -142,7 +146,7 @@ export default function App() {
     // Penyelesaian disimpan sebagai bendera berasingan: main semula tidak memadam atau menggandakannya.
     update((p) => ({
       ...patchActivity(p, activityId, { started: true, ever: true, run: null }),
-      ...(activityId === 'bilang' ? { completed: { ...p.completed, [missionKey(regionId, subId)]: true } } : {}),
+      completed: { ...p.completed, [missionKey(regionId, subId)]: true },
     }));
     playSound('done', progress.sound);
     setScreen({ name: 'results', regionId, subId, activityId, origin });
@@ -203,7 +207,10 @@ export default function App() {
   if (screen.name === 'home') {
     return (
       <HomePage
-        onPlay={() => setScreen({ name: 'world' })}
+        onPlay={() => {
+          setCloudIntro(true);
+          setScreen({ name: 'world' });
+        }}
         onPlayDarjah4={() => setScreen({ name: 'd4-topik' })}
         onOpenMinigame={() => setScreen({ name: 'minigame' })}
         sound={progress.sound}
@@ -238,6 +245,7 @@ export default function App() {
             {shortcutOpen && (
               <ShortcutPanel progress={progress} onStart={(id) => startActivity(id, 'shortcut')} onClose={() => setShortcutOpen(false)} />
             )}
+            {cloudIntro && <CloudCurtain onDone={endCloudIntro} />}
           </>
         )}
 

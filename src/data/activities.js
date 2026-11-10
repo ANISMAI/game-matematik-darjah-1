@@ -4,10 +4,66 @@
 // Untuk tambah aktiviti baru nanti: masukkan objek ke dalam ACTIVITIES dengan
 // { id, regionId, subId, title, mechanic, mechanicLabel, instruction, questions:[...] }.
 
-export const ACTIVITIES = [];
+const MELON_HINT = 'Kira biji pada belahan kiri, kemudian belahan kanan. Belahan mana ada lebih banyak biji?';
+const OWL_HINT = 'Kira bulu oren pada sayap kiri, kemudian sayap kanan. Sayap mana ada lebih banyak bulu?';
+const BUTTERFLY_HINT = 'Kira pom-pom pada sayap kiri, kemudian sayap kanan. Sayap mana ada lebih banyak?';
+
+export const ACTIVITIES = [
+  {
+    id: 'rama-rama',
+    regionId: 'nombor',
+    subId: 'banyak-sedikit',
+    title: 'Rama-rama Pom-pom',
+    mechanic: 'butterfly',
+    mechanicLabel: 'Bandingkan sayap',
+    instruction: 'Bandingkan pom-pom pada sayap kiri dan kanan. Letakkan sambungan badan yang betul pada rama-rama.',
+    // left/right = bilangan pom-pom pada sayap. showNumbers: true untuk paparkan nombor pada bunga.
+    questions: [
+      { id: 'q1', left: 6, right: 2, hint: BUTTERFLY_HINT },
+      { id: 'q2', left: 3, right: 5, hint: BUTTERFLY_HINT },
+      { id: 'q3', left: 4, right: 4, hint: BUTTERFLY_HINT },
+      { id: 'q4', left: 8, right: 5, hint: BUTTERFLY_HINT },
+      { id: 'q5', left: 2, right: 7, hint: BUTTERFLY_HINT },
+    ],
+  },
+  {
+    id: 'tembikai',
+    regionId: 'nombor',
+    subId: 'banyak-sedikit',
+    title: 'Biji Tembikai',
+    mechanic: 'watermelon',
+    mechanicLabel: 'Bandingkan biji',
+    instruction: 'Kira biji pada belahan kiri dan kanan. Lengkapkan tembikai dengan hati yang betul di tengah.',
+    // left/right = bilangan biji pada belahan tembikai (maksimum 10).
+    questions: [
+      { id: 'q1', left: 5, right: 3, hint: MELON_HINT },
+      { id: 'q2', left: 2, right: 6, hint: MELON_HINT },
+      { id: 'q3', left: 7, right: 7, hint: MELON_HINT },
+      { id: 'q4', left: 9, right: 4, hint: MELON_HINT },
+      { id: 'q5', left: 3, right: 8, hint: MELON_HINT },
+    ],
+  },
+  {
+    id: 'burung-hantu',
+    regionId: 'nombor',
+    subId: 'banyak-sedikit',
+    title: 'Paruh Burung Hantu',
+    mechanic: 'owl',
+    mechanicLabel: 'Bandingkan bulu',
+    instruction: 'Kira bulu oren pada sayap kiri dan kanan. Lengkapkan muka burung hantu dengan paruh yang betul.',
+    // left/right = bilangan bulu oren pada sayap (maksimum 10).
+    questions: [
+      { id: 'q1', left: 4, right: 1, hint: OWL_HINT },
+      { id: 'q2', left: 3, right: 7, hint: OWL_HINT },
+      { id: 'q3', left: 6, right: 6, hint: OWL_HINT },
+      { id: 'q4', left: 10, right: 8, hint: OWL_HINT },
+      { id: 'q5', left: 5, right: 9, hint: OWL_HINT },
+    ],
+  },
+];
 
 // Susunan dalam senarai Pratonton Gameplay.
-export const SHORTCUT_ORDER = [];
+export const SHORTCUT_ORDER = ['rama-rama', 'tembikai', 'burung-hantu'];
 
 export function getActivity(id) {
   return ACTIVITIES.find((a) => a.id === id);

@@ -2611,3 +2611,1215 @@ body {
     justify-content: center;
   }
 }
+
+/* ---------- Tirai awan sebelum peta ---------- */
+
+.cloud-curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cloud-half {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 62vw; /* bertindih 12vw di tengah supaya tiada celah */
+  animation: cloud-open-left var(--cloud-open) cubic-bezier(0.65, 0, 0.3, 1) var(--cloud-hold) forwards;
+}
+
+.cloud-half.left {
+  left: 0;
+}
+
+.cloud-half.right {
+  right: 0;
+  animation-name: cloud-open-right;
+}
+
+.cloud-half-inner {
+  position: absolute;
+  inset: 0;
+}
+
+/* separuh kanan ialah cerminan separuh kiri */
+.cloud-half.right .cloud-half-inner {
+  transform: scaleX(-1);
+}
+
+.cloud-fill {
+  position: absolute;
+  inset: 0 14% 0 0;
+  background: linear-gradient(180deg, #eef5fc 0%, #e3eef9 60%, #d4e4f3 100%);
+}
+
+.cloud-puff {
+  position: absolute;
+  height: auto;
+  overflow: visible;
+  transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--flip));
+  filter: drop-shadow(0 1.4vmin 1.8vmin rgba(70, 110, 160, 0.22));
+  animation: cloud-puff-breathe 2.6s ease-in-out infinite alternate;
+}
+
+.cloud-puff:nth-child(odd) {
+  animation-delay: -1.3s;
+}
+
+@keyframes cloud-open-left {
+  to {
+    transform: translateX(-105%) scale(1.08);
+    opacity: 0.6;
+  }
+}
+
+@keyframes cloud-open-right {
+  to {
+    transform: translateX(105%) scale(1.08);
+    opacity: 0.6;
+  }
+}
+
+@keyframes cloud-puff-breathe {
+  to {
+    transform: translate(-50%, -50%) rotate(var(--rot)) scaleX(var(--flip)) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud-curtain {
+    display: none;
+  }
+}
+
+/* ---------- Rama-rama (Banyak dan Sedikit) ---------- */
+
+.bf-piece {
+  cursor: grab;
+  transition: transform 0.15s;
+}
+
+.bf-piece:not(.is-tried):hover > g:first-of-type,
+.bf-piece:focus-visible > g:first-of-type {
+  filter: drop-shadow(0 6px 6px rgba(59, 42, 26, 0.3));
+}
+
+.bf-piece.is-tried {
+  cursor: not-allowed;
+}
+
+.bf-piece.is-ghosted > g {
+  opacity: 0.3;
+}
+
+.bf-piece:focus-visible {
+  outline: none;
+}
+
+.bf-piece:focus-visible circle:first-child {
+  stroke: #e63e6d;
+  stroke-width: 5;
+}
+
+.bf-slot.is-armed circle {
+  animation: bf-pulse 0.9s ease-in-out infinite alternate;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.bf-slot.is-over circle {
+  fill: #fff4c2;
+  stroke: #e63e6d;
+}
+
+.bf-placed {
+  animation: bf-drop 0.35s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+.bf-drag {
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.bf-wing {
+  transform-box: view-box;
+  transform-origin: 500px 240px;
+}
+
+.bf-wing.is-flap {
+  animation: bf-flap 0.42s ease-in-out infinite alternate;
+}
+
+.bf-demo-move {
+  animation: bf-demo 2.6s ease-in-out infinite;
+}
+
+@keyframes bf-pulse {
+  to {
+    transform: scale(1.1);
+  }
+}
+
+@keyframes bf-drop {
+  from {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+@keyframes bf-flap {
+  to {
+    transform: scaleX(0.8);
+  }
+}
+
+@keyframes bf-demo {
+  0%,
+  15% {
+    transform: translate(0, 0);
+  }
+  60%,
+  85% {
+    transform: translate(180px, -302px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-wing.is-flap,
+  .bf-demo-move,
+  .bf-placed,
+  .bf-slot.is-armed circle {
+    animation: none;
+  }
+}
+
+/* ---------- Susun atur aktiviti: palang kayu + skrol kiri + stage ---------- */
+
+.act-screen {
+  padding-bottom: 0;
+}
+
+.act-screen > .act-topbar,
+.act-screen > .act-body {
+  position: relative;
+  z-index: 1;
+}
+
+.act-topbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 8px 12px 0;
+  padding: 8px 16px;
+  border: 4px solid #6b3f1d;
+  border-radius: 18px;
+  background:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0) 0 140px, rgba(80, 40, 10, 0.12) 140px 143px),
+    linear-gradient(180deg, #c98a4b 0%, #a96a33 55%, #8c5427 100%);
+  box-shadow: inset 0 3px 0 rgba(255, 220, 170, 0.45), 0 5px 0 #5a3214, 0 8px 14px rgba(40, 20, 5, 0.3);
+}
+
+.act-wood-btn {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 18px;
+  border: 3px solid #6b3f1d;
+  border-radius: 999px;
+  background: #fff6e2;
+  color: #3b2a1a;
+  font: inherit;
+  font-size: 1.05rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #6b3f1d;
+}
+
+.act-wood-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #6b3f1d;
+}
+
+.act-spark {
+  color: #ffd84d;
+  font-size: 1.4rem;
+  text-shadow: 0 2px 0 #6b3f1d;
+  margin-left: auto;
+}
+
+.act-plaque {
+  flex: 0 1 auto;
+  min-width: 0;
+  margin: 0;
+  padding: 6px 34px;
+  border: 3px solid #6b3f1d;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #fff9ea, #f6e3bd);
+  color: #3b2a1a;
+  font-size: clamp(1.1rem, 2.2vw, 1.7rem);
+  font-weight: 900;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: inset 0 -3px 0 rgba(160, 110, 50, 0.25);
+}
+
+.act-progress {
+  flex: none;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff8e6;
+  font-weight: 800;
+  text-shadow: 0 2px 0 rgba(60, 30, 10, 0.5);
+}
+
+.act-divider {
+  width: 3px;
+  height: 30px;
+  border-radius: 2px;
+  background: rgba(255, 240, 210, 0.6);
+}
+
+.act-dots {
+  display: flex;
+  gap: 5px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.act-dots li {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid #3b2a1a;
+  background: #fff;
+  color: #3b2a1a;
+  font-weight: 900;
+  text-shadow: none;
+}
+
+.act-dots li.now {
+  background: #ffd84d;
+}
+
+.act-dots li.done {
+  background: var(--teal);
+  color: #fff;
+}
+
+.act-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  gap: 12px;
+  padding: 10px 12px 12px;
+}
+
+/* skrol arahan */
+.act-scroll {
+  flex: none;
+  width: clamp(230px, 24vw, 330px);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.act-scroll-rod {
+  position: relative;
+  z-index: 2;
+  height: 26px;
+  margin: 0 -6px;
+  border: 3px solid #5a3214;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #d9a066, #a8692f 60%, #7f4a1e);
+  box-shadow: 0 4px 6px rgba(40, 20, 5, 0.3);
+}
+
+.act-scroll-rod::before,
+.act-scroll-rod::after {
+  /* tali gantung */
+  content: '';
+  position: absolute;
+  top: 2px;
+  width: 22px;
+  height: 18px;
+  border-radius: 6px;
+  background: #c1121f;
+  border: 2px solid #5a3214;
+}
+
+.act-scroll-rod::before {
+  left: 18%;
+}
+
+.act-scroll-rod::after {
+  right: 18%;
+}
+
+.act-scroll-banner {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 50px;
+  height: 58px;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  padding-bottom: 10px;
+  border: 3px solid #5a3214;
+  border-top: 0;
+  background: #d62839;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.act-scroll-paper {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: -6px;
+  padding: 44px 18px 18px;
+  border: 3px solid #c99a62;
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.6), transparent 40%),
+    linear-gradient(180deg, #fdf3dc, #f5e2b8);
+  box-shadow: inset 0 0 26px rgba(176, 122, 69, 0.3), 0 6px 14px rgba(40, 20, 5, 0.25);
+}
+
+.act-portrait {
+  flex: none;
+  width: clamp(96px, 10vw, 150px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 4px solid #e3a92c;
+  background: radial-gradient(circle, #fff7d6, #ffe08a);
+  overflow: hidden;
+  box-shadow: 0 0 0 4px #fff6e2, 0 4px 10px rgba(80, 40, 10, 0.3);
+}
+
+.act-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.act-portrait.is-happy {
+  animation: pop 0.4s ease-out;
+}
+
+.act-steps {
+  align-self: stretch;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.act-steps li {
+  position: relative;
+  padding-left: 26px;
+  color: #3b2a1a;
+  font-size: clamp(1rem, 1.35vw, 1.2rem);
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.act-steps li::before {
+  content: '✦';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #d62839;
+}
+
+.act-hint-note {
+  align-self: stretch;
+  margin: 0;
+  padding: 8px 10px;
+  border: 2px dashed #e3a92c;
+  border-radius: 12px;
+  background: #fff9e0;
+  color: #6b4a1e;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.act-feedback:empty {
+  display: none;
+}
+
+.act-feedback .feedback-card {
+  padding: 6px 14px;
+  gap: 8px;
+}
+
+.act-feedback .feedback-card p {
+  font-size: 1.2rem;
+}
+
+.act-tools {
+  margin-top: 6px;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.act-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 4px solid #8a5a2b;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fffaf0, #f6e6c6);
+  color: #3b2a1a;
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #8a5a2b;
+}
+
+.act-pill:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #8a5a2b;
+}
+
+.act-pill:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.act-pill.is-primary {
+  border-color: #a3123a;
+  background: linear-gradient(180deg, #ff5d8a, #e63e6d);
+  color: #fff;
+  box-shadow: 0 4px 0 #a3123a;
+}
+
+.act-pill.is-on {
+  background: linear-gradient(180deg, #fff3b0, #ffd84d);
+}
+
+.act-pill .hint-dot {
+  position: absolute;
+  top: -4px;
+  right: 10px;
+}
+
+.act-pill:focus-visible,
+.act-wood-btn:focus-visible {
+  outline: 3px solid #1f6feb;
+  outline-offset: 3px;
+}
+
+.act-body > .act-stage {
+  flex: 1 1 auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* skrin pendek: kecilkan potret */
+@media (max-height: 720px) {
+  .act-portrait {
+    width: 80px;
+  }
+  .act-scroll-paper {
+    gap: 8px;
+    padding-top: 58px;
+  }
+}
+
+/* skrin sempit: skrol jadi jalur atas, stage di bawah */
+@media (max-width: 760px) {
+  .act-topbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 6px 10px;
+  }
+  .act-spark {
+    display: none;
+  }
+  .act-plaque {
+    order: -1;
+    flex-basis: 100%;
+    text-align: center;
+    padding: 4px 12px;
+  }
+  .act-progress {
+    margin-left: 0;
+    font-size: 0.85rem;
+  }
+  .act-dots li {
+    width: 26px;
+    height: 26px;
+    font-size: 0.85rem;
+  }
+  .act-body {
+    flex-direction: column;
+    padding: 8px;
+  }
+  .act-scroll {
+    width: 100%;
+  }
+  .act-scroll-rod,
+  .act-portrait {
+    display: none;
+  }
+  .act-scroll-paper {
+    flex: none;
+    margin-top: 0;
+    padding: 10px 12px;
+    border-top: 3px solid #c99a62;
+    border-radius: 16px;
+  }
+  .act-tools {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .act-pill {
+    flex: 1 1 140px;
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+}
+
+/* elak kandungan aktiviti melebar melepasi skrin (SVG/teks panjang dalam flex) */
+.act-screen {
+  width: 100%;
+  min-width: 0;
+}
+
+.act-topbar,
+.act-body,
+.act-body > * {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .act-topbar {
+    margin: 6px 8px 0;
+  }
+  .act-progress > span,
+  .act-divider {
+    display: none;
+  }
+  .act-body > .act-stage {
+    width: 100%;
+  }
+}
+
+/* ---------- Palang atas: kayu balak dengan ranting berdaun ---------- */
+
+.act-topbar {
+  position: relative;
+  margin: 14px 18px 0;
+  padding: 8px 22px;
+  border: 4px solid #4a240c;
+  border-radius: 26px;
+  background:
+    /* bonggol kayu */
+    radial-gradient(ellipse 22px 7px at 24% 30%, rgba(60, 25, 5, 0.45) 40%, transparent 70%),
+    radial-gradient(ellipse 18px 6px at 63% 72%, rgba(60, 25, 5, 0.4) 40%, transparent 70%),
+    radial-gradient(ellipse 14px 5px at 84% 35%, rgba(60, 25, 5, 0.35) 40%, transparent 70%),
+    /* ira kayu mendatar */
+    repeating-linear-gradient(
+      180deg,
+      rgba(255, 210, 160, 0.08) 0 3px,
+      rgba(70, 30, 8, 0.16) 3px 4px,
+      rgba(0, 0, 0, 0) 4px 9px,
+      rgba(70, 30, 8, 0.1) 9px 10px,
+      rgba(0, 0, 0, 0) 10px 15px
+    ),
+    linear-gradient(180deg, #b8693a 0%, #95501f 45%, #7a3d16 100%);
+  box-shadow:
+    inset 0 4px 0 rgba(255, 200, 140, 0.35),
+    inset 0 -5px 0 rgba(50, 20, 5, 0.35),
+    0 6px 0 #3d1e08,
+    0 10px 16px rgba(40, 20, 5, 0.35);
+}
+
+.act-topbar > :not(.act-leaves) {
+  position: relative;
+  z-index: 2;
+}
+
+.act-leaves {
+  position: absolute;
+  z-index: 1;
+  top: -14px;
+  width: 210px;
+  height: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 3px 2px rgba(30, 50, 10, 0.35));
+}
+
+.act-leaves.left {
+  left: -34px;
+}
+
+.act-leaves.right {
+  right: -34px;
+  transform: scaleX(-1);
+}
+
+/* butang & papan tajuk: krim dalam bingkai kayu, dengan paku */
+.act-wood-btn,
+.act-plaque {
+  border: 3px solid #4a240c;
+  box-shadow:
+    0 0 0 4px #b8743c,
+    0 0 0 6px #4a240c,
+    0 6px 0 2px #3d1e08;
+}
+
+.act-wood-btn {
+  margin-left: 8px;
+  padding: 6px 22px;
+  background: linear-gradient(180deg, #fffaf0, #f3e2bf);
+  font-size: 1.15rem;
+}
+
+.act-wood-btn:active {
+  transform: translateY(2px);
+  box-shadow:
+    0 0 0 4px #b8743c,
+    0 0 0 6px #4a240c,
+    0 3px 0 2px #3d1e08;
+}
+
+.act-plaque {
+  position: relative;
+  padding: 6px 44px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #fffaf0, #f3e2bf);
+}
+
+.act-plaque::before,
+.act-plaque::after {
+  /* paku */
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin-top: -5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #e6d2b0, #7a5a36 70%);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.3);
+}
+
+.act-plaque::before {
+  left: 14px;
+}
+
+.act-plaque::after {
+  right: 14px;
+}
+
+.act-spark {
+  color: #ffd84d;
+  filter: drop-shadow(0 2px 0 #4a240c);
+  text-shadow: none;
+}
+
+.act-progress {
+  margin-right: 6px;
+  font-size: 1.1rem;
+  color: #fff4dc;
+  text-shadow: 0 2px 0 #4a240c;
+}
+
+.act-divider {
+  background: #f3d9a6;
+  box-shadow: 0 0 0 1px rgba(74, 36, 12, 0.5);
+}
+
+.act-dots li {
+  border-color: #2d1a0c;
+  box-shadow: 0 2px 0 #3d1e08;
+}
+
+@media (max-width: 760px) {
+  .act-topbar {
+    margin: 12px 8px 0;
+    padding: 8px 12px 10px;
+  }
+  .act-leaves {
+    width: 140px;
+    top: -10px;
+  }
+  .act-plaque {
+    padding: 4px 30px;
+  }
+}
+
+/* jauhkan Keluar & kemajuan dari daun di hujung palang */
+.act-wood-btn {
+  margin-left: clamp(40px, 5vw, 90px);
+}
+
+.act-progress {
+  margin-right: clamp(40px, 5vw, 90px);
+}
+
+@media (max-width: 760px) {
+  .act-wood-btn,
+  .act-progress {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+/* ---------- Tajuk sejajar dengan tengah rama-rama (tengah ruang stage) ---------- */
+/* Stage bermula selepas skrol (lebar --scroll-w + jarak 12px), jadi tengahnya teranjak ke kanan
+   sebanyak separuh daripada itu berbanding tengah palang. */
+
+.act-screen {
+  --scroll-w: clamp(230px, 24vw, 330px);
+}
+
+.act-scroll {
+  width: var(--scroll-w);
+}
+
+@media (min-width: 1250px) {
+  .act-topbar .act-plaque {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(calc(-50% + (var(--scroll-w) + 12px) / 2), -50%);
+    max-width: 34vw;
+  }
+  .act-spark {
+    display: none;
+  }
+  /* Keluar di kiri, kemajuan di kanan */
+  .act-progress {
+    margin-left: auto;
+  }
+}
+
+/* skrin sederhana: kecilkan kemajuan supaya tidak bertembung dengan tajuk */
+@media (min-width: 1250px) and (max-width: 1500px) {
+  .act-progress > span,
+  .act-divider {
+    display: none;
+  }
+  .act-dots li {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+  .act-topbar .act-plaque {
+    padding: 4px 34px;
+    font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  }
+}
+
+/* Keluar & kemajuan lebih ke tengah supaya tidak terkena daun; daun ikut saiz skrin */
+@media (min-width: 761px) {
+  .act-leaves {
+    width: clamp(150px, 11vw, 210px);
+  }
+  .act-wood-btn {
+    margin-left: clamp(110px, 8.6vw, 165px);
+  }
+  .act-progress {
+    margin-right: clamp(110px, 8.6vw, 165px);
+  }
+}
+
+/* 761–1249px: tajuk ikut aliran (di antara Keluar dan kemajuan), tiada teks "Soalan" */
+@media (min-width: 761px) and (max-width: 1249px) {
+  .act-progress > span,
+  .act-divider {
+    display: none;
+  }
+  .act-spark {
+    display: none;
+  }
+  .act-topbar .act-plaque {
+    margin: 0 auto;
+    padding: 4px 30px;
+    font-size: clamp(1rem, 1.8vw, 1.3rem);
+  }
+  .act-progress {
+    margin-left: 0;
+  }
+}
+
+/* papan tajuk memaparkan soalan: boleh dua baris, jawapan diserlahkan bila betul */
+.act-topbar .act-plaque {
+  white-space: normal;
+  text-align: center;
+  line-height: 1.15;
+  text-overflow: clip;
+}
+
+.act-plaque.is-solved {
+  color: #1b6d63;
+  animation: pop 0.35s ease-out;
+}
+
+@media (min-width: 1250px) {
+  .act-topbar .act-plaque {
+    max-width: 40vw;
+    animation-name: none;
+  }
+}
+
+.act-scroll-title {
+  margin: 0;
+  padding: 4px 16px;
+  border-radius: 999px;
+  background: #d62839;
+  color: #fff;
+  font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+  font-weight: 900;
+  text-align: center;
+  box-shadow: 0 3px 0 #8f1424;
+}
+
+/* "Soalan X daripada Y" dipaparkan dalam skrol; palang atas hanya bulatan nombor */
+.act-scroll-count {
+  margin: -6px 0 0;
+  color: #8a5a2b;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+/* Lebar papan soalan dihadkan kepada ruang antara Keluar dan bulatan nombor
+   (tajuk diletak di tengah stage, jadi ruang kiri & kanan dikira sama). */
+.act-screen {
+  --bar-m: clamp(110px, 8.6vw, 165px);
+  --prog-w: 190px;
+}
+
+@media (min-width: 761px) {
+  .act-wood-btn {
+    margin-left: var(--bar-m);
+  }
+  .act-progress {
+    margin-right: var(--bar-m);
+  }
+}
+
+@media (min-width: 1250px) and (max-width: 1500px) {
+  .act-screen {
+    --prog-w: 165px;
+  }
+}
+
+@media (min-width: 1250px) {
+  .act-topbar {
+    min-height: 82px;
+  }
+  .act-topbar .act-plaque {
+    max-width: calc(100vw - 88px - 2 * var(--bar-m) - 2 * var(--prog-w) - var(--scroll-w) - 12px - 32px);
+  }
+}
+
+/* ---------- Soalan tepat di tengah palang kayu ---------- */
+/* Menggantikan anjakan "sejajar rama-rama": papan soalan kini di tengah palang, dan lebarnya
+   dihadkan secara simetri supaya tidak bertembung dengan Keluar (kiri) atau bulatan nombor (kanan). */
+@media (min-width: 1000px) {
+  .act-topbar {
+    min-height: 82px;
+  }
+  .act-topbar .act-plaque {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    max-width: calc(100vw - 88px - 2 * var(--bar-m) - 2 * var(--prog-w) - 32px);
+  }
+  .act-spark {
+    display: none;
+  }
+  .act-progress {
+    margin-left: auto;
+  }
+}
+
+@media (min-width: 1000px) and (max-width: 1500px) {
+  .act-screen {
+    --prog-w: 165px;
+  }
+  .act-dots li {
+    width: 28px;
+    height: 28px;
+    font-size: 0.85rem;
+  }
+  .act-topbar .act-plaque {
+    padding: 4px 34px;
+    font-size: clamp(1.05rem, 1.8vw, 1.4rem);
+  }
+}
+
+/* ---------- Tembikai (Banyak dan Sedikit) ---------- */
+
+/* belahan dilukis di x = 440/560 dan dianjak rapat ke tengah; lubang hati di antara keduanya */
+.wm-half {
+  transform: translateX(52px);
+}
+
+.wm-half-r {
+  transform: translateX(-52px);
+}
+
+/* betul: belahan bercantum (sekali), kemudian satu gigitan */
+.wm-half.is-joined {
+  transform: translateX(60px);
+  animation: wm-join-l 0.4s cubic-bezier(0.3, 1.3, 0.5, 1) both;
+}
+
+.wm-half-r.is-joined {
+  transform: translateX(-60px);
+  animation-name: wm-join-r;
+}
+
+.wm-bite {
+  transform-box: view-box;
+  transform-origin: 500px 40px;
+  animation: wm-bite 0.3s cubic-bezier(0.3, 1.5, 0.5, 1) 0.75s both;
+}
+
+.wm-juice {
+  opacity: 0;
+  animation: wm-juice 0.7s ease-out 0.8s forwards;
+}
+
+.wm-nyam {
+  opacity: 0;
+  animation: wm-nyam 1.6s ease-out 0.8s both;
+}
+
+.wm-demo-move {
+  animation: wm-demo 2.6s ease-in-out infinite;
+}
+
+@keyframes wm-join-l {
+  from {
+    transform: translateX(52px);
+  }
+}
+
+@keyframes wm-join-r {
+  from {
+    transform: translateX(-52px);
+  }
+}
+
+@keyframes wm-bite {
+  from {
+    transform: scale(0);
+  }
+}
+
+@keyframes wm-juice {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), calc(var(--dy) + 40px));
+  }
+}
+
+@keyframes wm-nyam {
+  0% {
+    opacity: 0;
+    transform: translate(640px, 40px) scale(0.4);
+  }
+  20%,
+  75% {
+    opacity: 1;
+    transform: translate(640px, 40px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(640px, 20px) scale(1);
+  }
+}
+
+@keyframes wm-demo {
+  0%,
+  15% {
+    transform: translate(0, 0);
+  }
+  60%,
+  85% {
+    transform: translate(180px, -274px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wm-half.is-joined,
+  .wm-bite,
+  .wm-demo-move {
+    animation: none;
+  }
+
+  .wm-juice,
+  .wm-nyam {
+    display: none;
+  }
+}
+
+/* Ketik tanpa seret (rama-rama, tembikai): kepingan bergoyang sebagai isyarat "seret saya". */
+.bf-wiggle {
+  animation: bf-wiggle 0.5s ease-in-out;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes bf-wiggle {
+  20% {
+    transform: translateY(-14px) rotate(-8deg);
+  }
+  45% {
+    transform: translateY(-8px) rotate(7deg);
+  }
+  70% {
+    transform: translateY(-3px) rotate(-4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bf-wiggle {
+    animation: none;
+  }
+}
+
+/* ---------- Burung hantu (Banyak dan Sedikit) ---------- */
+
+/* betul: sayap mengibas sekali (naik dan turun), mata berkelip sekali, "Hu hu!" muncul */
+.ow-wing {
+  transform-box: view-box;
+  transform-origin: 410px 290px;
+}
+
+.ow-wing-r {
+  transform-origin: 590px 290px;
+}
+
+.ow-wing.is-flap {
+  animation: ow-flap-l 0.32s ease-in-out 0.1s 2 alternate;
+}
+
+.ow-wing-r.is-flap {
+  animation-name: ow-flap-r;
+}
+
+.ow-lid {
+  transform-box: fill-box;
+  transform-origin: center top;
+  transform: scaleY(0);
+  animation: ow-blink 0.36s ease-in-out 0.8s;
+}
+
+.ow-huhu {
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ow-huhu 1.6s ease-out 0.6s both;
+}
+
+.ow-demo-move {
+  animation: ow-demo 2.6s ease-in-out infinite;
+}
+
+@keyframes ow-flap-l {
+  to {
+    transform: rotate(16deg);
+  }
+}
+
+@keyframes ow-flap-r {
+  to {
+    transform: rotate(-16deg);
+  }
+}
+
+@keyframes ow-blink {
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes ow-huhu {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.6);
+  }
+  20%,
+  75% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes ow-demo {
+  0%,
+  15% {
+    transform: translate(0, 0);
+  }
+  60%,
+  85% {
+    transform: translate(180px, -296px);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ow-wing.is-flap,
+  .ow-lid,
+  .ow-demo-move {
+    animation: none;
+  }
+
+  .ow-huhu {
+    display: none;
+  }
+}
