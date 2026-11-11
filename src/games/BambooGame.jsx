@@ -16,6 +16,7 @@ const BOT_Y = 440; // dasar bakul
 const BASKETS = { puluh: 355, sa: 645 }; // pusat bakul (sejajar lajur papan nilai tempat)
 const SRC = { ikat: 330, batang: 670 }; // longgokan di bangku
 const MAX_TENS = 9;
+const STICK_S = 0.86; // skala buluh di dalam bakul (batang dan ikat sama tinggi)
 
 export const split = (n) => [Math.floor(n / 10), n % 10];
 
@@ -57,19 +58,20 @@ function Stick({ x = 0, y = 0, a = 0, s = 1 }) {
   );
 }
 
-const BUNDLE_OFFS = Array.from({ length: 10 }, (_, k) => [(k - 4.5) * 9.5, k % 2 ? -4 : 0]);
-
 // Seikat buluh: 10 batang diikat tali merah ninja; (x, y) = pangkal ikatan.
-function Bundle({ x = 0, y = 0, s = 1, a = 0 }) {
+// gap = jarak antara batang dalam ikatan; ikatan rapat (gap kecil) digunakan dalam bakul supaya ikat boleh
+// dilukis setinggi sebatang buluh tetapi masih muat 5 sebaris.
+function Bundle({ x = 0, y = 0, s = 1, a = 0, gap = 9.5 }) {
+  const half = 4.5 * gap + 7; // separuh lebar ikatan (hingga tepi batang luar)
   return (
     <g transform={`translate(${x} ${y}) rotate(${a}) scale(${s})`}>
-      {BUNDLE_OFFS.map(([dx, dy], k) => (
-        <Stick key={k} x={dx} y={dy} />
+      {Array.from({ length: 10 }, (_, k) => (
+        <Stick key={k} x={(k - 4.5) * gap} y={k % 2 ? -4 : 0} />
       ))}
       {[-82, -34].map((ry) => (
         <g key={ry}>
-          <rect x="-52" y={ry} width="104" height="13" rx="6" fill="#d6283a" stroke={OUT} strokeWidth="2.5" />
-          <path d={`M-46 ${ry + 4} H46`} stroke="#ff8a96" strokeWidth="2.5" strokeLinecap="round" opacity=".7" />
+          <rect x={-half - 3} y={ry} width={(half + 3) * 2} height="13" rx="6" fill="#d6283a" stroke={OUT} strokeWidth="2.5" />
+          <path d={`M${-half + 3} ${ry + 4} H${half - 3}`} stroke="#ff8a96" strokeWidth="2.5" strokeLinecap="round" opacity=".7" />
         </g>
       ))}
       <circle cx="0" cy="-76" r="7" fill="#b81d33" stroke={OUT} strokeWidth="2.5" />
@@ -103,18 +105,19 @@ function BasketFront({ cx, label, shake }) {
 }
 
 // Isi bakul PULUH: ikat buluh, baris depan hingga 5, baris belakang (lebih tinggi) untuk selebihnya.
+// Ikat dilukis pada skala yang sama dengan batang dalam bakul SA (STICK_S) supaya tinggi buluh sama.
 function TensInBasket({ n, popKey }) {
   const cx = BASKETS.puluh;
   const spots = Array.from({ length: n }, (_, k) => {
     const back = k >= 5;
     const i = back ? k - 5 : k;
     const cnt = back ? n - 5 : Math.min(n, 5);
-    return { k, back, x: cx + (i - (cnt - 1) / 2) * 50 + (back ? 25 : 0), y: RIM_Y + (back ? -24 : 10) };
+    return { k, back, x: cx + (i - (cnt - 1) / 2) * 48 + (back ? 24 : 0), y: RIM_Y + (back ? -6 : 26) };
   });
-  // baris belakang dilukis dahulu; jarak 50 > lebar ikat (≈ 46) supaya setiap ikat jelas dan boleh dikira
+  // baris belakang dilukis dahulu; ikat rapat (gap 5) ≈ 55 lebar pada jarak 48: bertindih sedikit, masih boleh dikira
   return [...spots.filter((p) => p.back), ...spots.filter((p) => !p.back)].map((p) => (
     <g key={p.k} className={p.k === n - 1 ? `wb-pop wb-pop-${popKey}` : undefined}>
-      <Bundle x={p.x} y={p.y} s={0.46} />
+      <Bundle x={p.x} y={p.y} s={STICK_S} gap={5} />
     </g>
   ));
 }
@@ -126,7 +129,7 @@ function OnesInBasket({ n, popKey, tying }) {
     <g className={tying ? 'wb-tying' : undefined}>
       {Array.from({ length: n }, (_, k) => (
         <g key={k} className={k === n - 1 && !tying ? `wb-pop wb-pop-${popKey}` : undefined}>
-          <Stick x={cx + (k - (n - 1) / 2) * 22} y={RIM_Y + 26} a={(k - (n - 1) / 2) * 2.4} s={0.86} />
+          <Stick x={cx + (k - (n - 1) / 2) * 22} y={RIM_Y + 26} a={(k - (n - 1) / 2) * 2.4} s={STICK_S} />
         </g>
       ))}
       {tying && (
@@ -218,7 +221,9 @@ export default function BambooGame({ q, board, setBoard, solved, hint, tap }) {
   const target = split(q.n);
   const [tying, setTying] = useState(false);
   const [shake, setShake] = useState(null); // { key, n }
-  const [pop, setPop] = useState(0);
+  // pembilang animasi "pop" berasingan untuk setiap bakul: menambah batang tidak memainkan semula animasi ikat
+  const [pop, setPop] = useState({ puluh: 0, sa: 0 });
+  const bump = (key) => setPop((p) => ({ ...p, [key]: p[key] + 1 }));
   const [wiggle, setWiggle] = useState(null); // { id, n }
   const timer = useRef(null);
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -230,7 +235,7 @@ export default function BambooGame({ q, board, setBoard, solved, hint, tap }) {
     if (id === 'ikat') {
       if (target !== 'puluh' || board.puluh >= MAX_TENS) return nope(target);
       tap('tap');
-      setPop((p) => p + 1);
+      bump('puluh');
       setBoard({ ...board, puluh: board.puluh + 1 });
       return;
     }
@@ -243,13 +248,13 @@ export default function BambooGame({ q, board, setBoard, solved, hint, tap }) {
       setTying(true);
       timer.current = setTimeout(() => {
         setTying(false);
-        setPop((p) => p + 1);
+        bump('puluh');
         setBoard({ puluh: board.puluh + 1, sa: 0 });
       }, 1100);
       return;
     }
     tap('tap');
-    setPop((p) => p + 1);
+    bump('sa');
     setBoard({ ...board, sa: board.sa + 1 });
   };
 
@@ -284,8 +289,8 @@ export default function BambooGame({ q, board, setBoard, solved, hint, tap }) {
           <BasketBack cx={cx} />
         </g>
       ))}
-      <TensInBasket n={view.puluh} popKey={pop % 2} />
-      <OnesInBasket n={view.sa} popKey={pop % 2} tying={tying} />
+      <TensInBasket n={view.puluh} popKey={pop.puluh % 2} />
+      <OnesInBasket n={view.sa} popKey={pop.sa % 2} tying={tying} />
       {Object.entries(BASKETS).map(([key, cx]) => (
         <g key={`${key}${shake?.key === key ? shake.n : ''}`}>
           <BasketFront cx={cx} label={key === 'puluh' ? 'PULUH' : 'SA'} shake={shake?.key === key} />

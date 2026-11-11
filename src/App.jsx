@@ -19,6 +19,7 @@ import SubtopikPage from './darjah4/SubtopikPage.tsx';
 import SoalanPage from './darjah4/SoalanPage.tsx';
 import HalanganPage from './darjah4/HalanganPage.tsx';
 import MinigamePage from './minigame/MinigamePage.tsx';
+import DevStagePicker from './components/DevStagePicker.jsx';
 
 if (import.meta.env.DEV) {
   const errors = validateBank();
@@ -261,6 +262,26 @@ export default function App() {
               onSelectSub={selectSub}
               onBack={() => setScreen({ name: 'world' })}
             />
+            {import.meta.env.DEV && (
+              <DevStagePicker
+                region={region}
+                progress={progress}
+                onOpenSub={(subId) => {
+                  // lompat terus: peta dimuat semula dengan ninja di batu tahap itu
+                  openRegion(region.id, subId);
+                  setRun((r) => r + 1);
+                }}
+                onStart={(id) => startActivity(id, 'region')}
+                onCompleteSub={(list) =>
+                  update((p) => {
+                    let next = p;
+                    for (const a of list) next = { ...next, ...patchActivity(next, a.id, { started: true, ever: true, run: null }) };
+                    return { activities: next.activities };
+                  })
+                }
+                onReset={() => update(() => ({ activities: {}, completed: {}, started: {}, lastMission: null }))}
+              />
+            )}
             {preview && (
               <MissionPreview
                 region={region}

@@ -2714,7 +2714,11 @@ body {
   opacity: 0.3;
 }
 
-.bf-piece:focus-visible {
+/* Tiada kotak fokus pelayar (klik/sentuh atau papan kekunci); fokus papan kekunci ditanda dengan bayang di atas. */
+.bf-piece:focus,
+.bf-piece:focus-visible,
+[data-drag]:focus,
+[data-drag]:focus-visible {
   outline: none;
 }
 
@@ -4215,3 +4219,23 @@ body {
     opacity: 1;
   }
 }
+
+/* ---------- Panel pembangun: pilih tahap (dev sahaja) ---------- */
+.dev-picker { position: fixed; left: 16px; bottom: 16px; z-index: 900; font: 13px/1.3 system-ui, sans-serif; }
+.dev-picker button { font: inherit; cursor: pointer; }
+.dev-picker-toggle { background: #1d3557; color: #fff; border: 2px solid #ffd166; border-radius: 999px; padding: 6px 14px; font-weight: 700; box-shadow: 0 3px 10px rgba(0,0,0,.3); }
+.dev-picker-panel { position: absolute; left: 0; bottom: 44px; width: min(340px, calc(100vw - 32px)); max-height: 70vh; overflow: auto; background: #fffdf6; color: #1a1006; border: 2px solid #3b2a1a; border-radius: 12px; padding: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.35); }
+.dev-picker-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.dev-picker-head button { background: #e63946; color: #fff; border: 0; border-radius: 6px; padding: 3px 10px; }
+.dev-picker ol { list-style: none; margin: 0; padding: 0; }
+.dev-picker li { padding: 6px 0; border-top: 1px solid #e8dcc4; }
+.dev-picker-sub { display: flex; align-items: center; gap: 6px; }
+.dev-picker-title { flex: 1; text-align: left; background: none; border: 0; padding: 0; font-weight: 700; color: #1d3557; }
+.dev-picker-title:hover { text-decoration: underline; }
+.dev-picker-sub > button:last-child:not(.dev-picker-title) { background: #2a9d8f; color: #fff; border: 0; border-radius: 6px; padding: 1px 7px; }
+.dev-st { font-size: 11px; padding: 1px 6px; border-radius: 6px; background: #e9edf3; }
+.dev-st-sedang { background: #fde2d4; }
+.dev-st-selesai { background: #c9f0e9; }
+.dev-picker-acts { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
+.dev-picker-acts button { background: #ffd166; border: 1px solid #3b2a1a; border-radius: 6px; padding: 2px 8px; }
+.dev-picker-none { color: #8c94a6; font-size: 12px; }
