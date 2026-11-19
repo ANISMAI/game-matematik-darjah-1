@@ -1,4 +1,5 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { recordDaily } from './lib/daily.js';
 import { getRegion, getSubtopic, START_REGION } from './data/topics.js';
 import { getActivity, questionTotal, validateBank } from './data/activities.js';
 import { missionKey, missionStatus, patchActivity, useProgress } from './lib/storage.js';
@@ -13,12 +14,13 @@ import ResultsScreen from './components/ResultsScreen.jsx';
 import ActivityShell from './components/ActivityShell.jsx';
 import ShortcutPanel from './components/ShortcutPanel.jsx';
 import NinjaCharacter from './components/NinjaCharacter.jsx';
-import HomePage from './home/HomePage.jsx';
+import HomePage, { PROFILE_AVATARS } from './home/HomePage.jsx';
 import TopikPage from './darjah4/TopikPage.jsx';
 import SubtopikPage from './darjah4/SubtopikPage.tsx';
 import SoalanPage from './darjah4/SoalanPage.tsx';
 import HalanganPage from './darjah4/HalanganPage.tsx';
 import MinigamePage from './minigame/MinigamePage.tsx';
+import { preloadMallSprites } from './minigame/mall/preload.ts';
 import DevStagePicker from './components/DevStagePicker.jsx';
 
 if (import.meta.env.DEV) {
@@ -95,7 +97,8 @@ function Header({ sound, onToggleSound, onHome }) {
 
 export default function App() {
   const [progress, update] = useProgress();
-  const [screen, setScreen] = useState({ name: 'home' });
+  // '#mall…' dalam URL = laluan terus ke Mini Game (pembangunan / ujian). Lihat src/minigame/dev.ts.
+  const [screen, setScreen] = useState(() => ({ name: window.location.hash.startsWith('#mall') ? 'minigame' : 'home' }));
   const [homeProfile, setHomeProfile] = useState({
     coins: 0,
     gems: 0,
@@ -111,6 +114,8 @@ export default function App() {
   // Tirai awan dimainkan bila masuk peta dari Home sahaja.
   const [cloudIntro, setCloudIntro] = useState(false);
   const endCloudIntro = useCallback(() => setCloudIntro(false), []);
+  // Muat awal sprite Mini Game Mall semasa di homepage (tiada watak sementara bila masuk).
+  useEffect(() => preloadMallSprites(), []);
 
   const openRegion = (regionId, subId = null) => {
     const region = getRegion(regionId);
@@ -144,6 +149,9 @@ export default function App() {
 
   const finishActivity = ({ regionId, subId, activityId, origin }) => {
     setNewBadge(!progress.activities[activityId]?.ever);
+    // Misi Harian (latihan utama sahaja): latihan tamat + bilangan soalan dijawab
+    recordDaily('activity');
+    recordDaily('questions', questionTotal(getActivity(activityId)) || 0);
     // Penyelesaian disimpan sebagai bendera berasingan: main semula tidak memadam atau menggandakannya.
     update((p) => ({
       ...patchActivity(p, activityId, { started: true, ever: true, run: null }),
@@ -174,8 +182,11 @@ export default function App() {
     return (
       <MinigamePage
         sound={progress.sound}
-        onToggleSound={() => update((p) => ({ sound: !p.sound }))}
-        onBack={() => setScreen({ name: 'home' })}
+        avatarSrc={PROFILE_AVATARS[homeProfile.equipped?.avatar] || PROFILE_AVATARS['av-1']}
+        onBack={() => {
+          if (window.location.hash.startsWith('#mall')) history.replaceState(null, '', window.location.pathname + window.location.search);
+          setScreen({ name: 'home' });
+        }}
       />
     );
   }
@@ -218,6 +229,7 @@ export default function App() {
         onToggleSound={() => update((p) => ({ sound: !p.sound }))}
         profile={homeProfile}
         onProfileChange={setHomeProfile}
+        latihanDone={Object.values(progress.activities).filter((a) => a.ever).length}
       />
     );
   }

@@ -1,0 +1,69 @@
+/* Shuriken Master — panel/header berkongsi gaya .spot-* (spot.css). */
+.shu-root { background: linear-gradient(#cfe7a8, #a9cf7d); }
+.shu-stats { display: flex; align-items: center; gap: 8px; flex: none; }
+.shu-score {
+  display: flex; align-items: center; gap: 4px; padding: 6px 12px; border: 3px solid #20293e; border-radius: 999px;
+  background: #fffaf0; color: #35241b; font-size: 15px;
+}
+.shu-score b { font-size: 18px; font-weight: 900; }
+.shu-acc { color: #fff3d6; font-size: 12px; font-weight: 800; white-space: nowrap; }
+.shu-help { width: 48px; height: 48px; }
+.shu-help:disabled { opacity: .5; }
+
+.shu-wrap { position: relative; flex: 1; min-height: 0; display: grid; place-items: center; padding: 8px; }
+.shu-arena {
+  position: relative; overflow: hidden; border: 4px solid #26324d; border-radius: 18px; touch-action: none; cursor: crosshair;
+  box-shadow: 0 0 0 4px #fff3d6, 0 8px 0 4px rgba(74, 44, 20, .3); user-select: none; -webkit-user-select: none;
+}
+.shu-arena canvas { display: block; width: 100%; height: 100%; pointer-events: none; }
+.shu-arena .spot-toast { top: 10px; }
+.shu-prompt {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); margin: 0; padding: 6px 14px; max-width: 90%;
+  border: 3px solid #26324d; border-radius: 999px; background: rgba(255, 250, 240, .95); color: #35241b;
+  font-size: 15px; font-weight: 900; text-align: center; pointer-events: none; animation: mall-pop .3s ease-out;
+}
+
+/* tutorial dalam babak */
+.shu-tut { position: absolute; inset: 0; background: rgba(7, 21, 43, .35); }
+.shu-tut-path { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.shu-tut-path line { stroke: #fff; stroke-width: 6; stroke-dasharray: 2 16; stroke-linecap: round; animation: shu-dash 1s linear infinite; }
+@keyframes shu-dash { to { stroke-dashoffset: -18; } }
+.shu-tut-hand {
+  position: absolute; left: var(--x0); top: var(--y0); font-size: 40px; transform: translate(-30%, -10%);
+  filter: drop-shadow(0 3px 0 rgba(38, 50, 77, .6)); animation: shu-hand 2.2s ease-in-out infinite; pointer-events: none;
+}
+@keyframes shu-hand {
+  0%, 15% { left: var(--x0); top: var(--y0); transform: translate(-30%, -10%) scale(1); }
+  20% { transform: translate(-30%, -10%) scale(.88); }
+  70% { left: var(--x1); top: var(--y1); transform: translate(-30%, -10%) scale(.88); }
+  80%, 100% { left: var(--x1); top: var(--y1); transform: translate(-30%, -10%) scale(1); opacity: .2; }
+}
+.shu-tut-card {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); width: min(340px, calc(100% - 24px));
+  padding: 12px; border: 4px solid #74381b; border-radius: 20px; background: linear-gradient(#fff8db, #f4d7a2);
+  box-shadow: inset 0 0 0 3px #ffc04d, 0 10px 24px rgba(0, 0, 0, .4); animation: mall-pop .25s ease-out;
+}
+.shu-tut-card h2 { margin: 0 0 8px; font-size: 18px; font-weight: 900; color: #74381b; text-align: center; }
+.shu-tut-card ol { display: flex; flex-direction: column; gap: 6px; margin: 0 0 10px; padding: 0; list-style: none; }
+.shu-tut-card li { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 800; line-height: 1.3; color: #35241b; }
+.shu-tut-card li span { flex: none; width: 28px; text-align: center; font-size: 18px; color: #74381b; }
+.shu-tut-card .mall-btn { width: 100%; }
+
+.shu-intro-text { margin: 0 0 10px; font-size: 16px; font-weight: 800; line-height: 1.4; color: #35241b; text-align: center; }
+.shu-tip { margin: 0 0 10px; padding: 6px 10px; border: 2px dashed #c47a1c; border-radius: 12px; background: rgba(255, 255, 255, .55); font-size: 14px; font-weight: 800; color: #7a3b12; text-align: center; }
+.shu-cue { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+.shu-cue span { padding: 4px 12px; border: 3px solid #26324d; border-radius: 999px; font-size: 14px; font-weight: 900; }
+.shu-cue-ok { background: #d6e8fb; color: #234d80; }
+.shu-cue-no { background: #fde0dc; color: #8f2a1d; text-decoration: line-through; }
+.shu-result-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 8px 0; padding: 0; list-style: none; }
+.shu-result-grid li { display: flex; flex-direction: column; align-items: center; padding: 6px 2px; border: 3px solid #4a2c14; border-radius: 12px; background: rgba(255, 255, 255, .6); }
+.shu-result-grid b { font-size: 19px; font-weight: 900; color: #35241b; }
+.shu-result-grid span { font-size: 11px; font-weight: 800; color: #7a3b12; }
+
+@media (max-width: 560px) {
+  .shu-acc, .shu-score { display: none; }
+  .spot-top .spot-title b { display: block; font-size: 11px; }
+  .spot-top .spot-title span { font-size: 14px; }
+  .shu-help { width: 44px; height: 44px; }
+  .shu-prompt { font-size: 13px; }
+}

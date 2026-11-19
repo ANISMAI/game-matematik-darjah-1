@@ -1,0 +1,395 @@
+/* Bilik Harta Karun Ninja — bilik dojo kayu yang cerah: papan tanda, peti, rak hadiah, dinding lencana. */
+.tr-screen {
+  --navy: #26324d; --ink: #35241b; --wood: #9a6332; --wood-d: #4a2c14; --gold: #ffc04d; --orange: #ee7b00; --red: #c94a2b; --green: #2f9a4a; --cream: #fffdf3;
+  position: fixed; inset: 0; z-index: 120; overflow: hidden; color: var(--ink); background: #f3d29c;
+  animation: tr-in .45s cubic-bezier(.2, .8, .3, 1);
+}
+@keyframes tr-in { from { opacity: 0; transform: scale(1.04); } }
+.tr-screen :focus-visible { outline: 4px solid #4fb3ff; outline-offset: 3px; }
+
+/* ── latar bilik: gambar bilik harta (rak penuh ganjaran di kiri/kanan, dinding tengah lapang untuk panel) ── */
+.tr-room { position: absolute; inset: 0; pointer-events: none; overflow: hidden; background: #2a1608; }
+.tr-room::before { /* gambar bilik, sedikit kabur supaya tidak bersaing dengan panel */
+  content: ''; position: absolute; inset: -12px; background: url('/home/vault/room-bg.webp') center bottom / cover no-repeat; filter: blur(2px) saturate(.9);
+}
+.tr-room::after { /* gelapkan latar + vignette: tengah lebih cerah, tepi lebih gelap → fokus pada panel */
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 75% at 50% 50%, rgba(30, 16, 6, .35), rgba(30, 16, 6, .62) 100%);
+}
+
+/* butang Utama — papan kayu kecil yang tergantung di sebelah papan tajuk */
+.tr-title-row { display: flex; align-items: center; gap: 14px; }
+.tr-home {
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; flex: none;
+  width: 76px; min-height: 76px; padding: 6px 4px; border: 5px solid #145c45; border-radius: 18px; cursor: pointer;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, .45), transparent 40%), linear-gradient(160deg, #7ee8b8, #2bb58a 55%, #1d8f8a); color: #fff; font: inherit; font-size: 13px; font-weight: 900; text-shadow: 0 2px 0 #145c45;
+  box-shadow: inset 0 0 0 3px #ffd24d, inset 0 -6px 0 rgba(0, 60, 50, .25), 0 6px 0 #0f4a38;
+  transform-origin: 50% -40px; animation: tr-drop .5s cubic-bezier(.3, 1.4, .5, 1);
+}
+.tr-home svg { width: 32px; height: 32px; filter: drop-shadow(0 2px 0 rgba(20, 92, 69, .7)); }
+.tr-home .tr-rope.l { left: 16%; }
+.tr-home .tr-rope.r { right: 16%; }
+.tr-home:hover { animation: tr-swing .7s ease-in-out; }
+.tr-home:active { transform: translateY(3px); box-shadow: inset 0 0 0 3px #ffd24d, 0 2px 0 #0f4a38; }
+@keyframes tr-swing { 30% { transform: rotate(-6deg); } 65% { transform: rotate(4deg); } }
+
+
+.tr-wrap {
+  position: relative; z-index: 1; display: flex; flex-direction: column; gap: clamp(8px, 1.4vh, 14px);
+  height: 100%; max-width: 1240px; margin: 0 auto;
+  padding: max(40px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+}
+
+/* ── A. papan tanda + kaunter ── */
+.tr-head { display: flex; align-items: center; justify-content: center; gap: 14px 22px; flex-wrap: wrap; }
+.tr-sign {
+  position: relative; padding: 10px 30px 12px; border: 5px solid var(--wood-d); border-radius: 20px; text-align: center;
+  background: linear-gradient(#b87a3e, #8a5428); box-shadow: inset 0 0 0 3px var(--gold), inset 0 5px 0 rgba(255, 255, 255, .2), 0 7px 0 rgba(74, 44, 20, .45);
+  animation: tr-drop .5s cubic-bezier(.3, 1.4, .5, 1);
+}
+@keyframes tr-drop { from { transform: translateY(-40px); opacity: 0; } }
+/* tali panjang sampai tepi atas skrin (lebihan dipotong oleh .tr-screen overflow:hidden) */
+.tr-rope { position: absolute; bottom: 100%; width: 6px; height: 100vh; border-radius: 3px; background: repeating-linear-gradient(0deg, #c89458 0 5px, #8a5a2b 5px 9px); }
+.tr-rope.l { left: 22%; }
+.tr-rope.r { right: 22%; }
+.tr-sign h1 { margin: 0; font-size: clamp(24px, min(3.2vw, 4.6vh), 40px); line-height: 1.05; color: #ffe9a8; text-shadow: 0 3px 0 rgba(60, 25, 8, .7); letter-spacing: .4px; }
+.tr-sign p { margin: 4px 0 0; font-size: clamp(12px, 1.8vh, 15px); font-weight: 800; color: #ffe1b8; }
+.tr-counters { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.tr-counters li {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border: 3px solid var(--navy); border-radius: 999px;
+  background: var(--cream); box-shadow: 0 4px 0 rgba(38, 50, 77, .35); font-weight: 900;
+}
+.tr-counters b { font-size: 19px; color: var(--navy); font-variant-numeric: tabular-nums; }
+.tr-counters small { margin-left: -4px; font-size: 13px; color: #7a3b12; }
+.tr-counters span { font-size: 12px; color: #7a3b12; text-transform: uppercase; letter-spacing: .4px; }
+.tr-counters li.bump { animation: tr-bump .5s cubic-bezier(.3, 1.6, .5, 1); }
+@keyframes tr-bump { 40% { transform: scale(1.18); background: #fff2b3; } }
+.tr-star { width: 20px; height: 20px; color: #f0a500; fill: #ffd24d; }
+.tr-giftico { width: 20px; height: 20px; color: var(--red); }
+
+/* syiling & permata */
+.tr-coin {
+  display: inline-block; flex: none; width: 1.1em; height: 1.1em; vertical-align: -0.2em; border: 2px solid #a35d00; border-radius: 50%; box-sizing: border-box;
+  background: radial-gradient(circle at 35% 30%, #fff3a8 0 18%, #ffd24d 40%, #f0a500 100%); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .35);
+}
+.tr-gem { display: inline-block; flex: none; width: 1.15em; height: 1.15em; vertical-align: -0.2em; color: #1f7fd6; fill: #8fd3ff; stroke-width: 2.2; }
+
+/* ── tab ── */
+.tr-tabs { display: flex; justify-content: center; gap: 8px; }
+.tr-tab {
+  position: relative; min-height: 48px; padding: 0 22px; border: 4px solid var(--wood-d); border-radius: 16px 16px 10px 10px; cursor: pointer;
+  background: linear-gradient(#c99558, #a8703c); color: #fff3d6; font: inherit; font-size: 17px; font-weight: 900; text-shadow: 0 2px 0 rgba(60, 30, 10, .5);
+  box-shadow: inset 0 3px 0 rgba(255, 255, 255, .25), 0 4px 0 rgba(74, 44, 20, .45);
+}
+.tr-tab.on { background: linear-gradient(#e2603a, var(--red)); border-color: #6b1c12; box-shadow: inset 0 0 0 3px var(--gold), 0 4px 0 #6b1c12; transform: translateY(-2px); }
+.tr-tab em {
+  position: absolute; top: -10px; right: -8px; display: grid; place-items: center; min-width: 24px; height: 24px; padding: 0 6px; border: 3px solid #fff; border-radius: 999px;
+  background: var(--green); color: #fff; font-size: 13px; font-style: normal; text-shadow: none; animation: tr-pulse 1.4s ease-in-out infinite;
+}
+@keyframes tr-pulse { 50% { transform: scale(1.15); } }
+.tr-tab.bump { animation: tr-bump .5s cubic-bezier(.3, 1.6, .5, 1); }
+
+/* ── panel ── */
+.tr-panel {
+  flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 16px; border: 5px solid var(--wood-d); border-radius: 24px;
+  background: linear-gradient(rgba(255, 249, 232, .94), rgba(250, 234, 196, .94)); box-shadow: inset 0 0 0 3px var(--gold), 0 10px 0 rgba(74, 44, 20, .35);
+  animation: tr-panel-in .3s ease-out;
+}
+@keyframes tr-panel-in { from { opacity: 0; transform: translateY(10px); } }
+.tr-panel-intro { display: flex; align-items: center; gap: 8px; margin: 0 0 12px; font-size: 15px; font-weight: 800; color: #7a3b12; }
+.tr-panel-intro svg { width: 22px; height: 22px; flex: none; color: var(--orange); }
+
+/* peti — sprite 8 frame (2172×420, setiap frame 271.5 lebar). Kotak menunjuk bahagian bawah frame (badan peti);
+   imej penuh lebih tinggi supaya cahaya & syiling boleh naik melepasi kotak. */
+.tr-chest { position: relative; display: block; width: 100%; aspect-ratio: 271.5 / 240; }
+.tr-chest-img {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 175%; pointer-events: none;
+  background: url('/home/vault/chest-sheet.webp') 0 0 / 800% 100% no-repeat;
+}
+.tr-chest.locked .tr-chest-img { filter: saturate(.35) brightness(.92); }
+.tr-chest.soon .tr-chest-img { filter: grayscale(.85) brightness(1.05); }
+.tr-chest.ready .tr-chest-img { animation: tr-wiggle 2.4s step-end infinite; filter: drop-shadow(0 0 10px rgba(255, 200, 60, .9)); }
+.tr-chest.ready { animation: tr-bounce 1.2s ease-in-out infinite; }
+@keyframes tr-bounce { 50% { transform: translateY(-5px); } }
+/* goyang berkala: frame 1 → 2 → 3 → 2 → 1 */
+@keyframes tr-wiggle {
+  0% { background-position-x: 0%; } 55% { background-position-x: 14.2857%; } 63% { background-position-x: 28.5714%; }
+  71% { background-position-x: 14.2857%; } 79% { background-position-x: 28.5714%; } 87% { background-position-x: 0%; }
+}
+/* buka: frame 2 → 8 lalu kekal terbuka */
+.tr-chest.opening .tr-chest-img { animation: tr-open-frames .55s step-end forwards; }
+@keyframes tr-open-frames {
+  0% { background-position-x: 14.2857%; } 11% { background-position-x: 28.5714%; } 22% { background-position-x: 42.8571%; }
+  36% { background-position-x: 57.1429%; } 52% { background-position-x: 71.4286%; } 68% { background-position-x: 85.7143%; } 84%, 100% { background-position-x: 100%; }
+}
+.tr-chest.opening { animation: tr-pop-chest .55s ease-out; }
+@keyframes tr-pop-chest { 30% { transform: scale(1.08, .94); } 60% { transform: scale(.96, 1.06) translateY(-4px); } }
+.tr-chest.opened .tr-chest-img { background-position-x: 100%; }
+.tr-chest-lock {
+  position: absolute; right: 4%; bottom: 4%; display: grid; place-items: center; width: 34%; max-width: 40px; aspect-ratio: 1; border: 3px solid var(--navy); border-radius: 50%;
+  background: #fffdf3; color: var(--navy); font-size: 18px; font-weight: 900; box-shadow: 0 3px 0 rgba(38, 50, 77, .35);
+}
+.tr-chest-lock svg { width: 58%; height: 58%; stroke-width: 3; }
+
+/* label keadaan */
+.tr-state { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 900; vertical-align: middle; background: #e3d3b4; color: #6b3a18; white-space: nowrap; }
+.tr-state.ready { background: #ffe58a; color: #8a4a00; }
+.tr-state.opened, .tr-state.opening { background: #cdeec0; color: #1d5e2d; }
+.tr-state.soon { background: #e7dcf7; color: #5a36a8; }
+
+/* bar kemajuan */
+.tr-prog { display: flex; align-items: center; gap: 8px; width: 100%; }
+.tr-bar { position: relative; flex: 1; height: 16px; border: 3px solid var(--wood-d); border-radius: 999px; background: #ecd5a8; overflow: hidden; }
+.tr-bar i { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: linear-gradient(#ffd24d, var(--orange)); box-shadow: inset 0 3px 0 rgba(255, 255, 255, .35); transition: width .5s ease-out; }
+.tr-prog b { font-size: 15px; font-weight: 900; color: var(--navy); font-variant-numeric: tabular-nums; }
+.tr-prog small { font-size: 12px; font-weight: 800; color: #7a3b12; white-space: nowrap; }
+.tr-next { margin: 0; font-size: 14px; font-weight: 800; color: #a74517; }
+
+.tr-reward-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.tr-chip-s { display: inline-flex; align-items: center; gap: 4px; padding: 2px 10px; border: 2px solid #723715; border-radius: 999px; background: #fff; font-size: 14px; font-weight: 900; }
+.tr-chip-s.gift svg { width: 16px; height: 16px; color: var(--red); }
+
+/* butang */
+.tr-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 50px; padding: 0 22px; border: 4px solid var(--navy); border-radius: 16px;
+  font: inherit; font-size: 18px; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 var(--navy); white-space: nowrap;
+}
+.tr-btn svg { width: 22px; height: 22px; }
+.tr-btn:not(:disabled):not(.done):active { transform: translateY(4px); box-shadow: 0 1px 0 var(--navy); }
+.tr-btn.claim { background: linear-gradient(#7ee06a, var(--green)); color: #fff; text-shadow: 0 2px 0 #1d5e2d; animation: tr-throb 1.2s ease-in-out infinite; }
+.tr-btn.go { background: linear-gradient(#4a5878, var(--navy)); color: #fff3d6; }
+.tr-btn.done { border-color: #2f7a3e; background: #fff; color: #2f7a3e; box-shadow: none; cursor: default; }
+.tr-btn.small { min-height: 46px; padding: 0 16px; font-size: 16px; }
+@keyframes tr-throb { 50% { transform: scale(1.05); } }
+
+/* ── B. peti utama + C. peti sokongan ── */
+.tr-chests { display: grid; grid-template-columns: minmax(280px, .9fr) 1.2fr; gap: 16px; align-items: stretch; }
+.tr-hero {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 18px 16px 16px; border: 4px solid var(--navy); border-radius: 22px; text-align: center;
+  background: radial-gradient(ellipse at 50% 30%, #fff8d8, #fde9b4 60%, #f6d58f); box-shadow: 0 6px 0 rgba(38, 50, 77, .3); overflow: hidden;
+}
+.tr-hero.ready { border-color: #b06a00; box-shadow: 0 0 0 4px #ffd24d, 0 6px 0 rgba(38, 50, 77, .3); }
+.tr-hero::before { /* sinar cahaya lembut di belakang peti */
+  content: ''; position: absolute; left: 50%; top: 110px; width: 520px; height: 520px; margin: -260px 0 0 -260px; pointer-events: none; opacity: .35;
+  background: repeating-conic-gradient(from 0deg, #fff 0 10deg, transparent 10deg 24deg); border-radius: 50%; animation: tr-spin 30s linear infinite;
+  mask-image: radial-gradient(circle, #000 20%, transparent 65%); -webkit-mask-image: radial-gradient(circle, #000 20%, transparent 65%);
+}
+.tr-hero.locked::before { opacity: .12; }
+@keyframes tr-spin { to { transform: rotate(360deg); } }
+.tr-hero > * { position: relative; }
+.tr-hero-tag {
+  position: absolute; top: 10px; left: 12px; padding: 2px 12px; border-radius: 999px; background: var(--navy); color: #ffd24d; font-size: 12px; font-weight: 900;
+  letter-spacing: .5px; text-transform: uppercase;
+}
+.tr-hero-chest { --cw: clamp(140px, 23vh, 220px); position: relative; width: var(--cw); margin-top: calc(var(--cw) * .38); /* ruang untuk cahaya & syiling bila peti dibuka */ padding: 0; border: 0; background: none; cursor: pointer; border-radius: 20px; }
+.tr-hero-chest:disabled { cursor: default; }
+.tr-pedestal { position: absolute; left: 6%; right: 6%; bottom: 0; height: 22%; border: 4px solid var(--wood-d); border-radius: 50%; background: radial-gradient(ellipse at 50% 30%, #f5d27a, #c9963a); }
+.tr-hero h2 { margin: 2px 0 0; font-size: clamp(20px, 3vh, 26px); font-weight: 900; color: var(--ink); }
+.tr-info { margin: 0; font-size: 14px; font-weight: 700; color: #7a3b12; }
+.tr-hero .tr-prog { max-width: 340px; }
+
+.tr-cards { display: grid; grid-auto-rows: 1fr; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.tr-card {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px 14px; padding: 10px 14px; border: 4px solid var(--navy); border-radius: 20px;
+  background: var(--cream); box-shadow: 0 5px 0 rgba(38, 50, 77, .3);
+}
+.tr-card.ready { background: linear-gradient(#fffbe6, #fff0b8); border-color: #b06a00; box-shadow: 0 0 0 4px #ffd24d, 0 5px 0 rgba(38, 50, 77, .3); }
+.tr-card.opened { background: linear-gradient(#f2fbec, #ddf3d1); border-color: #2f7a3e; }
+.tr-card.soon { background: repeating-linear-gradient(135deg, #f6efff 0 14px, #efe5fc 14px 28px); border-style: dashed; }
+.tr-card-chest { width: clamp(70px, 11vh, 96px); padding: 0; border: 0; background: none; cursor: pointer; border-radius: 14px; }
+.tr-card-chest:disabled { cursor: default; }
+.tr-card-main { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.tr-card h3 { margin: 0; font-size: 18px; font-weight: 900; color: var(--ink); }
+.tr-card-main > p:not(.tr-next) { margin: 0; font-size: 13px; font-weight: 700; color: #7a3b12; }
+.tr-card .tr-next { font-size: 13px; }
+
+/* ── D. rak hadiah ── */
+.tr-shelves { background: linear-gradient(#a8703c, #8a5428); box-shadow: inset 0 0 0 3px var(--gold), inset 0 0 30px rgba(0, 0, 0, .25), 0 10px 0 rgba(74, 44, 20, .35); }
+.tr-shelves .tr-panel-intro { color: #fff3d6; }
+.tr-shelves .tr-panel-intro svg { color: #ffd24d; }
+.tr-shelf { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 18px 0; margin: 0; padding: 0; list-style: none; }
+.tr-gift { display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 0 6px 8px; text-align: center; position: relative; }
+/* papan rak di bawah setiap item → kelihatan seperti rak bersambung */
+.tr-gift::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 92px; height: 14px; z-index: 0;
+  background: linear-gradient(#e0ae6d, #b37a3c); border-top: 3px solid #f5d29c; border-bottom: 4px solid var(--wood-d); box-shadow: 0 6px 6px rgba(0, 0, 0, .25);
+}
+.tr-stand { position: relative; z-index: 1; display: grid; place-items: center; width: 88px; height: 96px; }
+.tr-stand .tr-art { width: 78px; height: 78px; filter: drop-shadow(0 4px 0 rgba(0, 0, 0, .25)); }
+.tr-gift.got .tr-stand .tr-art { animation: tr-float 3s ease-in-out infinite; }
+@keyframes tr-float { 50% { transform: translateY(-4px); } }
+.tr-gift.locked .tr-art { filter: brightness(0) invert(1) opacity(.32); }
+.tr-gift b { position: relative; z-index: 1; margin-top: 12px; padding: 2px 10px; border: 2px solid var(--wood-d); border-radius: 8px; background: #fff3d6; font-size: 13px; font-weight: 900; color: var(--ink); }
+.tr-gift small { position: relative; z-index: 1; font-size: 11.5px; font-weight: 800; color: #ffe1b8; line-height: 1.25; }
+.tr-gift.locked b { background: #e8d6b4; color: #6b4a2a; }
+.tr-gift.soon b { background: #e7dcf7; color: #5a36a8; }
+.tr-lock-dot { position: absolute; display: grid; place-items: center; width: 30px; height: 30px; border: 3px solid var(--navy); border-radius: 50%; background: #fffdf3; color: var(--navy); }
+.tr-lock-dot svg { width: 16px; height: 16px; stroke-width: 3; }
+.tr-stand .tr-lock-dot { right: 6px; bottom: 10px; }
+.tr-new {
+  position: absolute; top: -2px; right: -10px; padding: 2px 8px; border: 2px solid #fff; border-radius: 999px; background: var(--red); color: #fff;
+  font-size: 11px; font-style: normal; font-weight: 900; transform: rotate(10deg); animation: tr-pulse 1.4s ease-in-out infinite;
+}
+
+/* ── E. dinding lencana ── */
+.tr-badges { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.tr-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 14px 10px 12px; border: 3px solid #d9b77a; border-radius: 18px; text-align: center;
+  background: rgba(255, 255, 255, .6);
+}
+.tr-badge.got { border-color: var(--tone); background: #fff; box-shadow: 0 4px 0 rgba(38, 50, 77, .2); }
+.tr-medal { position: relative; display: grid; place-items: center; width: 76px; height: 86px; }
+.tr-ribbon { position: absolute; bottom: 0; width: 18px; height: 34px; background: var(--tone); border: 3px solid var(--navy); }
+.tr-ribbon.l { left: 18px; transform: rotate(18deg); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+.tr-ribbon.r { right: 18px; transform: rotate(-18deg); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%); }
+.tr-medal-face {
+  position: relative; display: grid; place-items: center; width: 66px; height: 66px; margin-bottom: 14px; border: 4px solid var(--navy); border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff 0 10%, var(--tone) 45%); box-shadow: inset 0 0 0 4px #ffd24d, 0 4px 0 rgba(38, 50, 77, .3); color: #fff;
+}
+.tr-medal-face svg { width: 32px; height: 32px; stroke-width: 2.5; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .3)); }
+.tr-badge.got .tr-medal-face { animation: tr-shine 4s ease-in-out infinite; }
+@keyframes tr-shine { 0%, 85%, 100% { filter: none; } 92% { filter: brightness(1.25); } }
+.tr-badge.locked .tr-medal { filter: grayscale(1) opacity(.5); }
+.tr-medal .tr-lock-dot { right: 0; top: 0; filter: none; }
+.tr-badge b { font-size: 15px; font-weight: 900; color: var(--ink); }
+.tr-badge small { font-size: 12px; font-weight: 800; color: #7a3b12; }
+.tr-got { display: inline-flex; align-items: center; gap: 4px; color: var(--green) !important; }
+.tr-got svg { width: 14px; height: 14px; stroke-width: 3.5; }
+.tr-mini-bar { position: relative; width: 80%; height: 10px; border: 2px solid var(--wood-d); border-radius: 999px; background: #ecd5a8; overflow: hidden; }
+.tr-mini-bar i { position: absolute; inset: 0 auto 0 0; background: linear-gradient(#ffd24d, var(--orange)); }
+
+/* ── dedah ganjaran ── */
+.tr-reveal { position: absolute; inset: 0; z-index: 10; display: grid; place-items: center; padding: 16px; background: rgba(38, 30, 20, .55); animation: tr-fade .25s ease-out; }
+@keyframes tr-fade { from { opacity: 0; } }
+.tr-reveal-card {
+  position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; width: min(440px, 100%); padding: 20px 20px 22px; border: 5px solid var(--wood-d);
+  border-radius: 26px; text-align: center; background: radial-gradient(ellipse at 50% 20%, #fffbe6, #fde9b4 70%); box-shadow: inset 0 0 0 3px var(--gold), 0 14px 0 rgba(0, 0, 0, .25);
+  animation: tr-pop .45s cubic-bezier(.2, 1.4, .4, 1);
+}
+@keyframes tr-pop { from { transform: scale(.6); opacity: 0; } }
+.tr-rays {
+  position: absolute; left: 50%; top: 90px; width: 460px; height: 460px; margin: -230px 0 0 -230px; border-radius: 50%; pointer-events: none; opacity: .5;
+  background: repeating-conic-gradient(#ffe38a 0 12deg, transparent 12deg 24deg); animation: tr-spin 12s linear infinite;
+  mask-image: radial-gradient(circle, #000 15%, transparent 62%); -webkit-mask-image: radial-gradient(circle, #000 15%, transparent 62%);
+}
+.tr-confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; border-radius: 22px; }
+.tr-confetti b {
+  position: absolute; top: -12px; left: calc(var(--i) * 7.1% + 2%); width: 9px; height: 14px; border-radius: 2px;
+  background: hsl(calc(var(--i) * 47deg) 85% 60%); animation: tr-confetti 1.8s ease-in calc(var(--i) * -0.13s) infinite;
+}
+@keyframes tr-confetti { to { transform: translateY(520px) rotate(540deg); } }
+.tr-reveal-chest { position: relative; width: 170px; }
+.tr-reveal h2 { position: relative; margin: 0; font-size: 30px; color: var(--red); text-shadow: 0 2px 0 #fff; }
+.tr-reveal p { position: relative; margin: 0; font-size: 15px; font-weight: 800; color: #7a3b12; }
+.tr-loot { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 6px 0 8px; padding: 0; list-style: none; }
+.tr-loot li {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 96px; padding: 10px 10px 8px; border: 3px solid var(--navy); border-radius: 16px; background: #fff;
+  font-size: 13px; font-weight: 800; color: #7a3b12; animation: tr-loot .5s cubic-bezier(.2, 1.5, .4, 1) var(--d) backwards;
+}
+.tr-loot li.gift { border-color: var(--red); background: #fff6e8; }
+@keyframes tr-loot { from { transform: scale(0) rotate(-12deg); } }
+.tr-loot b { font-size: 18px; font-weight: 900; color: var(--navy); }
+.tr-loot-ico { display: grid; place-items: center; height: 44px; font-size: 34px; }
+.tr-loot-ico .tr-art { width: 48px; height: 48px; }
+
+/* ganjaran terbang ke koleksi */
+.tr-fly {
+  position: fixed; z-index: 20; display: grid; place-items: center; font-size: 34px; pointer-events: none;
+  animation: tr-fly .75s cubic-bezier(.5, -.3, .7, 1) forwards;
+}
+.tr-fly .tr-art { width: 52px; height: 52px; }
+@keyframes tr-fly {
+  0% { transform: translate(-50%, -50%) scale(1.25); }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(.45); opacity: .3; }
+}
+
+/* ── tablet / desktop kecil ── */
+@media (max-width: 980px) {
+  .tr-shelf { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+/* ── telefon & tablet menegak ── */
+@media (max-width: 760px) {
+  .tr-wrap { padding-top: max(16px, env(safe-area-inset-top)); padding-left: 10px; padding-right: 10px; gap: 8px; }
+
+  .tr-head { flex-direction: column; gap: 8px; padding: 0; }
+  .tr-sign { padding: 8px 16px 10px; border-width: 4px; }
+  .tr-home { width: 62px; min-height: 62px; border-width: 4px; font-size: 12px; }
+  .tr-home svg { width: 24px; height: 24px; }
+  .tr-title-row { gap: 10px; width: 100%; }
+  .tr-title-row .tr-sign { flex: 1; min-width: 0; }
+  .tr-counters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: 100%; }
+  .tr-counters li { flex-direction: column; justify-content: center; gap: 0; min-height: 52px; padding: 4px 2px; border-radius: 14px; }
+  .tr-counters b { font-size: 17px; }
+  .tr-counters span { font-size: 10px; }
+  .tr-counters small { display: none; }
+  .tr-tabs { gap: 6px; }
+  .tr-tab { flex: 1; min-width: 0; padding: 0 6px; font-size: 15px; border-width: 3px; }
+  .tr-panel { padding: 12px 10px; border-width: 4px; border-radius: 20px; }
+  .tr-chests { display: flex; flex-direction: column; }
+  .tr-hero, .tr-cards { flex: none; }
+  .tr-sign p { font-size: 12px; }
+  .tr-panel-intro { font-size: 13px; }
+  .tr-hero-chest { --cw: 170px; }
+  .tr-card { grid-template-columns: auto minmax(0, 1fr); grid-template-areas: 'chest main' 'btn btn'; padding: 10px; }
+  .tr-card-chest { grid-area: chest; width: 72px; }
+  .tr-card-main { grid-area: main; }
+  .tr-card .tr-btn { grid-area: btn; width: 100%; margin-top: 6px; }
+  .tr-shelf { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .tr-stand { width: 78px; height: 88px; }
+  .tr-stand .tr-art { width: 68px; height: 68px; }
+  .tr-gift::after { top: 84px; }
+  .tr-gift b { font-size: 12px; padding: 2px 6px; }
+  .tr-badges { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .tr-loot li { min-width: 84px; }
+}
+@media (max-width: 339px) {
+  .tr-shelf { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .tr-sign h1 { font-size: 21px; }
+  .tr-counters span { letter-spacing: 0; }
+}
+/* ── telefon melintang / skrin rendah ── */
+@media (max-height: 560px) and (min-width: 561px) {
+  .tr-wrap { padding-top: 10px; padding-bottom: 8px; gap: 6px; }
+  .tr-head { flex-wrap: nowrap; justify-content: flex-start; padding: 0; gap: 10px; }
+  .tr-sign { padding: 4px 14px 5px; border-width: 4px; }
+  .tr-sign h1 { font-size: 19px; }
+  .tr-sign p { display: none; }
+  .tr-counters { flex-wrap: nowrap; gap: 5px; }
+  .tr-counters li { min-height: 34px; padding: 0 8px; gap: 4px; }
+  .tr-counters b { font-size: 15px; }
+  .tr-counters span { display: none; }
+  .tr-tab { min-height: 44px; font-size: 14px; padding: 0 14px; }
+  .tr-panel { padding: 10px; }
+  .tr-hero { padding: 10px; gap: 4px; }
+  .tr-hero-chest { --cw: 110px; }
+  .tr-info { display: none; }
+  .tr-card { padding: 6px 10px; }
+  .tr-card-main > p:not(.tr-next) { display: none; }
+  .tr-card-chest { width: 60px; }
+  .tr-reveal-card { gap: 4px; padding: 12px; }
+  .tr-reveal-chest { width: 100px; }
+  .tr-reveal h2 { font-size: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tr-screen, .tr-sign, .tr-home, .tr-chest, .tr-chest-img, .tr-hero::before, .tr-tab em, .tr-btn.claim, .tr-panel, .tr-gift .tr-art,
+  .tr-new, .tr-badge .tr-medal-face, .tr-reveal, .tr-reveal-card, .tr-rays, .tr-confetti b, .tr-loot li, .tr-counters li, .tr-tab { animation: none !important; }
+  .tr-bar i { transition: none; }
+}
+
+/* peti yang sudah dibuka boleh ditekan untuk main semula animasi buka */
+.tr-chest.opened { cursor: pointer; }
+.tr-hero-chest:not(:disabled):hover .tr-chest.opened, .tr-card-chest:not(:disabled):hover .tr-chest.opened { transform: scale(1.05); transition: transform .2s; }
+
+/* skrin lebar: panel lebih sempit supaya rak harta di tepi gambar latar kelihatan */
+@media (min-width: 1100px) and (min-height: 561px) {
+  .tr-wrap { max-width: min(1180px, 72vw); }
+  .tr-head { padding: 0; }
+}
+/* telefon melintang: butang Utama kecil (ikon sahaja) */
+@media (max-height: 560px) and (min-width: 561px) {
+  .tr-home { width: 46px; min-height: 46px; padding: 4px; border-width: 4px; border-radius: 14px; }
+  .tr-home span { display: none; }
+  .tr-home svg { width: 24px; height: 24px; }
+  .tr-title-row { gap: 8px; }
+}

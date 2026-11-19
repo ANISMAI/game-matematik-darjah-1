@@ -1,0 +1,178 @@
+/* Sushi Master Ninja — dua zon: pentas tali sawat (atas) + meja bahan berasingan (bawah).
+   Panel/header berkongsi gaya .spot-* (spot.css) supaya semua permainan mini akademi kelihatan sama. */
+.sushi-root { overflow-y: auto; overflow-x: hidden; background: linear-gradient(#ffe9d6, #f7d2b3); }
+
+/* kad pesanan */
+.sushi-orders {
+  display: flex; gap: 10px; min-height: 86px; padding: 10px max(12px, env(safe-area-inset-right)) 4px max(12px, env(safe-area-inset-left));
+  overflow-x: auto; flex: none; scrollbar-width: thin;
+}
+.sushi-orders-empty { margin: auto; font-size: 16px; font-weight: 800; color: #7a3b12; }
+.sushi-card {
+  position: relative; display: flex; align-items: center; gap: 8px; flex: none; min-width: 210px; padding: 6px 12px 6px 8px;
+  border: 3px solid #26324d; border-radius: 16px; background: #fffaf0; color: #35241b; text-align: left;
+  box-shadow: 0 4px 0 rgba(38, 50, 77, .35); transition: transform .12s;
+}
+.sushi-card.sel { background: #fff3c4; border-color: #b06a00; box-shadow: 0 0 0 3px #ffd24d, 0 4px 0 rgba(38, 50, 77, .35); }
+.sushi-card.sent, .sushi-card.rolling { opacity: .75; }
+.sushi-card > img { width: 54px; height: 54px; flex: none; }
+.sushi-badge {
+  position: absolute; left: -8px; top: -8px; display: grid; place-items: center; width: 26px; height: 26px; border: 3px solid #fff;
+  border-radius: 50%; background: #3d4c7a; color: #fff; font-size: 13px; font-weight: 900; font-style: normal;
+}
+.sushi-card.sel .sushi-badge { background: #d9443a; }
+.sushi-card-main { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sushi-card-main b { font-size: 15px; font-weight: 900; white-space: nowrap; }
+.sushi-card-main small { font-size: 12px; font-weight: 800; color: #7a3b12; }
+.sushi-steps { display: flex; align-items: center; gap: 3px; }
+.sushi-step { position: relative; display: grid; place-items: center; width: 30px; height: 30px; border: 2px solid rgba(38, 50, 77, .35); border-radius: 9px; background: #fff; }
+.sushi-step + .sushi-step::before { content: '›'; position: absolute; left: -8px; font-size: 14px; font-weight: 900; color: #7a3b12; }
+.sushi-step img { width: 26px; height: 26px; }
+.sushi-step.done { border-color: #2f9a4a; background: #dff7d8; }
+.sushi-step.done em {
+  position: absolute; right: -5px; bottom: -5px; display: grid; place-items: center; width: 15px; height: 15px; border-radius: 50%;
+  background: #2f9a4a; color: #fff; font-size: 10px; font-style: normal; font-weight: 900;
+}
+.sushi-step.next { border-color: #ee7b00; box-shadow: 0 0 0 2px #ffd24d; animation: sushi-pulse 1s ease-in-out infinite; }
+@keyframes sushi-pulse { 50% { transform: scale(1.12); } }
+
+/* pentas (zon atas) */
+.sushi-stage-wrap { position: relative; flex: 1 1 auto; min-height: 190px; display: grid; place-items: center; padding: 4px 8px; }
+.sushi-stage { position: relative; border: 4px solid #26324d; border-radius: 18px; overflow: hidden; box-shadow: 0 0 0 4px #fff3d6, 0 8px 0 4px rgba(74, 44, 20, .3); }
+.sushi-stage canvas { display: block; width: 100%; height: 100%; }
+
+/* meja bahan (zon bawah, terpisah) — SAIZ SAMA untuk semua tahap. Dulang 8 petak; perasa menegak; tikar sempit.
+   Susunan: bahan | perasa (kicap masin, wasabi, kicap manis) | tikar sushi | Semula */
+.sushi-table {
+  flex: none; display: grid; align-items: center; justify-content: center; gap: 10px 16px;
+  grid-template-columns: 1fr; grid-template-areas: 'ings' 'tools';
+  margin: 6px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+  padding: 12px 16px; border: 4px solid #4a2c14; border-radius: 22px;
+  background: repeating-linear-gradient(90deg, rgba(94, 58, 28, .1) 0 2px, transparent 2px 46px), linear-gradient(#d39a5c, #b8783f);
+  box-shadow: inset 0 4px 0 rgba(255, 255, 255, .25), 0 6px 0 rgba(74, 44, 20, .45);
+}
+/* dulang bahan berpetak 3 × 2 (susunan tetap). Petak tanpa bahan dalam tahap ini dibiar kosong. */
+.sushi-ings {
+  grid-area: ings; display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 6px;
+  border: 4px solid #4a2c14; border-radius: 14px; background: linear-gradient(#9a6332, #7a4a22);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, .2), 0 5px 0 rgba(74, 44, 20, .45);
+}
+.sushi-ing {
+  position: relative; display: block; width: 100%; aspect-ratio: 2.15 / 1; padding: 0; border: 0; border-radius: 8px;
+  background: linear-gradient(#e2b97f, #eccb97); box-shadow: inset 0 4px 6px rgba(74, 44, 20, .45), inset 0 -2px 0 rgba(255, 255, 255, .25);
+  color: #35241b; transition: transform .1s, box-shadow .15s;
+}
+.sushi-ing.empty { box-shadow: inset 0 4px 6px rgba(74, 44, 20, .45); }
+.sushi-ing img { position: absolute; inset: 3px 4px 10px; width: calc(100% - 8px); height: calc(100% - 13px); object-fit: contain; pointer-events: none; filter: drop-shadow(0 2px 0 rgba(74, 44, 20, .3)); }
+.sushi-ing b {
+  position: absolute; left: 50%; bottom: -5px; transform: translateX(-50%); padding: 0 7px; border: 2px solid #26324d; border-bottom: 3px solid var(--ing);
+  border-radius: 999px; background: #fffaf0; font-size: 11px; font-weight: 900; line-height: 1.25; white-space: nowrap;
+}
+.sushi-ing:not(:disabled):active { transform: translateY(2px); }
+.sushi-ing:disabled { cursor: default; }
+.sushi-ing:disabled img { opacity: .8; }
+.sushi-ing.hi { box-shadow: 0 0 0 3px #ffd24d, 0 0 12px 3px rgba(255, 210, 77, .85), inset 0 4px 6px rgba(74, 44, 20, .35); }
+.sushi-ing.hi b { background: #fff3c4; border-color: #ee7b00; }
+.sushi-ing.shake { animation: mall-shake .35s; }
+.sushi-arrow {
+  position: absolute; top: -22px; left: 50%; transform: translateX(-50%); color: #ee7b00; font-size: 20px;
+  text-shadow: 0 2px 0 #26324d; animation: sushi-bob .8s ease-in-out infinite;
+}
+@keyframes sushi-bob { 50% { transform: translate(-50%, 6px); } }
+/* baris alat (telefon): perasa | tikar | Semula */
+.sushi-tools { grid-area: tools; display: flex; align-items: center; gap: 10px; }
+.sushi-condiments { display: flex; flex-direction: column; gap: 2px; flex: none; }
+.sushi-condiment { display: flex; flex-direction: column; align-items: center; }
+.sushi-condiment img { width: 40px; height: 40px; filter: drop-shadow(0 3px 0 rgba(74, 44, 20, .35)); }
+.sushi-condiment small { display: none; font-size: 11px; font-weight: 900; color: #fff3d6; text-shadow: 0 1px 0 #4a2c14, 0 0 3px #4a2c14; white-space: nowrap; }
+.sushi-mat { flex: 1 1 auto; min-width: 0; border-radius: 14px; background: rgba(74, 44, 20, .25); }
+.sushi-mat canvas { display: block; width: 100%; height: auto; aspect-ratio: 320 / 130; }
+.sushi-side-btn {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; flex: none; width: 72px; min-height: 64px;
+  border: 3px solid #26324d; border-radius: 14px; background: #fffaf0; color: #4a2c14; font-size: 12px; font-weight: 900;
+  box-shadow: 0 4px 0 rgba(38, 50, 77, .45);
+}
+.sushi-side-btn svg { width: 24px; height: 24px; }
+.sushi-side-btn:disabled { opacity: .45; cursor: default; }
+.sushi-side-btn:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(38, 50, 77, .45); }
+
+/* senarai resipi dalam pengenalan */
+.sushi-recipes { display: flex; flex-direction: column; gap: 8px; margin: 0 0 12px; padding: 0; list-style: none; }
+.sushi-recipes li { display: flex; align-items: center; gap: 10px; padding: 6px 10px; border: 3px solid #4a2c14; border-radius: 14px; background: rgba(255, 255, 255, .65); }
+.sushi-recipes li > img { width: 48px; height: 48px; }
+.sushi-recipes li > b { flex: 1; font-size: 15px; font-weight: 900; color: #35241b; }
+
+/* desktop lebar: SATU baris, saiz tetap — bahan (6 slot) | perasa | tikar | Semula */
+@media (min-width: 900px) {
+  .sushi-table { grid-template-columns: auto auto 236px auto; grid-template-areas: 'ings cond mat btn'; height: 156px; padding: 8px 18px; }
+  .sushi-tools { display: contents; }
+  .sushi-ings { grid-template-columns: repeat(4, 108px); }
+  /* perasa: satu lajur menegak (kicap masin, wasabi, kicap manis) */
+  .sushi-condiments { grid-area: cond; flex-direction: column; gap: 2px; }
+  .sushi-condiment { flex-direction: row; gap: 4px; }
+  .sushi-condiment img { width: 38px; height: 38px; }
+  .sushi-condiment small { display: block; min-width: 72px; }
+  .sushi-mat { grid-area: mat; }
+  .sushi-side-btn { grid-area: btn; }
+}
+/* telefon & tablet menegak: pentas dapat lebih ruang, meja lebih padat */
+@media (max-width: 899px) {
+  .sushi-orders { min-height: 0; padding-top: 8px; padding-bottom: 2px; }
+  .sushi-stage-wrap { padding: 2px 4px; }
+  .sushi-table { gap: 8px; margin-top: 2px; padding: 10px 12px; border-radius: 20px; }
+  .sushi-ings { gap: 5px; padding: 5px; }
+  .sushi-ing { aspect-ratio: 1.7 / 1; }
+  .sushi-tools { gap: 8px; }
+  .sushi-condiments { gap: 0; }
+  .sushi-condiment img { width: 32px; height: 32px; }
+  .sushi-mat canvas { aspect-ratio: 320 / 120; }
+}
+/* telefon */
+@media (max-width: 520px) {
+  .sushi-table { padding: 8px; gap: 8px; border-width: 3px; }
+  .sushi-ings { gap: 4px; padding: 4px; border-width: 3px; }
+  .sushi-ing { aspect-ratio: 1.8 / 1; min-height: 44px; }
+  .sushi-ing img { inset: 2px 3px 9px; width: calc(100% - 6px); height: calc(100% - 11px); }
+  .sushi-ing b { font-size: 10px; padding: 0 5px; }
+  .sushi-condiment img { width: 28px; height: 28px; }
+  .sushi-side-btn { width: 58px; min-height: 56px; font-size: 11px; }
+  .sushi-card { min-width: 0; padding: 5px 10px 5px 8px; }
+  .sushi-card > img { width: 44px; height: 44px; }
+}
+/* tablet menegak: meja tidak melebar penuh — saiz selesa di tengah */
+@media (min-width: 521px) and (max-width: 899px) {
+  .sushi-table { width: min(620px, calc(100% - 20px)); box-sizing: border-box; margin-left: auto; margin-right: auto; }
+  .sushi-ing b { font-size: 13px; }
+  .sushi-condiment img { width: 40px; height: 40px; }
+  .sushi-tools { justify-content: center; }
+  .sushi-mat { max-width: 380px; }
+}
+@media (max-height: 520px) {
+  .sushi-orders { min-height: 74px; }
+  .sushi-stage-wrap { min-height: 220px; }
+}
+/* telefon melintang: DUA lajur — pentas (kiri, besar) | pesanan + meja padat (kanan); tiada tatal */
+@media (min-aspect-ratio: 1/1) and (max-height: 520px) and (max-width: 899px) {
+  .sushi-root {
+    display: grid; overflow: hidden; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto minmax(0, 1fr);
+    grid-template-areas: 'top top' 'stage orders' 'stage table';
+  }
+  .sushi-root > .spot-top { grid-area: top; padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: 4px; }
+  .sushi-root .spot-icon-btn { width: 44px; height: 44px; }
+  .sushi-root .spot-hint-btn { min-height: 44px; }
+  .sushi-orders { grid-area: orders; width: 336px; box-sizing: border-box; min-height: 0; padding: 6px 8px 2px 4px; }
+  .sushi-card { padding: 3px 10px 3px 8px; }
+  .sushi-card > img { width: 38px; height: 38px; }
+  .sushi-stage-wrap { grid-area: stage; min-height: 0; padding: 4px 0 max(6px, env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-left)); }
+  .sushi-table {
+    grid-area: table; align-self: start; width: 336px; box-sizing: border-box; grid-template-columns: 1fr; grid-template-areas: 'ings' 'tools';
+    gap: 6px; margin: 4px max(8px, env(safe-area-inset-right)) 6px 0; padding: 6px 8px; border-width: 3px;
+  }
+  .sushi-ings { grid-template-columns: repeat(4, 1fr); gap: 4px; padding: 4px; border-width: 3px; }
+  .sushi-ing { aspect-ratio: 1.9 / 1; }
+  .sushi-ing b { font-size: 10px; bottom: -4px; }
+  .sushi-tools { gap: 6px; }
+  .sushi-condiment img { width: 24px; height: 24px; }
+  .sushi-mat canvas { aspect-ratio: 320 / 120; }
+  .sushi-side-btn { width: 54px; min-height: 50px; font-size: 11px; }
+}

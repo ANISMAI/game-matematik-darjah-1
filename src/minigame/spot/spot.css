@@ -1,0 +1,147 @@
+/* Latihan Mata Ninja — gaya selari dengan panel Akademi Ninja (kayu, kertas skrol, garis tebal navy). */
+.spot-root {
+  position: absolute; inset: 0; z-index: 30; display: flex; flex-direction: column;
+  background:
+    repeating-linear-gradient(0deg, rgba(94, 58, 28, .12) 0 2px, transparent 2px 34px),
+    linear-gradient(#e3b37a, #d39a5c);
+  animation: mall-fade .25s ease-out; touch-action: none;
+}
+.spot-top {
+  display: flex; align-items: center; gap: 10px; padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 10px max(12px, env(safe-area-inset-left));
+  background: linear-gradient(#35415a, #1f2a44); border-bottom: 4px solid #0d1222; box-shadow: 0 4px 0 rgba(13, 18, 34, .25);
+}
+.spot-icon-btn {
+  display: grid; place-items: center; flex: none; width: 52px; height: 52px; border: 3px solid #20293e; border-radius: 16px;
+  background: linear-gradient(#4a5878, #26324d); color: #ffd24d; box-shadow: inset 0 3px 0 rgba(255, 255, 255, .2), 0 4px 0 #0d1222;
+}
+.spot-icon-btn svg { width: 26px; height: 26px; }
+.spot-icon-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #0d1222; }
+.spot-title { flex: 1; min-width: 0; display: flex; flex-direction: column; color: #fff3d6; }
+.spot-title b { font-size: 13px; font-weight: 900; letter-spacing: .6px; text-transform: uppercase; color: #ffd24d; }
+.spot-title span { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 17px; font-weight: 900; }
+.spot-counter {
+  display: flex; align-items: center; gap: 6px; flex: none; padding: 6px 14px; border: 3px solid #723715; border-radius: 999px;
+  background: linear-gradient(#fdbd24, #ee7b00); color: #fff; box-shadow: inset 0 3px 0 rgba(255, 255, 255, .35);
+}
+.spot-counter svg { width: 20px; height: 20px; }
+.spot-counter b { font-size: 22px; font-weight: 900; text-shadow: 0 2px 0 rgba(114, 55, 21, .7); }
+.spot-hint-btn {
+  position: relative; display: flex; align-items: center; gap: 6px; flex: none; min-height: 48px; padding: 0 14px;
+  border: 3px solid #20293e; border-radius: 16px; background: linear-gradient(#fff6d0, #ffd24d); color: #4a2c14;
+  font-size: 15px; font-weight: 900; box-shadow: 0 4px 0 #0d1222;
+}
+.spot-hint-btn svg { width: 22px; height: 22px; }
+.spot-hint-btn i {
+  position: absolute; top: -9px; right: -9px; display: grid; place-items: center; width: 22px; height: 22px; border: 2px solid #fff;
+  border-radius: 50%; background: #d9443a; color: #fff; font-size: 12px; font-style: normal;
+}
+.spot-hint-btn:disabled { filter: grayscale(.9); opacity: .6; cursor: default; }
+.spot-hint-btn:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 #0d1222; }
+.spot-proto {
+  position: absolute; z-index: 2; right: max(10px, env(safe-area-inset-right)); bottom: max(6px, env(safe-area-inset-bottom));
+  padding: 2px 10px; border: 2px dashed #8f2a1d; border-radius: 999px; background: rgba(255, 248, 219, .92); color: #8f2a1d;
+  font-size: 11px; font-weight: 900; letter-spacing: .4px; text-transform: uppercase; pointer-events: none;
+}
+
+.spot-board { position: relative; flex: 1; min-height: 0; margin: 14px max(12px, env(safe-area-inset-right)) max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); display: grid; place-items: center; }
+.spot-pics { display: flex; gap: 14px; align-items: center; justify-content: center; }
+.spot-pics.stacked { flex-direction: column; }
+.spot-pic {
+  position: relative; box-sizing: content-box; flex: none; overflow: hidden; border: 4px solid #26324d; border-radius: 16px; background: #fff3d6;
+  box-shadow: 0 0 0 4px #fff3d6, 0 8px 0 4px rgba(74, 44, 20, .35); cursor: default; touch-action: none;
+}
+.spot-pic.ready { cursor: crosshair; }
+.spot-pic img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; }
+.spot-loading-pic { position: absolute; inset: 0; background: linear-gradient(110deg, #fff3d6 30%, #ffe9b8 50%, #fff3d6 70%); background-size: 200% 100%; animation: spot-shimmer 1.2s linear infinite; }
+@keyframes spot-shimmer { to { background-position: -200% 0; } }
+
+/* penanda betul: cincin emas + tanda */
+.spot-mark {
+  position: absolute; box-sizing: border-box; border: 4px solid #ffd24d; border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 0 3px #26324d, inset 0 0 0 3px #26324d, 0 0 14px rgba(255, 210, 77, .7);
+  animation: spot-mark-in .35s cubic-bezier(.2, .9, .3, 1.4);
+}
+.spot-mark::after {
+  content: '✓'; position: absolute; right: -6px; top: -6px; display: grid; place-items: center; width: 22px; height: 22px;
+  border: 2px solid #26324d; border-radius: 50%; background: #3fbf6f; color: #fff; font-size: 13px; font-weight: 900;
+}
+@keyframes spot-mark-in { from { transform: scale(.4); opacity: 0; } }
+.spot-burst { position: absolute; width: 0; height: 0; pointer-events: none; }
+.spot-burst i {
+  position: absolute; left: -7px; top: -7px; width: 14px; height: 14px; background: #ffd24d;
+  clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+  animation: spot-burst .8s ease-out forwards; transform: rotate(var(--a)) translateY(0);
+}
+@keyframes spot-burst { to { transform: rotate(var(--a)) translateY(-46px) scale(.4); opacity: 0; } }
+/* ketikan salah: cincin lembut */
+.spot-miss {
+  position: absolute; width: 40px; height: 40px; margin: -20px 0 0 -20px; border: 3px solid rgba(255, 255, 255, .95); border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(38, 50, 77, .55); pointer-events: none; animation: spot-miss .8s ease-out forwards;
+}
+@keyframes spot-miss { from { transform: scale(.5); opacity: 1; } to { transform: scale(1.15); opacity: 0; } }
+/* petunjuk: denyut lembut sekitar kawasan */
+.spot-hint {
+  position: absolute; box-sizing: border-box; border: 4px dashed rgba(255, 210, 77, .95); border-radius: 50%; pointer-events: none;
+  background: radial-gradient(rgba(255, 233, 168, .28), rgba(255, 233, 168, 0) 70%); animation: spot-hint 1.4s ease-in-out 3;
+}
+@keyframes spot-hint { 50% { transform: scale(.88); opacity: .55; } }
+
+.spot-toast {
+  position: absolute; left: 50%; top: 8px; transform: translateX(-50%); padding: 8px 20px; border: 3px solid #26324d; border-radius: 999px;
+  background: #fff3d6; color: #4a2c14; font-size: 19px; font-weight: 900; pointer-events: none; animation: mall-pop .2s ease-out;
+  box-shadow: 0 4px 0 rgba(38, 50, 77, .35);
+}
+.spot-toast.good { background: #dff7d8; color: #1d5e2d; }
+.spot-loading {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px;
+  color: #4a2c14; font-size: 18px; font-weight: 900; text-shadow: 0 1px 0 rgba(255, 255, 255, .6);
+}
+.spot-spinner { width: 44px; height: 44px; border: 6px solid rgba(38, 50, 77, .25); border-top-color: #26324d; border-radius: 50%; animation: spot-spin .9s linear infinite; }
+@keyframes spot-spin { to { transform: rotate(360deg); } }
+.spot-complete {
+  position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  background: rgba(7, 21, 43, .35); animation: mall-fade .25s ease-out; pointer-events: none;
+}
+.spot-complete b { font-size: clamp(40px, 9vw, 76px); font-weight: 900; color: #ffd24d; -webkit-text-stroke: 3px #26324d; text-shadow: 0 6px 0 #26324d; animation: mall-pop .35s cubic-bezier(.2, .9, .3, 1.4); }
+.spot-complete svg { width: 48px; height: 48px; fill: #ffd24d; color: #26324d; animation: spot-star .4s cubic-bezier(.2, .9, .3, 1.5) backwards; }
+@keyframes spot-star { from { transform: scale(0) rotate(-40deg); } }
+
+/* panel (pengenalan / rehat / keputusan) */
+.spot-layer { position: absolute; inset: 0; z-index: 5; display: grid; place-items: center; padding: 16px; background: rgba(7, 21, 43, .55); animation: mall-fade .2s ease-out; }
+.spot-panel {
+  width: min(460px, 100%); max-height: calc(100dvh - 32px); overflow: auto; border: 5px solid #74381b; border-radius: 26px;
+  background: linear-gradient(#fff8db, #f4d7a2); box-shadow: inset 0 0 0 4px #ffc04d, 0 15px 40px rgba(0, 0, 0, .5); animation: mall-pop .22s ease-out;
+}
+.spot-panel.small { width: min(340px, 100%); }
+.spot-panel-head { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: linear-gradient(#c94a2b, #8f2a1d); color: #ffe9a8; border-bottom: 4px solid #74381b; }
+.spot-panel-head span { font-size: 26px; }
+.spot-panel-head h2 { margin: 0; font-size: 20px; font-weight: 900; text-shadow: 0 2px 0 rgba(60, 14, 8, .6); }
+.spot-panel-body { padding: 16px; }
+.spot-stack { display: flex; flex-direction: column; gap: 12px; }
+.spot-intro-goal { display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 0 12px; font-size: 22px; font-weight: 900; color: #74381b; }
+.spot-intro-goal svg { width: 26px; height: 26px; }
+.spot-tut { display: flex; flex-direction: column; gap: 8px; margin: 0 0 10px; padding: 0; list-style: none; }
+.spot-tut li { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 3px solid #4a2c14; border-radius: 14px; background: rgba(255, 255, 255, .6); font-size: 15px; font-weight: 800; line-height: 1.3; color: #35241b; }
+.spot-tut li span { font-size: 22px; }
+.spot-intro-note { margin: 0; font-size: 14px; font-weight: 700; color: #6b3a18; text-align: center; }
+.spot-result-sub { margin: 0; font-size: 15px; font-weight: 800; color: #6b3a18; text-align: center; }
+.spot-stars { display: flex; justify-content: center; gap: 8px; margin: 10px 0 4px; }
+.spot-stars svg { width: 54px; height: 54px; color: #26324d; fill: rgba(74, 44, 20, .25); stroke-width: 2.2; animation: spot-star .45s cubic-bezier(.2, .9, .3, 1.5) backwards; }
+.spot-stars svg.on { fill: #ffd24d; }
+.spot-result-line { margin: 4px 0; font-size: 18px; font-weight: 900; color: #35241b; text-align: center; }
+.spot-result-best { margin: 2px 0; font-size: 14px; font-weight: 800; color: #6b3a18; text-align: center; }
+.spot-reward { display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 10px 0 4px; padding: 10px; border: 3px dashed #c47a1c; border-radius: 16px; background: rgba(255, 255, 255, .55); }
+.spot-reward b { font-size: 13px; font-weight: 900; color: #a74517; text-transform: uppercase; letter-spacing: .5px; }
+.spot-reward span { display: flex; gap: 14px; }
+.spot-reward em { font-size: 18px; font-weight: 900; font-style: normal; color: #35241b; }
+.spot-reward small { font-size: 14px; font-weight: 700; color: #7a3b12; text-align: center; }
+.spot-result-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+
+@media (max-width: 560px) {
+  .spot-top { gap: 8px; }
+  .spot-title b { display: none; }
+  .spot-title span { font-size: 15px; white-space: normal; line-height: 1.15; }
+  .spot-hint-btn span { display: none; }
+  .spot-hint-btn { min-height: 48px; padding: 0 12px; }
+  .spot-counter b { font-size: 19px; }
+}

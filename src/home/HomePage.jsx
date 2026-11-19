@@ -3,6 +3,10 @@ import { X } from 'lucide-react';
 import { GELARAN, KedaiModal } from './components/KedaiModal';
 import { SakuraFall } from './components/SakuraFall';
 import { BirdsFlow } from './components/BirdsFlow';
+import DailyMissions from './components/DailyMissions';
+import { dailyBadge } from '../lib/daily.js';
+import TreasureRoom from './vault/TreasureRoom.jsx';
+import { vaultBadge } from './vault/vault.js';
 import './dojo.css';
 import './home-layout.css';
 
@@ -72,7 +76,7 @@ function SideButton({ type, label, badge, onClick }) {
 }
 function HomeNotice({ title, children, onClose }) { return <div className="notice-backdrop" role="presentation" onMouseDown={(e)=>{ if(e.target===e.currentTarget) onClose(); }}><section className="home-notice" role="dialog" aria-modal="true" aria-label={title}><button className="notice-close" onClick={onClose}><X /></button><h2>{title}</h2>{children}</section></div>; }
 
-const PROFILE_AVATARS = {
+export const PROFILE_AVATARS = {
   'av-1': '/home/character/character1.webp', 'av-2': '/home/character/character2.webp',
   'av-3': '/home/character/character3.webp', 'av-4': '/home/character/character4.webp',
   'av-5': '/home/character/character5.webp', 'av-6': '/home/character/character6.webp',
@@ -145,8 +149,11 @@ function ProfilePopup({ open, onClose, profile }) {
   </div>;
 }
 
-export default function HomePage({ onPlay, onPlayDarjah4, onOpenMinigame, sound, onToggleSound, profile, onProfileChange }) {
-  const [subject, setSubject] = useState('Matematik'); const [grade, setGrade] = useState('Darjah 1'); const [shopOpen, setShopOpen] = useState(false); const [profileOpen, setProfileOpen] = useState(false); const [notice, setNotice] = useState(null); const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+export default function HomePage({ onPlay, onPlayDarjah4, onOpenMinigame, sound, onToggleSound, profile, onProfileChange, latihanDone = 0 }) {
+  const [vaultOpen, setVaultOpen] = useState(false); const [rewardBadge, setRewardBadge] = useState(() => vaultBadge({ latihanDone }));
+  const refreshBadges = () => { setMissionBadge(dailyBadge()); setRewardBadge(vaultBadge({ latihanDone })); };
+  const addReward = ({ coins = 0, gems = 0 }) => onProfileChange((p) => ({ ...p, coins: (p.coins || 0) + coins, gems: (p.gems || 0) + gems }));
+  const [subject, setSubject] = useState('Matematik'); const [grade, setGrade] = useState('Darjah 1'); const [shopOpen, setShopOpen] = useState(false); const [profileOpen, setProfileOpen] = useState(false); const [notice, setNotice] = useState(null); const [missionsOpen, setMissionsOpen] = useState(false); const [missionBadge, setMissionBadge] = useState(() => dailyBadge()); const [reducedMotion, setReducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   const equipped = profile.equipped || {};
   const homeAvatar = PROFILE_AVATARS[equipped.avatar] || PROFILE_AVATARS['av-1'];
   const homeFrame = PROFILE_FRAMES[equipped.bingkai] || PROFILE_FRAMES['fr-default'];
@@ -158,17 +165,19 @@ export default function HomePage({ onPlay, onPlayDarjah4, onOpenMinigame, sound,
     return () => media.removeEventListener('change', updateMotion);
   }, []);
   const play = () => { if (subject !== 'Matematik') return setNotice({ title: 'Pengembaraan akan datang', text: `${subject} ${grade} sedang disediakan.` }); if (grade === 'Darjah 1') onPlay(); else if (grade === 'Darjah 4' && onPlayDarjah4) onPlayDarjah4(); else setNotice({ title: 'Pengembaraan akan datang', text: `${subject} ${grade} sedang disediakan.` }); };
-  const nav = (key, label) => { if (key === 'utama') return; if (key === 'belajar') return play(); if (key === 'kuiz' && onOpenMinigame) return onOpenMinigame(); if (key === 'kedai') return setShopOpen(true); setNotice({ title: label, text: 'Bahagian ini sedang disediakan. Nantikan kemas kini seterusnya!' }); };
+  const nav = (key, label) => { if (key === 'utama') return; if (key === 'belajar') return play(); if (key === 'minigame' && onOpenMinigame) return onOpenMinigame(); if (key === 'kedai') return setShopOpen(true); setNotice({ title: label, text: 'Bahagian ini sedang disediakan. Nantikan kemas kini seterusnya!' }); };
   const patchProfile = (patch) => onProfileChange((previous) => ({ ...previous, ...patch }));
   return <div className="dojo-home ninja-home" data-subject={theme.key}><img className="village-scene-img" src={theme.background} alt=""/><div className="lantern-lights" aria-hidden="true"><i className="lantern-light left"/><i className="lantern-light right"/></div>{!reducedMotion && <><div className="birds-layer" aria-hidden="true"><BirdsFlow /></div><div className="sakura-layer" aria-hidden="true"><SakuraFall /></div></>}
-    <header className="home-topbar"><button className="profile-card" onClick={()=>setProfileOpen(true)}><span className="avatar-mini"><img className="mini-avatar-bg" src="/home/character/bg-character.webp" alt=""/><img className="mini-avatar-character" src={homeAvatar} alt="Avatar mad"/><img className="mini-avatar-frame" src={homeFrame} alt=""/></span><span className="profile-copy"><strong>mad</strong><em>Ninja Pelatih</em></span><span className="level-copy"><span>★ <b>Lv.6</b></span><i><u /></i></span></button><div className="currency-row"><span>🪙 <b>{profile.coins || 120}</b></span><span>🗓️ <b>2 hari</b></span></div></header>
+    <header className="home-topbar"><button className="profile-card" onClick={()=>setProfileOpen(true)}><span className="avatar-mini"><img className="mini-avatar-bg" src="/home/character/bg-character.webp" alt=""/><img className="mini-avatar-character" src={homeAvatar} alt="Avatar mad"/><img className="mini-avatar-frame" src={homeFrame} alt=""/></span><span className="profile-copy"><strong>mad</strong><em>Ninja Pelatih</em></span><span className="level-copy"><span>★ <b>Lv.6</b></span><i><u /></i></span></button><div className="currency-row"><span>🪙 <b>{profile.coins || 0}</b></span><span>🗓️ <b>2 hari</b></span></div></header>
     <div className="brand-sign"><img className="brand-board-art" src="/home/homepage/logo-board.webp" alt=""/><div className="brand-board-copy"><h1><b>YOU</b> <em>EDU</em> <b>{theme.name}</b><small>{theme.tagline}</small></h1></div></div>
     <div className="selectors"><label><Icon name="calc"/><select value={subject} onChange={e=>setSubject(e.target.value)}><option>Matematik</option><option>Sains</option><option>Bahasa Melayu</option></select></label><label><Icon name="cap"/><select value={grade} onChange={e=>setGrade(e.target.value)}><option>Darjah 1</option><option>Darjah 2</option><option>Darjah 3</option><option>Darjah 4</option></select></label><button className="settings-button" onClick={()=>setNotice({title:'Tetapan', settings:true})}><Icon name="gear"/></button></div>
-    <aside className="side-actions"><SideButton type="mission" label="Misi" badge="3" onClick={()=>setNotice({title:'Misi Harian',text:'Selesaikan latihan nombor hari ini untuk mengumpul 3 bintang!'})}/><SideButton type="reward" label="Ganjaran" onClick={()=>setNotice({title:'Ganjaran',text:'Peti ganjaran seterusnya akan dibuka selepas satu latihan lagi.'})}/></aside>
+    <aside className="side-actions"><SideButton type="mission" label="Misi" badge={missionBadge ? String(missionBadge) : null} onClick={()=>setMissionsOpen(true)}/><SideButton type="reward" label="Ganjaran" badge={rewardBadge ? String(rewardBadge) : null} onClick={()=>setVaultOpen(true)}/></aside>
     <main className="hero-stage"><img className="stone-platform-art" src="/home/homepage/stone-platform.webp" alt=""/><div className="ninja-pair"><img className="hero-ninja orange" src="/home/homepage/ninja-orange.webp" alt="Ninja oren melambai"/><img className="hero-ninja teal" src="/home/homepage/ninja-teal.webp" alt="Ninja hijau memegang buluh"/></div></main>
     <aside className="daily-scroll"><img className="daily-scroll-art" src="/home/homepage/daily-scroll.webp" alt=""/><div className="daily-scroll-content"><span className={`daily-subject-icon ${theme.key}`}>{theme.key === 'math' ? <Icon name="book"/> : theme.icon}</span><h2>LATIHAN<br/>HARI INI</h2><p>{theme.lesson}<br/>{theme.detail}</p><div className="stars">★ ★ ★</div><i><u/></i></div></aside>
     <section className="play-zone"><p>✦ <span>{theme.prompt}</span> ✦</p><button onClick={play}><span><Icon name="play"/></span>MULA MAIN</button></section>
-    <nav className="home-dock" aria-label="Menu utama"><img className="footer-icons-art" src="/home/homepage/icon%20footer.webp" alt=""/>{[['kuiz','quiz','Kuiz'],['belajar','book','Belajar'],['utama','shop','Utama'],['kedai','shop','Kedai'],['lagi','more','Lagi']].map(([key,icon,label])=><button key={key} data-open-shop={key==='kedai' ? '' : undefined} className={key==='utama'?'active':''} onClick={()=>nav(key,label)}><span><Icon name={icon}/></span><b>{label}</b></button>)}</nav>
+    <nav className="home-dock" aria-label="Menu utama"><img className="footer-icons-art" src="/home/homepage/icon%20footer.webp" alt=""/>{[['minigame','quiz','Mini Game'],['belajar','book','Belajar'],['utama','shop','Utama'],['kedai','shop','Kedai'],['lagi','more','Lagi']].map(([key,icon,label])=><button key={key} data-open-shop={key==='kedai' ? '' : undefined} className={key==='utama'?'active':''} onClick={()=>nav(key,label)}><span><Icon name={icon}/></span><b>{label}</b></button>)}</nav>
+    <DailyMissions open={missionsOpen} sound={sound} onClose={()=>{ setMissionsOpen(false); refreshBadges(); }} onReward={addReward} onGo={()=>{ setMissionsOpen(false); refreshBadges(); play(); }}/>
+    <TreasureRoom open={vaultOpen} sound={sound} profile={profile} latihanDone={latihanDone} onReward={addReward} onClose={()=>{ setVaultOpen(false); refreshBadges(); }} onOpenMissions={()=>{ setVaultOpen(false); refreshBadges(); setMissionsOpen(true); }}/>
     {notice && <HomeNotice title={notice.title} onClose={()=>setNotice(null)}>{notice.settings ? <div className="sound-setting"><span>Bunyi permainan</span><button onClick={onToggleSound}>{sound?'Hidup':'Mati'}</button></div> : <p>{notice.text}</p>}</HomeNotice>}
     <ProfilePopup open={profileOpen} onClose={()=>setProfileOpen(false)} profile={profile}/>
     <KedaiModal open={shopOpen} onClose={()=>setShopOpen(false)} sound={sound} coins={profile.coins} gems={profile.gems} onCoinsChange={(coins)=>patchProfile({coins})} onGemsChange={(gems)=>patchProfile({gems})} equipped={profile.equipped} onEquippedChange={(equipped)=>patchProfile({equipped})}/>

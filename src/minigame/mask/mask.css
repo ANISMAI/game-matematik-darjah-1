@@ -1,0 +1,239 @@
+/* Ninja Mask Designer — Studio Seni Shinobi. Gaya selari dengan panel Akademi (kayu, kertas, garis navy). */
+.mask-root { touch-action: manipulation; }
+.mask-mode {
+  flex: none; padding: 6px 12px; border: 3px solid #20293e; border-radius: 999px; font-size: 13px; font-weight: 900; letter-spacing: .4px;
+  text-transform: uppercase; background: #fff3d6; color: #4a2c14;
+}
+.mask-mode.free { background: linear-gradient(#b8f0a8, #5cc35a); color: #123d16; }
+.mask-text { margin: 0 0 4px; font-size: 16px; font-weight: 800; line-height: 1.4; color: #35241b; text-align: center; }
+
+/* ---- susun atur editor: telefon (menegak) ---- */
+.mask-editor {
+  flex: 1; min-height: 0; display: grid; gap: 8px;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(210px, 1fr) auto auto auto;
+  grid-template-areas: 'mission' 'stage' 'actions' 'tools' 'bottom';
+  padding: 8px max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
+}
+.mask-mission { grid-area: mission; }
+.mask-stage-wrap { grid-area: stage; }
+.mask-actions { grid-area: actions; }
+.mask-tools { grid-area: tools; }
+.mask-bottom { grid-area: bottom; }
+
+/* ---- desktop / landskap: kotak alat di sisi ---- */
+@media (min-aspect-ratio: 1/1) and (min-width: 700px) {
+  .mask-editor {
+    grid-template-columns: minmax(0, 1fr) minmax(320px, 430px);
+    grid-template-rows: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: 'stage mission' 'stage tools' 'stage actions' 'stage bottom';
+    gap: 10px 14px; padding-top: 12px;
+  }
+  .mask-tools { max-height: none; min-height: 0; }
+}
+
+/* kad misi */
+.mask-mission {
+  display: flex; gap: 10px; align-items: flex-start; padding: 8px 10px; border: 3px solid #74381b; border-radius: 18px;
+  background: linear-gradient(#fff8db, #f4d7a2); box-shadow: 0 4px 0 rgba(74, 44, 20, .3);
+}
+.mask-guru { flex: none; width: 64px; height: 64px; border: 3px solid #26324d; border-radius: 50%; background: radial-gradient(#fff3d6, #f0c27a); }
+.mask-mission-main { flex: 1; min-width: 0; }
+.mask-mission-main > b { display: block; font-size: 15px; font-weight: 900; line-height: 1.3; color: #35241b; }
+.mask-checklist { display: flex; flex-direction: column; gap: 3px; margin: 6px 0 0; padding: 0; list-style: none; }
+.mask-checklist li { display: grid; grid-template-columns: 22px 1fr; column-gap: 6px; align-items: center; font-size: 14px; font-weight: 800; color: #4a2c14; }
+.mask-checklist li i {
+  display: grid; place-items: center; width: 20px; height: 20px; border: 2px solid #26324d; border-radius: 50%; font-style: normal;
+  font-size: 12px; font-weight: 900; background: #fff;
+}
+.mask-checklist li.ok i { background: #5cc35a; color: #fff; }
+.mask-checklist li.ok span { color: #1d5e2d; }
+.mask-checklist li.bad i { background: #d9443a; color: #fff; }
+.mask-checklist li em { grid-column: 2; font-size: 13px; font-style: normal; font-weight: 800; color: #a3261b; }
+.mask-checklist.intro { margin: 10px 0 14px; padding: 10px 12px; border: 3px dashed #c47a1c; border-radius: 14px; background: rgba(255, 255, 255, .55); }
+.mask-checklist.intro li { font-size: 15px; }
+.mask-intro { display: flex; gap: 12px; align-items: center; }
+.mask-intro p { margin: 0; font-size: 16px; font-weight: 800; line-height: 1.4; color: #35241b; }
+.mask-intro .mask-guru { width: 76px; height: 76px; }
+
+/* pentas topeng — tidak pernah dipotong: saiz dikira ikut ruang */
+.mask-stage-wrap { position: relative; min-height: 0; min-width: 0; display: grid; place-items: center; }
+.mask-stage {
+  position: relative; border: 4px solid #26324d; border-radius: 22px; box-sizing: content-box;
+  background: radial-gradient(circle at 50% 40%, #fffaf0, #f3dfb8 70%, #e6c48e); box-shadow: 0 0 0 4px #fff3d6, 0 8px 0 4px rgba(74, 44, 20, .35);
+  touch-action: none;
+}
+.mask-stage canvas { display: block; width: 100%; height: 100%; border-radius: 18px; }
+.mask-anchor {
+  position: absolute; width: 48px; height: 48px; margin: -24px 0 0 -24px; padding: 0; border: 3px dashed #26324d; border-radius: 50%;
+  background: rgba(255, 210, 77, .35); animation: mask-pulse 1.1s ease-in-out infinite; cursor: pointer;
+}
+.mask-anchor.filled { background: rgba(255, 255, 255, .25); border-style: solid; }
+.mask-anchor.hinted { border-color: #d9443a; background: rgba(217, 68, 58, .25); }
+.mask-anchor:focus-visible { outline: 3px solid #1f6fd1; outline-offset: 3px; }
+@keyframes mask-pulse { 50% { transform: scale(1.12); } }
+.mask-remove {
+  position: absolute; display: grid; place-items: center; width: 30px; height: 30px; margin: -15px 0 0 -15px; padding: 0;
+  border: 2px solid #fff; border-radius: 50%; background: #d9443a; color: #fff; box-shadow: 0 2px 0 rgba(0, 0, 0, .35);
+}
+.mask-remove::before { content: ''; position: absolute; inset: -8px; } /* sasaran sentuh ≥ 44px */
+.mask-remove svg { width: 18px; height: 18px; }
+.mask-ghost { position: fixed; z-index: 40; width: 64px; height: 64px; margin: -32px 0 0 -32px; pointer-events: none; filter: drop-shadow(0 6px 6px rgba(0, 0, 0, .35)); }
+.mask-ghost img { width: 100%; height: 100%; }
+
+/* kotak alat */
+.mask-tools {
+  display: flex; flex-direction: column; min-height: 0; max-height: 34dvh; border: 3px solid #74381b; border-radius: 18px;
+  background: linear-gradient(#fff8db, #f4d7a2); overflow: hidden; box-shadow: 0 4px 0 rgba(74, 44, 20, .3);
+}
+.mask-tabs { display: grid; grid-template-columns: repeat(4, 1fr); flex: none; background: #74381b; gap: 3px; padding: 3px 3px 0; }
+.mask-tab {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; min-height: 48px; padding: 4px 2px;
+  border: 0; border-radius: 12px 12px 0 0; background: #c99a5e; color: #4a2c14; font-size: 13px; font-weight: 900;
+}
+.mask-tab span { font-size: 18px; line-height: 1; display: grid; place-items: center; }
+.mask-tab span svg { width: 16px; height: 16px; }
+.mask-tab.on { background: #fff8db; color: #a74517; }
+.mask-tab:disabled { opacity: .55; cursor: not-allowed; }
+.mask-tab.hinted { animation: mask-blink .8s ease-in-out infinite; }
+@keyframes mask-blink { 50% { background: #ffd24d; } }
+.mask-panel { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 10px; touch-action: pan-y; }
+.mask-tip { margin: 0 0 8px; font-size: 13px; font-weight: 800; color: #6b3a18; }
+.mask-regions { display: flex; gap: 8px; margin-bottom: 10px; }
+.mask-chip {
+  flex: 1; min-height: 44px; border: 3px solid #26324d; border-radius: 999px; background: #fffdf3; color: #4a2c14; font-size: 14px; font-weight: 900;
+}
+.mask-chip.on { background: linear-gradient(#fdbd24, #ee7b00); color: #fff; text-shadow: 0 1px 0 rgba(114, 55, 21, .7); }
+.mask-chip.hinted, .mask-item.hinted { box-shadow: 0 0 0 4px #d9443a; }
+.mask-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 8px; }
+.mask-swatch { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 2px; border: 0; background: none; color: #4a2c14; font-size: 12px; font-weight: 800; }
+.mask-swatch i {
+  display: grid; place-items: center; width: 46px; height: 46px; border: 3px solid #26324d; border-radius: 50%; color: #fff;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, .15);
+}
+.mask-swatch i svg { width: 24px; height: 24px; filter: drop-shadow(0 1px 1px rgba(0, 0, 0, .8)); }
+.mask-swatch.on i { box-shadow: 0 0 0 3px #fff8db, 0 0 0 6px #ee7b00; }
+.mask-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+.mask-item {
+  display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 84px; padding: 6px 4px; border: 3px solid #26324d;
+  border-radius: 14px; background: #fffdf3; color: #4a2c14; font-size: 12px; font-weight: 800; line-height: 1.15; touch-action: none; user-select: none;
+}
+.mask-root .mask-item { touch-action: none; }
+.mask-item img { width: 46px; height: 46px; pointer-events: none; }
+.mask-item.on { background: #ffe58a; box-shadow: 0 0 0 3px #ee7b00; }
+.mask-none { display: grid; place-items: center; width: 46px; height: 46px; border: 3px dashed #9a6332; border-radius: 50%; color: #9a6332; }
+
+/* tindakan */
+.mask-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.mask-act {
+  white-space: nowrap;
+  display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 46px; padding: 0 8px; border: 3px solid #20293e;
+  border-radius: 14px; background: linear-gradient(#4a5878, #26324d); color: #fff3d6; font-size: 14px; font-weight: 900; box-shadow: 0 4px 0 #0d1222;
+}
+.mask-act svg { width: 20px; height: 20px; flex: none; color: #ffd24d; }
+.mask-act:disabled { opacity: .45; cursor: default; }
+.mask-act:not(:disabled):active { transform: translateY(3px); box-shadow: 0 1px 0 #0d1222; }
+.mask-act.small { min-height: 44px; font-size: 13px; padding: 0 6px; }
+.mask-act.danger { background: linear-gradient(#ff7a5c, #d9443a); }
+.mask-act.danger svg { color: #fff; }
+.mask-bottom { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mask-bottom .mall-btn { min-height: 52px; font-size: 15px; }
+.mask-bottom .mall-btn:disabled { filter: grayscale(.8); opacity: .55; cursor: default; }
+
+/* tutorial / simpan */
+.mask-tut-pic { display: grid; place-items: center; height: 72px; font-size: 52px; }
+.mask-save-thumb { display: block; width: 150px; height: auto; margin: 0 auto; border: 3px solid #26324d; border-radius: 16px; background: #fff3d6; }
+.mask-field { display: flex; flex-direction: column; gap: 4px; font-size: 14px; font-weight: 900; color: #6b3a18; }
+.mask-field input, .mask-rename input {
+  min-height: 46px; padding: 0 12px; border: 3px solid #26324d; border-radius: 12px; background: #fff; color: #35241b; font: inherit; font-size: 17px; font-weight: 800;
+}
+.mask-error { margin: 0; padding: 8px 10px; border: 2px solid #a3261b; border-radius: 10px; background: #ffe1dc; color: #a3261b; font-size: 14px; font-weight: 800; }
+
+/* galeri */
+.mask-gallery { position: relative; flex: 1; min-height: 0; overflow-y: auto; padding: 14px max(12px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); touch-action: pan-y; }
+.mask-gallery ul { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(230px, 100%), 1fr)); gap: 14px; margin: 0; padding: 0; list-style: none; }
+.mask-gallery-empty { margin: 30px auto; max-width: 420px; padding: 16px; border: 3px dashed #74381b; border-radius: 18px; background: rgba(255, 248, 219, .8); font-size: 16px; font-weight: 800; color: #4a2c14; text-align: center; }
+.mask-card {
+  display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border: 4px solid #74381b; border-radius: 20px;
+  background: linear-gradient(#fff8db, #f4d7a2); box-shadow: 0 5px 0 rgba(74, 44, 20, .35);
+}
+.mask-card img { width: 120px; height: auto; }
+.mask-card b { font-size: 16px; font-weight: 900; color: #35241b; text-align: center; word-break: break-word; }
+.mask-card small { font-size: 12px; font-weight: 800; color: #6b3a18; }
+.mask-card-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; width: 100%; }
+.mask-card-actions .mask-act { flex-direction: column; gap: 1px; padding: 4px 2px; font-size: 12px; line-height: 1.1; white-space: normal; text-align: center; }
+.mask-rename { display: flex; gap: 6px; width: 100%; }
+.mask-rename input { flex: 1; min-width: 0; }
+
+@media (max-width: 560px) {
+  .mask-mode { display: none; }
+  .mask-guru { width: 48px; height: 48px; }
+  .mask-mission-main > b { font-size: 14px; }
+  .mask-checklist li { font-size: 13px; }
+  .mask-act span { font-size: 12px; }
+}
+@media (max-height: 640px) and (max-aspect-ratio: 1/1) {
+  .mask-checklist li em { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mask-anchor, .mask-tab.hinted { animation: none; }
+}
+
+/* toast di bawah pentas supaya tidak menutup dahi */
+.mask-stage .spot-toast { top: auto; bottom: 10px; max-width: 92%; font-size: 16px; text-align: center; }
+
+/* landskap rendah (telefon melintang): padatkan sisi supaya kotak alat masih kelihatan */
+@media (min-aspect-ratio: 1/1) and (min-width: 700px) {
+  .mask-editor { grid-template-rows: minmax(0, auto) minmax(120px, 1fr) auto auto; }
+  .mask-mission { min-height: 0; overflow-y: auto; }
+}
+@media (min-aspect-ratio: 1/1) and (max-height: 520px) {
+  .mask-root .spot-top { padding-top: max(4px, env(safe-area-inset-top)); padding-bottom: 4px; }
+  .mask-root .spot-icon-btn { width: 44px; height: 44px; }
+  .mask-root .spot-hint-btn { min-height: 44px; }
+  .mask-editor { gap: 6px 10px; padding-top: 6px; }
+  .mask-mission { max-height: 30dvh; padding: 6px 8px; }
+  .mask-mission .mask-guru { width: 40px; height: 40px; }
+  .mask-mission-main > b { font-size: 13px; }
+  .mask-checklist li { font-size: 12px; }
+  .mask-tab { min-height: 44px; flex-direction: row; gap: 4px; }
+  .mask-act { min-height: 44px; }
+  .mask-bottom .mall-btn { min-height: 44px; padding-top: 0; padding-bottom: 0; }
+  .mask-panel { padding: 6px; }
+  .mask-item { min-height: 70px; }
+  .mask-item img { width: 36px; height: 36px; }
+}
+
+/* alat cat: Berus / Baldi Cat (dipilih SELEPAS warna) */
+.mask-paint-tools { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0 8px; padding: 6px; border-radius: 16px; }
+.mask-paint-tools.ask { background: rgba(255, 210, 77, .45); animation: mask-ask 1s ease-in-out infinite; }
+@keyframes mask-ask { 50% { background: rgba(255, 210, 77, .15); } }
+.mask-paint {
+  display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 8px; align-items: center; min-height: 56px;
+  padding: 6px 10px; border: 3px solid #26324d; border-radius: 14px; background: #fffdf3; color: #4a2c14; text-align: left;
+}
+.mask-paint-ico { grid-row: 1 / 3; display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: #f4e3c0; color: #4a2c14; }
+.mask-paint-ico svg { width: 24px; height: 24px; stroke: #26324d; fill: currentColor; fill-opacity: .9; }
+.mask-paint b { font-size: 15px; font-weight: 900; }
+.mask-paint small { font-size: 11px; font-weight: 800; color: #7a4a22; }
+.mask-paint.on { background: linear-gradient(#fdbd24, #ee7b00); color: #fff; box-shadow: 0 0 0 3px #fff8db, 0 0 0 6px #ee7b00; }
+.mask-paint.on small { color: #fff3d6; }
+.mask-chip .mask-dot { display: inline-block; vertical-align: middle; margin-right: 4px; border-radius: 50%; background: currentColor; }
+.mask-stage.paint-brush { cursor: crosshair; }
+.mask-stage.paint-bucket { cursor: cell; }
+@media (prefers-reduced-motion: reduce) { .mask-paint-tools.ask { animation: none; } }
+
+/* desktop: kotak alat guna semua ruang sisi (atasi had telefon di atas) */
+@media (min-aspect-ratio: 1/1) and (min-width: 700px) {
+  .mask-tools { max-height: none; }
+}
+/* telefon menegak: palet padat supaya Berus / Baldi Cat kelihatan tanpa tatal */
+@media (max-aspect-ratio: 1/1) {
+  .mask-tools { max-height: 42dvh; }
+  .mask-swatches { grid-template-columns: repeat(5, 1fr); gap: 4px; }
+  .mask-swatch i { width: 38px; height: 38px; }
+  .mask-swatch span { font-size: 11px; line-height: 1.1; }
+  .mask-paint-tools { margin: 8px 0 4px; padding: 4px; }
+  .mask-paint { min-height: 50px; }
+  .mask-tip { margin-bottom: 6px; }
+}
