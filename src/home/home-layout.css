@@ -183,3 +183,41 @@
 @media(max-width:1100px){.side-action>span:last-child{bottom:12px;height:22px}}
 @media(max-width:760px){.side-action>span:last-child{bottom:7px;height:17px}}
 @media(max-width:480px){.side-action>span:last-child{bottom:6px;height:16px}}
+
+/* ═══ Ninja sentiasa berdiri atas platform (semua saiz skrin) ═══
+   Punca terapung sebelum ini: lebar platform ikut LEBAR pentas, tetapi kedudukan ninja ikut TINGGI pentas, dan imej ninja
+   (object-fit: contain) diletak di TENGAH kotaknya. Kini semua saiz dikira daripada lebar platform (--pw) menggunakan unit
+   kontena, jadi kaki sentiasa jatuh pada permukaan atas platform walau apa nisbah skrin.
+   Ukuran imej: stone-platform.webp 1774×887 (nisbah 0.5) — permukaan atas berdiri ≈ 58% tinggi imej dari bawah;
+   ninja 1254×1254 — kaki oren 1.9% & hijau 5.1% di atas tepi bawah imej. */
+.hero-stage { container-type: size; }
+.hero-stage {
+  --pw: min(86cqw, 136cqh);           /* lebar platform: muat lebar pentas, tapi tidak terlalu tinggi untuk pentas */
+  --pb: calc(var(--pw) * -0.03);      /* tepi lutsinar bawah imej platform dibenam sedikit */
+  --feet: 0.545;                      /* ketinggian titik berdiri pada imej platform (dari bawah) — di hadapan permukaan atas */
+  --nh: calc(var(--pw) * 0.36);       /* tinggi watak (desktop) */
+}
+.hero-stage .stone-platform-art { left: 50%; bottom: var(--pb); width: var(--pw); height: auto; transform: translateX(-50%); }
+.hero-stage .ninja-pair {
+  left: 50%; bottom: calc(var(--pb) + var(--pw) * 0.5 * var(--feet)); width: calc(var(--nh) * 2.02); height: var(--nh);
+  transform: translateX(-50%);
+}
+.hero-stage .hero-ninja { bottom: calc(var(--nh) * -0.019); width: 50%; height: 100%; object-fit: contain; object-position: 50% 100%; }
+.hero-stage .hero-ninja.orange { left: 0; }
+.hero-stage .hero-ninja.teal { right: 0; height: 92%; bottom: calc(var(--nh) * 0.92 * -0.051); }
+.hero-stage .ninja-pair:before, .hero-stage .ninja-pair:after { bottom: -2%; width: 34%; height: 9%; }
+.hero-stage .ninja-pair:before { left: 8%; }
+.hero-stage .ninja-pair:after { right: 6%; }
+/* tablet menegak: pentas lebih lebar → platform & ninja lebih besar */
+@media (max-width: 1100px) and (min-width: 600px) and (orientation: portrait) {
+  .hero-stage { left: 9%; right: 9%; }
+  .hero-stage { --nh: calc(var(--pw) * 0.40); }
+}
+/* telefon: ninja lebih besar berbanding platform supaya jelas */
+@media (max-width: 599px) {
+  .hero-stage { --nh: calc(var(--pw) * 0.44); }
+}
+/* telefon melintang (skrin rendah): ninja lebih kecil supaya tidak bertindih dengan butang MULA MAIN */
+@media (max-height: 500px) and (orientation: landscape) {
+  .hero-stage { --nh: calc(var(--pw) * 0.30); --feet: 0.62; } /* berdiri di belakang supaya kaki tidak tertutup label "Sedia" */
+}
